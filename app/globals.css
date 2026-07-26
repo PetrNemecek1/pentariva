@@ -1,0 +1,84 @@
+@import "tailwindcss";
+@source "../app";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-cream: var(--cream);
+  --color-deep: var(--deep);
+  --color-border: var(--border);
+  --font-serif: var(--font-eb-garamond), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.5rem;
+  /* Deep forest green backgrounds & antique gold accents */
+  --background: oklch(0.22 0.03 155);
+  --deep: oklch(0.17 0.028 155);
+  --foreground: oklch(0.94 0.02 85);
+  --cream: oklch(0.94 0.025 85);
+  --gold: oklch(0.78 0.11 82);
+  --gold-soft: oklch(0.68 0.08 82);
+  --card: oklch(0.20 0.028 155);
+  --card-foreground: oklch(0.94 0.02 85);
+  --primary: oklch(0.78 0.11 82);
+  --primary-foreground: oklch(0.17 0.028 155);
+  --secondary: oklch(0.27 0.03 155);
+  --secondary-foreground: oklch(0.94 0.02 85);
+  --muted: oklch(0.25 0.028 155);
+  --muted-foreground: oklch(0.78 0.03 85);
+  --accent: oklch(0.78 0.11 82);
+  --accent-foreground: oklch(0.17 0.028 155);
+  --border: oklch(0.78 0.11 82 / 22%);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.78 0.11 82);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility container-p {
+  padding-inline: 1.5rem;
+  @media (min-width: 768px) { padding-inline: 3rem; }
+}
+
+@utility gold-rule {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
+}
