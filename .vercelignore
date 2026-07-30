@@ -1,0 +1,7 @@
+PENTARIVA-WEB-PRO-HOSTING-2026-07-29/
+src/
+.lovable/
+.tanstack/
+.next/
+vite.config.ts
+components.json

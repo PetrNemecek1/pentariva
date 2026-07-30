@@ -1,0 +1,122 @@
+import product01 from "@/assets/product-01.jpg";
+import product02 from "@/assets/product-02.jpg";
+import product03 from "@/assets/product-03.jpg";
+import product04 from "@/assets/product-04.jpg";
+
+export type ProductConcept = {
+  slug: string;
+  name: string;
+  shortName: string;
+  format: string;
+  intention: string;
+  description: string;
+  ritual: string;
+  image: string;
+  imageAlt: string;
+  principles: readonly string[];
+  suitableFor: readonly string[];
+};
+
+export const PRODUCT_CONCEPTS: readonly ProductConcept[] = [
+  {
+    slug: "kazdodenni-rovnovaha",
+    name: "PENTARIVA Každodenní rovnováha",
+    shortName: "Každodenní rovnováha",
+    format: "Koncept bylinného komplexu",
+    intention: "Klidný začátek každodenního rituálu.",
+    description:
+      "Návrh základního produktu budoucího portfolia, který vyjadřuje princip pravidelnosti, jednoduchosti a dlouhodobé péče.",
+    ritual:
+      "Jednoduchý ranní nebo polední okamžik, který připomíná, že rovnováha nevzniká jedním rozhodnutím, ale opakováním drobných kroků.",
+    image: product01.src,
+    imageAlt:
+      "Koncept botanického produktu PENTARIVA Každodenní rovnováha",
+    principles: [
+      "srozumitelná role v každodenní péči",
+      "transparentně připravované složení",
+      "forma navržená pro pravidelný rituál",
+      "odpovědná komunikace bez přehnaných slibů",
+    ],
+    suitableFor: [
+      "lidi hledající jednoduchý každodenní rituál",
+      "zájemce o budoucí základní řadu PENTARIVA",
+      "ty, kteří chtějí nejprve porozumět souvislostem",
+    ],
+  },
+  {
+    slug: "vecerni-harmonie",
+    name: "PENTARIVA Večerní harmonie",
+    shortName: "Večerní harmonie",
+    format: "Koncept bylinných kapek",
+    intention: "Přechod z aktivity do klidnější části dne.",
+    description:
+      "Editorializovaný koncept tekuté botanické formy propojené s večerním rituálem, dechem a vědomým zpomalením.",
+    ritual:
+      "Několik klidných minut bez obrazovek, teplý nápoj a prostor pro uzavření dne. Produkt je zde součástí rituálu, nikoli jeho jediným smyslem.",
+    image: product02.src,
+    imageAlt: "Koncept bylinných kapek PENTARIVA Večerní harmonie",
+    principles: [
+      "jemná a snadno uchopitelná forma",
+      "důraz na smyslový a večerní kontext",
+      "budoucí odborná a legislativní kontrola",
+      "propojení s tématem regenerace a životního rytmu",
+    ],
+    suitableFor: [
+      "lidi, kteří chtějí kultivovat večerní návyky",
+      "zájemce o botanické tekuté formy",
+      "čtenáře budoucího tématu spánku a regenerace",
+    ],
+  },
+  {
+    slug: "bylinny-ritual",
+    name: "PENTARIVA Bylinný rituál",
+    shortName: "Bylinný rituál",
+    format: "Koncept sypané bylinné směsi",
+    intention: "Chuť, vůně a dotek v jednom vědomém okamžiku.",
+    description:
+      "Koncept čajové směsi, která ztělesňuje smyslový jazyk PENTARIVA a propojuje přípravu, vůni, teplo a chvíli pozornosti.",
+    ritual:
+      "Pomalá příprava, vnímání vůně a teploty, chvíle bez spěchu. Každý krok má vlastní význam a společně vytvářejí prožitek.",
+    image: product03.src,
+    imageAlt: "Koncept sypané bylinné směsi PENTARIVA Bylinný rituál",
+    principles: [
+      "smyslově čitelná a přirozená forma",
+      "původ a kvalita bylin jako budoucí priorita",
+      "rituál přípravy jako součást zkušenosti",
+      "jasné informace před jakýmkoliv doporučením",
+    ],
+    suitableFor: [
+      "milovníky čajových a botanických rituálů",
+      "lidi hledající vědomou pauzu během dne",
+      "zájemce o příběh původu jednotlivých bylin",
+    ],
+  },
+  {
+    slug: "vnitrni-vitalita",
+    name: "PENTARIVA Vnitřní vitalita",
+    shortName: "Vnitřní vitalita",
+    format: "Koncept prémiového doplňku",
+    intention: "Dlouhodobost místo krátkodobých slibů.",
+    description:
+      "Koncept budoucího prémiového produktu postaveného na vysokých nárocích na dokumentaci, původ, kvalitu a srozumitelnost.",
+    ritual:
+      "Pravidelná péče doplněná vzděláváním a realistickým očekáváním. Výsledná receptura bude představena až po odborném a legislativním schválení.",
+    image: product04.src,
+    imageAlt: "Koncept prémiového produktu PENTARIVA Vnitřní vitalita",
+    principles: [
+      "kvalita a dohledatelnost před marketingem",
+      "odborná revize budoucí receptury",
+      "srozumitelná dokumentace a upozornění",
+      "propojení produktu se vzděláváním a Poradnou",
+    ],
+    suitableFor: [
+      "zájemce o budoucí prémiovou produktovou řadu",
+      "lidi, kteří vyžadují transparentní informace",
+      "členy, kteří chtějí sledovat vývoj portfolia",
+    ],
+  },
+];
+
+export function getProductConcept(slug: string) {
+  return PRODUCT_CONCEPTS.find((product) => product.slug === slug);
+}

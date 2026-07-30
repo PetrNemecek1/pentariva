@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { EB_Garamond, Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 
-const serif = EB_Garamond({
+const serif = Cormorant_Garamond({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-eb-garamond",
+  variable: "--font-cormorant",
   display: "swap",
 });
 
@@ -18,25 +18,35 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://pentariva.vercel.app",
   ),
-  title: "PENTARIVA — Z hlubin kořenů. Pro celého člověka.",
+  title: {
+    default: "PENTARIVA — Evropský ekosystém přirozené vitality",
+    template: "%s | PENTARIVA",
+  },
   description:
-    "PENTARIVA — bylinná péče vyrůstající z tradice, úcty k přírodě a pozornosti ke každému detailu.",
+    "Spojujeme tradiční bylinné receptury, moderní vývoj, digitální technologie a evropskou partnerskou komunitu do jednoho živého ekosystému péče o člověka.",
+  authors: [{ name: "PENTARIVA" }],
+  applicationName: "PENTARIVA",
   openGraph: {
-    title: "PENTARIVA — Z hlubin kořenů. Pro celého člověka.",
+    title: "PENTARIVA — Evropský ekosystém přirozené vitality",
     description:
-      "Bylinná péče inspirovaná tradicí a šitá na míru dnešnímu člověku.",
+      "Tradiční bylinné receptury, moderní vývoj a evropská komunita v jednom živém ekosystému.",
     type: "website",
     locale: "cs_CZ",
+    siteName: "PENTARIVA",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PENTARIVA — Z hlubin kořenů. Pro celého člověka.",
+    title: "PENTARIVA — Evropský ekosystém přirozené vitality",
     description:
-      "Bylinná péče inspirovaná tradicí a šitá na míru dnešnímu člověku.",
+      "Tradiční bylinné receptury, moderní vývoj a evropská komunita v jednom živém ekosystému.",
   },
   icons: {
     icon: "/favicon.ico",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1e2a1c",
 };
 
 export default function RootLayout({

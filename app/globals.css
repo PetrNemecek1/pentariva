@@ -1,17 +1,34 @@
 @import "tailwindcss";
 @source "../app";
+@source "../components";
+@source "../content";
 
 @custom-variant dark (&:is(.dark *));
+
+/*
+ * PENTARIVA — Design system.
+ * Semantic tokens derived from the Brand Book: deep forest green, warm ivory,
+ * antique gold, and rich botanical ink. All colors in oklch.
+ */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --font-serif: var(--font-cormorant), "Cormorant", ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -20,37 +37,83 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  /* PENTARIVA brand tokens */
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
+  --color-forest-soft: var(--forest-soft);
+  --color-ivory: var(--ivory);
+  --color-ivory-warm: var(--ivory-warm);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
+  --color-ink: var(--ink);
   --color-cream: var(--cream);
-  --color-deep: var(--deep);
-  --color-border: var(--border);
-  --font-serif: var(--font-eb-garamond), "Cormorant Garamond", Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-cream-muted: var(--cream-muted);
 }
 
 :root {
   --radius: 0.5rem;
-  /* Deep forest green backgrounds & antique gold accents */
-  --background: oklch(0.22 0.03 155);
-  --deep: oklch(0.17 0.028 155);
-  --foreground: oklch(0.94 0.02 85);
-  --cream: oklch(0.94 0.025 85);
-  --gold: oklch(0.78 0.11 82);
-  --gold-soft: oklch(0.68 0.08 82);
-  --card: oklch(0.20 0.028 155);
-  --card-foreground: oklch(0.94 0.02 85);
-  --primary: oklch(0.78 0.11 82);
-  --primary-foreground: oklch(0.17 0.028 155);
-  --secondary: oklch(0.27 0.03 155);
-  --secondary-foreground: oklch(0.94 0.02 85);
-  --muted: oklch(0.25 0.028 155);
-  --muted-foreground: oklch(0.78 0.03 85);
-  --accent: oklch(0.78 0.11 82);
-  --accent-foreground: oklch(0.17 0.028 155);
-  --border: oklch(0.78 0.11 82 / 22%);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.78 0.11 82);
+
+  /* PENTARIVA brand palette */
+  --forest: oklch(0.26 0.028 145);
+  --forest-deep: oklch(0.19 0.024 145);
+  --forest-soft: oklch(0.34 0.03 140);
+  --ivory: oklch(0.955 0.018 88);
+  --ivory-warm: oklch(0.93 0.024 85);
+  --gold: oklch(0.75 0.11 82);
+  --gold-soft: oklch(0.82 0.09 84);
+  --gold-deep: oklch(0.63 0.11 75);
+  --ink: oklch(0.2 0.02 120);
+  --cream: oklch(0.95 0.02 85);
+  --cream-muted: oklch(0.82 0.03 85);
+
+  /* Semantic surfaces default to the ivory/ink light theme */
+  --background: var(--ivory);
+  --foreground: var(--ink);
+  --card: oklch(0.98 0.014 85);
+  --card-foreground: var(--ink);
+  --popover: oklch(0.98 0.014 85);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: var(--cream);
+  --secondary: oklch(0.9 0.02 85);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.9 0.018 85);
+  --muted-foreground: oklch(0.4 0.02 120);
+  --accent: var(--gold);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: var(--cream);
+  --border: oklch(0.85 0.02 85);
+  --input: oklch(0.88 0.018 85);
+  --ring: var(--gold);
+}
+
+.dark {
+  --background: var(--forest-deep);
+  --foreground: var(--cream);
+  --card: var(--forest);
+  --card-foreground: var(--cream);
+  --popover: var(--forest);
+  --popover-foreground: var(--cream);
+  --primary: var(--gold);
+  --primary-foreground: var(--forest-deep);
+  --secondary: var(--forest-soft);
+  --secondary-foreground: var(--cream);
+  --muted: var(--forest-soft);
+  --muted-foreground: var(--cream-muted);
+  --accent: var(--gold);
+  --accent-foreground: var(--forest-deep);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: var(--gold);
 }
 
 @layer base {
@@ -58,27 +121,78 @@
     border-color: var(--color-border);
   }
 
-  html, body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
+  html {
     scroll-behavior: smooth;
   }
 
-  h1, h2, h3, h4, .font-serif {
-    font-family: var(--font-serif);
-    font-weight: 500;
-    letter-spacing: -0.01em;
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--gold) 40%, transparent);
+    color: var(--ink);
   }
 }
 
-@utility container-p {
-  padding-inline: 1.5rem;
-  @media (min-width: 768px) { padding-inline: 3rem; }
+@utility font-serif-display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
 }
 
-@utility gold-rule {
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
+@utility text-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.chapter-navigation-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.chapter-navigation-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .chapter-navigation-scroll {
+    padding-inline: max(0px, calc(50% - 4.5rem));
+  }
+}
+
+/* Hero text scrim — stronger on mobile where text overlaps products, subtler on desktop */
+.hero-text-scrim {
+  background:
+    radial-gradient(ellipse at 30% 42%, rgba(8,16,10,0.8) 0%, rgba(8,16,10,0.48) 26%, rgba(8,16,10,0.18) 52%, rgba(8,16,10,0) 72%);
+}
+
+@media (min-width: 1024px) {
+  .hero-text-scrim {
+    background:
+      radial-gradient(ellipse at 18% 28%, rgba(8,16,10,0.6) 0%, rgba(8,16,10,0.28) 22%, rgba(8,16,10,0.08) 42%, rgba(8,16,10,0) 58%);
+  }
+}
+
+/* Extra soft glow behind the hero text block */
+.hero-text-glow {
+  background:
+    radial-gradient(ellipse at 20% 36%, rgba(8,16,10,0.3) 0%, rgba(8,16,10,0.12) 50%, rgba(8,16,10,0) 72%);
+  filter: blur(40px);
+}
+
+@media (min-width: 1024px) {
+  .hero-text-glow {
+    background:
+      radial-gradient(ellipse at 20% 36%, rgba(8,16,10,0.26) 0%, rgba(8,16,10,0.1) 50%, rgba(8,16,10,0) 72%);
+  }
 }
