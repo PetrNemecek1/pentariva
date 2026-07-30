@@ -6,7 +6,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
-  Pause,
   Play,
   Volume2,
 } from "lucide-react";
@@ -749,62 +748,7 @@ function ChapterTwo() {
 /*  Chapter III — Pět smyslů. Jeden prožitek.                                  */
 /* -------------------------------------------------------------------------- */
 
-const FIVE_SENSES_AUDIO =
-  "/audio/pentariva-pet-smyslu-jeden-dech.wav";
-
 function ProductAudioPreview() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playing, setPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.7);
-
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    const onTime = () => setCurrentTime(a.currentTime);
-    const onMeta = () => {
-      setCurrentTime(a.currentTime || 0);
-      setDuration(Number.isFinite(a.duration) ? a.duration : 0);
-    };
-    const onPlay = () => setPlaying(true);
-    const onPause = () => setPlaying(false);
-    const onEnd = () => setPlaying(false);
-    a.addEventListener("timeupdate", onTime);
-    a.addEventListener("loadedmetadata", onMeta);
-    a.addEventListener("durationchange", onMeta);
-    a.addEventListener("play", onPlay);
-    a.addEventListener("pause", onPause);
-    a.addEventListener("ended", onEnd);
-    if (a.readyState >= 1) onMeta();
-    return () => {
-      a.removeEventListener("timeupdate", onTime);
-      a.removeEventListener("loadedmetadata", onMeta);
-      a.removeEventListener("durationchange", onMeta);
-      a.removeEventListener("play", onPlay);
-      a.removeEventListener("pause", onPause);
-      a.removeEventListener("ended", onEnd);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-  }, [volume]);
-
-  const toggle = () => {
-    const a = audioRef.current;
-    if (!a) return;
-    if (a.paused) void a.play();
-    else a.pause();
-  };
-
-  const fmt = (s: number) => {
-    if (!isFinite(s)) return "0:00";
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec.toString().padStart(2, "0")}`;
-  };
-
   return (
     <div className="border border-forest-deep/12 bg-ivory-warm/50 p-6 lg:p-8">
       <div className="flex flex-col gap-1">
@@ -812,42 +756,34 @@ function ProductAudioPreview() {
           Zvuková krajina PENTARIVA
         </span>
         <span className="font-serif-display text-forest-deep/70 italic" style={{ fontSize: "1rem" }}>
-          Pět smyslů. Jeden dech.
+          Zvukový prožitek připravujeme.
         </span>
       </div>
 
       <div className="mt-6 grid grid-cols-[3rem_minmax(0,1fr)] items-center gap-x-4 gap-y-5 sm:flex sm:gap-5">
         <button
           type="button"
-          onClick={toggle}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-forest-deep/30 bg-ivory text-forest-deep transition-colors hover:bg-forest-deep hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep/60"
-          aria-label={
-            playing
-              ? "Pozastavit zvukovou krajinu Pět smyslů. Jeden dech."
-              : "Přehrát zvukovou krajinu Pět smyslů. Jeden dech."
-          }
+          disabled
+          className="flex h-12 w-12 cursor-not-allowed items-center justify-center rounded-full border border-forest-deep/15 bg-ivory/60 text-forest-deep/35"
+          aria-label="Zvuková krajina se připravuje"
         >
-          {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 translate-x-[1px]" />}
+          <Play className="h-5 w-5 translate-x-[1px]" />
         </button>
 
         <div className="flex-1">
           <div className="h-[2px] w-full bg-forest-deep/10">
-            <div
-              className="h-full bg-gold-deep/70 transition-[width]"
-              style={{ width: duration ? `${(currentTime / duration) * 100}%` : "0%" }}
-              aria-hidden
-            />
+            <div className="h-full w-0 bg-gold-deep/70" aria-hidden />
           </div>
           <div
             className="mt-2 flex justify-between font-sans text-[0.7rem] text-forest-deep/60"
             style={{ letterSpacing: "0.12em" }}
           >
-            <span>{fmt(currentTime)}</span>
-            <span>{fmt(duration)}</span>
+            <span>0:00</span>
+            <span>—:—</span>
           </div>
         </div>
 
-        <label className="col-span-2 ml-auto flex items-center gap-2 text-forest-deep/60 sm:col-auto">
+        <div className="col-span-2 ml-auto flex items-center gap-2 text-forest-deep/30 sm:col-auto">
           <Volume2 className="h-4 w-4" aria-hidden />
           <span className="sr-only">Hlasitost</span>
           <input
@@ -855,20 +791,14 @@ function ProductAudioPreview() {
             min={0}
             max={1}
             step={0.01}
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
-            className="h-1 w-20 cursor-pointer accent-gold-deep"
+            value={0}
+            disabled
+            readOnly
+            className="h-1 w-20 cursor-not-allowed accent-gold-deep"
             aria-label="Hlasitost"
           />
-        </label>
+        </div>
       </div>
-
-      <audio
-        ref={audioRef}
-        src={FIVE_SENSES_AUDIO}
-        preload="metadata"
-        aria-label="Pět smyslů. Jeden dech. Originální zvuková krajina PENTARIVA."
-      />
     </div>
   );
 }
