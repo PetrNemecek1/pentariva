@@ -47,22 +47,15 @@ export function EditorialHero({
       />
       <div className="relative mx-auto grid max-w-[1400px] gap-12 px-6 lg:grid-cols-12 lg:px-12">
         <div className="lg:col-span-7">
-          <GoldOrnament
-            className={dark ? "text-gold" : "text-gold-deep"}
-            width={130}
-          />
+          <GoldOrnament className={dark ? "text-gold" : "text-gold-deep"} width={130} />
           <p
-            className={`mt-8 text-eyebrow ${
-              dark ? "text-gold" : "text-gold-deep"
-            }`}
+            className={`mt-8 text-eyebrow ${dark ? "text-gold" : "text-gold-deep"}`}
             style={{ letterSpacing: "0.32em" }}
           >
             {eyebrow}
           </p>
           <h1
-            className={`mt-6 font-serif-display ${
-              dark ? "text-cream" : "text-forest-deep"
-            }`}
+            className={`mt-6 font-serif-display ${dark ? "text-cream" : "text-forest-deep"}`}
             style={{
               fontSize: "clamp(2.5rem, 5vw, 4.8rem)",
               lineHeight: 1.02,
@@ -76,9 +69,7 @@ export function EditorialHero({
           {status && (
             <span
               className={`mb-6 w-fit border px-4 py-2 text-[0.64rem] uppercase ${
-                dark
-                  ? "border-gold/35 text-gold"
-                  : "border-gold-deep/25 text-gold-deep"
+                dark ? "border-gold/35 text-gold" : "border-gold-deep/25 text-gold-deep"
               }`}
               style={{ letterSpacing: "0.26em" }}
             >
@@ -119,9 +110,7 @@ export function SectionHeading({
         {eyebrow}
       </p>
       <h2
-        className={`mt-5 font-serif-display ${
-          dark ? "text-cream" : "text-forest-deep"
-        }`}
+        className={`mt-5 font-serif-display ${dark ? "text-cream" : "text-forest-deep"}`}
         style={{
           fontSize: "clamp(2rem, 3.8vw, 3.35rem)",
           lineHeight: 1.08,
@@ -193,6 +182,29 @@ export function TextLink({
         className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
         strokeWidth={1.5}
       />
+    </a>
+  );
+}
+
+export function InlineLink({
+  href,
+  children,
+  dark = false,
+}: {
+  href: string;
+  children: ReactNode;
+  dark?: boolean;
+}) {
+  return (
+    <a
+      href={href}
+      className={`font-medium underline decoration-1 underline-offset-[0.22em] transition-colors ${
+        dark
+          ? "text-gold-soft decoration-gold/45 hover:text-gold hover:decoration-gold"
+          : "text-forest-deep decoration-gold-deep/45 hover:text-gold-deep hover:decoration-gold-deep"
+      }`}
+    >
+      {children}
     </a>
   );
 }

@@ -39,7 +39,7 @@ const PRINCIPLES = [
   {
     roman: "II",
     title: "Pravdivost",
-    body: "Neslibujeme zázraky. Mluvíme o tom, co je opravdu uvnitř — o rostlinách, původu, procesu a odpovědnosti.",
+    body: "Mluvíme přesně o tom, co je opravdu uvnitř — o rostlinách, původu, procesu a odpovědnosti.",
   },
   {
     roman: "III",
@@ -54,7 +54,7 @@ const PRINCIPLES = [
   {
     roman: "V",
     title: "Partnerství",
-    body: "Rosteme jen společně. S pěstiteli, s vědci, s partnery, s komunitou. Ekosystém nemá střed — má vztahy.",
+    body: "Rosteme společně s pěstiteli, vědci, partnery a komunitou. Vztahy tvoří živý střed ekosystému.",
   },
 ] as const;
 
@@ -158,8 +158,7 @@ export default function SvetPentarivaPage() {
               }}
             >
               Kniha o kořenech,
-              <br />
-              o řemesle a o důvěře.
+              <br />o řemesle a o důvěře.
             </h1>
             <p
               className="mt-8 max-w-xl text-base leading-relaxed text-cream/95 sm:text-lg"
@@ -167,16 +166,13 @@ export default function SvetPentarivaPage() {
                 textShadow: "0 1px 2px rgba(0,0,0,0.4), 0 2px 12px rgba(0,0,0,0.35)",
               }}
             >
-              Než vznikl první produkt, vznikla myšlenka. Těchto sedm kapitol
-              vypráví příběh, ze kterého vyrůstá PENTARIVA – evropský ekosystém
-              propojující přírodu, člověka a moderní poznání.
+              Než vznikl první produkt, vznikla myšlenka. Těchto sedm kapitol vypráví příběh, ze
+              kterého vyrůstá PENTARIVA – evropský ekosystém propojující přírodu, člověka a moderní
+              poznání.
             </p>
 
             {/* Chapter index */}
-            <nav
-              aria-label="Kapitoly"
-              className="mt-14 border-t border-cream/20 pt-6"
-            >
+            <nav aria-label="Kapitoly" className="mt-14 border-t border-cream/20 pt-6">
               <ol className="flex flex-wrap gap-x-8 gap-y-3">
                 {CHAPTERS.map((c) => (
                   <li key={c.roman}>
@@ -217,29 +213,23 @@ export default function SvetPentarivaPage() {
             >
               <p>
                 <DropCap letter="Ž" />
-                ijeme v době, která si zvykla spěchat. Řešení se objevují dřív,
-                než stačíme pojmenovat otázku. Značky vznikají a zanikají
-                v rytmu jedné sezóny.
+                ijeme v době, která si zvykla spěchat. Řešení se objevují dřív, než stačíme
+                pojmenovat otázku. Značky vznikají a zanikají v rytmu jedné sezóny.
               </p>
               <p>
-                Přesto — nejcennější věci, které kolem sebe máme, se nikam
-                spěchat neučí. Kámen, ze kterého jsou postaveny evropské
-                kláštery. Vinná réva zasazená před sto lety.
+                Přesto — nejcennější věci, které kolem sebe máme, se nikam spěchat neučí. Kámen, ze
+                kterého jsou postaveny evropské kláštery. Vinná réva zasazená před sto lety.
               </p>
               <p>
-                PENTARIVA vzniká právě tady — v přesvědčení, že skutečná
-                hodnota se buduje v rytmu přírody, ne trhu. A že tento rytmus
-                stojí za to znovu objevit.
+                PENTARIVA vzniká právě tady — v přesvědčení, že skutečná hodnota se buduje v rytmu
+                přírody, ne trhu. A že tento rytmus stojí za to znovu objevit.
               </p>
             </div>
           </div>
         </section>
 
         {/* ─── II. Myšlenka — full-bleed craft image + pull quote ───────── */}
-        <section
-          id="myslenka"
-          className="relative isolate scroll-mt-24 bg-forest-deep"
-        >
+        <section id="myslenka" className="relative isolate scroll-mt-24 bg-forest-deep">
           <img
             src={svetCraft.url}
             alt="Ruce řemeslníka pečlivě skládají větvičky rozmarýnu a šalvěje na dubovém stole."
@@ -276,10 +266,9 @@ export default function SvetPentarivaPage() {
                   textShadow: "0 1px 10px rgba(0,0,0,0.35)",
                 }}
               >
-                PENTARIVA není katalog produktů ani marketingový projekt.
-                Je to živý celek, ve kterém se potkává tradiční bylinné
-                poznání, moderní vývoj, digitální technologie a evropská
-                partnerská komunita. Pět proudů — jedna řeka.
+                PENTARIVA je promyšlený ekosystém péče, poznání a vztahů. Je to živý celek, ve
+                kterém se potkává tradiční bylinné poznání, moderní vývoj, digitální technologie a
+                evropská partnerská komunita. Pět proudů — jedna řeka.
               </p>
               <div className="mt-10 flex items-center gap-3">
                 <span className="h-px w-10 bg-gold-soft/70" />
@@ -330,9 +319,9 @@ export default function SvetPentarivaPage() {
                 className="mt-8 max-w-[520px] text-ink/75"
                 style={{ fontSize: "1.075rem", lineHeight: 1.8 }}
               >
-                Každá receptura, každé partnerství, každé slovo prochází
-                stejnou zkouškou. Pokud rozhodnutí obstojí před těmito pěti
-                principy, může se stát součástí ekosystému PENTARIVA.
+                Každá receptura, každé partnerství, každé slovo prochází stejnou zkouškou. Pokud
+                rozhodnutí obstojí před těmito pěti principy, může se stát součástí ekosystému
+                PENTARIVA.
               </p>
             </div>
 
@@ -347,9 +336,7 @@ export default function SvetPentarivaPage() {
                       }`}
                     >
                       <div
-                        className={`lg:col-span-3 ${
-                          alignRight ? "lg:order-2 lg:text-right" : ""
-                        }`}
+                        className={`lg:col-span-3 ${alignRight ? "lg:order-2 lg:text-right" : ""}`}
                       >
                         <span
                           className="block font-serif-display text-gold-deep/70"
@@ -393,10 +380,7 @@ export default function SvetPentarivaPage() {
         </section>
 
         {/* ─── IV. Ekosystém — original editorial scene ───────────────────── */}
-        <section
-          id="ekosystem"
-          className="scroll-mt-24 bg-ivory-warm/40 py-28 lg:py-40"
-        >
+        <section id="ekosystem" className="scroll-mt-24 bg-ivory-warm/40 py-28 lg:py-40">
           <div className="mx-auto grid max-w-[1300px] gap-16 px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-20 lg:px-12">
             <div className="order-2 lg:order-1">
               <ChapterLabel roman="IV" kicker="EKOSYSTÉM" />
@@ -412,16 +396,15 @@ export default function SvetPentarivaPage() {
                 className="mt-10 max-w-[520px] text-ink/85"
                 style={{ fontSize: "1.075rem", lineHeight: 1.8 }}
               >
-                Produkty. Vzdělávání. Komunita. Poradna. Svět značky. Každá
-                vrstva má vlastní hloubku, ale všechny sdílí stejné kořeny.
-                Nic nefunguje samo — všechno spolu.
+                Produkty. Vzdělávání. Komunita. Poradna. Svět značky. Každá vrstva má vlastní
+                hloubku, ale všechny sdílí stejné kořeny. Všechno funguje ve vzájemném propojení.
               </p>
               <p
                 className="mt-6 max-w-[520px] text-ink/70"
                 style={{ fontSize: "1.02rem", lineHeight: 1.8 }}
               >
-                Zákazník se stává členem. Člen se stává partnerem. Partner
-                se stává součástí příběhu, který přesahuje jednotlivce.
+                Zákazník se stává členem. Člen se stává partnerem. Partner se stává součástí
+                příběhu, který přesahuje jednotlivce.
               </p>
               <div className="mt-10 flex items-center gap-3">
                 <span className="h-px w-10 bg-gold/60" />
@@ -459,26 +442,26 @@ export default function SvetPentarivaPage() {
               >
                 Tradice a laboratoř
                 <br />
-                nejsou soupeři.
+                tvoří spolupracující celek.
               </h2>
               <div
                 className="mt-12 space-y-8 text-ink/85"
                 style={{ fontSize: "1.075rem", lineHeight: 1.8 }}
               >
                 <p>
-                  Bylinné receptury vznikaly po staletí prostou zkušeností —
-                  z generací, které pozorovaly, ochutnávaly a předávaly. Tuto
-                  pokoru bereme jako výchozí bod, ne jako muzeum.
+                  Bylinné receptury vznikaly po staletí prostou zkušeností — z generací, které
+                  pozorovaly, ochutnávaly a předávaly. Tuto pokoru bereme jako živý výchozí bod
+                  současné práce.
                 </p>
                 <p>
-                  Každou surovinu, každý extrakt, každou kombinaci ověřujeme
-                  v evropských laboratořích. Ne proto, abychom tradici
-                  nahradili — ale proto, abychom jí rozuměli hlouběji.
+                  Každou surovinu, každý extrakt, každou kombinaci ověřujeme v evropských
+                  laboratořích. Ne proto, abychom tradici nahradili — ale proto, abychom jí rozuměli
+                  hlouběji.
                 </p>
                 <p>
-                  Ruka řemeslníka a přístroj v laboratoři pracují ve stejném
-                  týmu. Věda potvrzuje. Tradice inspiruje. Výsledkem je klid —
-                  vědomí, že nabízíme jen to, čemu sami věříme.
+                  Ruka řemeslníka a přístroj v laboratoři pracují ve stejném týmu. Věda potvrzuje.
+                  Tradice inspiruje. Výsledkem je klid — vědomí, že nabízíme jen to, čemu sami
+                  věříme.
                 </p>
               </div>
             </div>
@@ -504,10 +487,7 @@ export default function SvetPentarivaPage() {
         </section>
 
         {/* ─── VI. Evropa ─────────────────────────────────────────────────── */}
-        <section
-          id="evropa"
-          className="relative isolate scroll-mt-24 bg-forest-deep"
-        >
+        <section id="evropa" className="relative isolate scroll-mt-24 bg-forest-deep">
           <img
             src={svetEurope.url}
             alt="Evropská krajina při zlaté hodině s kamennými terasami a bylinnými poli."
@@ -528,13 +508,12 @@ export default function SvetPentarivaPage() {
               style={{
                 fontSize: "clamp(2.25rem, 4.6vw, 3.75rem)",
                 lineHeight: 1.05,
-                textShadow:
-                  "0 1px 2px rgba(0,0,0,0.4), 0 2px 16px rgba(0,0,0,0.4)",
+                textShadow: "0 1px 2px rgba(0,0,0,0.4), 0 2px 16px rgba(0,0,0,0.4)",
               }}
             >
               Kořeny máme v Evropě.
               <br />
-              A budoucnost stavíme tady.
+              Další kroky vznikají tady.
             </h2>
             <p
               className="mx-auto mt-10 max-w-xl text-cream/95"
@@ -544,9 +523,8 @@ export default function SvetPentarivaPage() {
                 textShadow: "0 1px 10px rgba(0,0,0,0.4)",
               }}
             >
-              Pěstitelé z jižní i střední Evropy. Laboratoře v Německu
-              a Rakousku. Řemeslní výrobní partneři v Čechách. Komunita,
-              která přesahuje jazyky i hranice.
+              Pěstitelé z jižní i střední Evropy. Laboratoře v Německu a Rakousku. Řemeslní výrobní
+              partneři v Čechách. Komunita, která přesahuje jazyky i hranice.
             </p>
             <p
               className="mx-auto mt-6 max-w-xl text-cream/80"
@@ -556,17 +534,13 @@ export default function SvetPentarivaPage() {
                 textShadow: "0 1px 10px rgba(0,0,0,0.4)",
               }}
             >
-              Evropa pro nás není trh. Je to kulturní krajina, ze které
-              čerpáme a které vracíme.
+              Evropa je pro nás kulturní krajina, ze které čerpáme a které vracíme.
             </p>
           </div>
         </section>
 
         {/* ─── VII. Signatura — closing editorial spread ──────────────────── */}
-        <section
-          id="signatura"
-          className="scroll-mt-24 bg-ivory py-28 lg:py-40"
-        >
+        <section id="signatura" className="scroll-mt-24 bg-ivory py-28 lg:py-40">
           <div className="mx-auto max-w-[1300px] px-6 lg:px-12">
             <figure className="overflow-hidden rounded-[20px] ring-1 ring-forest-deep/10 shadow-[0_30px_60px_-40px_rgba(30,42,28,0.4)]">
               <img
@@ -594,16 +568,14 @@ export default function SvetPentarivaPage() {
                 style={{ fontSize: "1.09rem", lineHeight: 1.8 }}
               >
                 <p>
-                  Svět PENTARIVA netvoří pouze produkty, technologie nebo
-                  jednotlivé myšlenky. Tvoří jej lidé, kteří věří, že skutečná
-                  hodnota vzniká z porozumění, každodenní péče a vztahů
-                  budovaných v čase.
+                  Svět PENTARIVA netvoří pouze produkty, technologie nebo jednotlivé myšlenky. Tvoří
+                  jej lidé, kteří věří, že skutečná hodnota vzniká z porozumění, každodenní péče a
+                  vztahů budovaných v čase.
                 </p>
                 <p>
-                  Každý člověk může do tohoto příběhu vstoupit jinak. Jako
-                  zákazník, člen komunity, poradce nebo partner. Společným
-                  základem zůstává důvěra a přesvědčení, že dobré věci
-                  rostou tehdy, když jim věnujeme pozornost.
+                  Každý člověk může do tohoto příběhu vstoupit jinak. Jako zákazník, člen komunity,
+                  poradce nebo partner. Společným základem zůstává důvěra a přesvědčení, že dobré
+                  věci rostou tehdy, když jim věnujeme pozornost.
                 </p>
               </div>
 

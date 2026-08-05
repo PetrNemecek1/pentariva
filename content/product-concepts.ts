@@ -25,21 +25,20 @@ export const PRODUCT_CONCEPTS: readonly ProductConcept[] = [
     format: "Koncept bylinného komplexu",
     intention: "Klidný začátek každodenního rituálu.",
     description:
-      "Návrh základního produktu budoucího portfolia, který vyjadřuje princip pravidelnosti, jednoduchosti a dlouhodobé péče.",
+      "Návrh základního produktu vznikajícího portfolia, který vyjadřuje princip pravidelnosti, jednoduchosti a dlouhodobé péče.",
     ritual:
-      "Jednoduchý ranní nebo polední okamžik, který připomíná, že rovnováha nevzniká jedním rozhodnutím, ale opakováním drobných kroků.",
+      "Jednoduchý ranní nebo polední okamžik, ve kterém rovnováha roste opakováním drobných kroků.",
     image: product01.src,
-    imageAlt:
-      "Koncept botanického produktu PENTARIVA Každodenní rovnováha",
+    imageAlt: "Koncept botanického produktu PENTARIVA Každodenní rovnováha",
     principles: [
       "srozumitelná role v každodenní péči",
-      "transparentně připravované složení",
+      "transparentně vznikající složení",
       "forma navržená pro pravidelný rituál",
-      "odpovědná komunikace bez přehnaných slibů",
+      "střízlivá a přesná komunikace",
     ],
     suitableFor: [
       "lidi hledající jednoduchý každodenní rituál",
-      "zájemce o budoucí základní řadu PENTARIVA",
+      "zájemce o základní řadu PENTARIVA",
       "ty, kteří chtějí nejprve porozumět souvislostem",
     ],
   },
@@ -52,19 +51,19 @@ export const PRODUCT_CONCEPTS: readonly ProductConcept[] = [
     description:
       "Editorializovaný koncept tekuté botanické formy propojené s večerním rituálem, dechem a vědomým zpomalením.",
     ritual:
-      "Několik klidných minut bez obrazovek, teplý nápoj a prostor pro uzavření dne. Produkt je zde součástí rituálu, nikoli jeho jediným smyslem.",
+      "Několik klidných minut, teplý nápoj a prostor pro uzavření dne. Produkt doplňuje širší večerní rituál.",
     image: product02.src,
     imageAlt: "Koncept bylinných kapek PENTARIVA Večerní harmonie",
     principles: [
       "jemná a snadno uchopitelná forma",
       "důraz na smyslový a večerní kontext",
-      "budoucí odborná a legislativní kontrola",
+      "odborná a legislativní kontrola ve vývoji",
       "propojení s tématem regenerace a životního rytmu",
     ],
     suitableFor: [
       "lidi, kteří chtějí kultivovat večerní návyky",
       "zájemce o botanické tekuté formy",
-      "čtenáře budoucího tématu spánku a regenerace",
+      "čtenáře tématu spánku a regenerace",
     ],
   },
   {
@@ -81,7 +80,7 @@ export const PRODUCT_CONCEPTS: readonly ProductConcept[] = [
     imageAlt: "Koncept sypané bylinné směsi PENTARIVA Bylinný rituál",
     principles: [
       "smyslově čitelná a přirozená forma",
-      "původ a kvalita bylin jako budoucí priorita",
+      "původ a kvalita bylin jako základní priorita",
       "rituál přípravy jako součást zkušenosti",
       "jasné informace před jakýmkoliv doporučením",
     ],
@@ -96,21 +95,21 @@ export const PRODUCT_CONCEPTS: readonly ProductConcept[] = [
     name: "PENTARIVA Vnitřní vitalita",
     shortName: "Vnitřní vitalita",
     format: "Koncept prémiového doplňku",
-    intention: "Dlouhodobost místo krátkodobých slibů.",
+    intention: "Dlouhodobá a odpovědná péče.",
     description:
-      "Koncept budoucího prémiového produktu postaveného na vysokých nárocích na dokumentaci, původ, kvalitu a srozumitelnost.",
+      "Koncept prémiového produktu postaveného na vysokých nárocích na dokumentaci, původ, kvalitu a srozumitelnost.",
     ritual:
-      "Pravidelná péče doplněná vzděláváním a realistickým očekáváním. Výsledná receptura bude představena až po odborném a legislativním schválení.",
+      "Pravidelná péče doplněná vzděláváním a realistickým očekáváním. Výslednou recepturu představujeme po odborném a legislativním schválení.",
     image: product04.src,
     imageAlt: "Koncept prémiového produktu PENTARIVA Vnitřní vitalita",
     principles: [
       "kvalita a dohledatelnost před marketingem",
-      "odborná revize budoucí receptury",
+      "odborná revize vznikající receptury",
       "srozumitelná dokumentace a upozornění",
       "propojení produktu se vzděláváním a Poradnou",
     ],
     suitableFor: [
-      "zájemce o budoucí prémiovou produktovou řadu",
+      "zájemce o prémiovou produktovou řadu",
       "lidi, kteří vyžadují transparentní informace",
       "členy, kteří chtějí sledovat vývoj portfolia",
     ],

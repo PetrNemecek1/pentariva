@@ -23,7 +23,7 @@ const PRODUCTS: Product[] = PRODUCT_CONCEPTS.map((product, index) => ({
   slug: product.slug,
   name: product.name,
   shortDescription: product.intention,
-  price: "Připravujeme",
+  price: "Ve vývoji",
   image: product.image,
   badge: "Koncept",
   href: `/produkty/${product.slug}`,
@@ -104,11 +104,11 @@ export function ProductCarousel() {
             className="mt-8 max-w-4xl font-serif-display text-forest-deep"
             style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.1 }}
           >
-            Připravované produkty <span className="tracking-[0.04em]">PENTARIVA</span>
+            Produktové koncepty <span className="tracking-[0.04em]">PENTARIVA</span>
           </h2>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 sm:text-lg">
-            Poznejte první koncepty budoucího portfolia. Jejich názvy, receptury
-            a dostupnost jsou ve vývoji a produkty zatím nelze zakoupit.
+            Poznejte první koncepty vznikajícího portfolia. Jejich názvy, receptury i dostupnost
+            právě rozvíjíme a každá karta transparentně ukazuje aktuální stav.
           </p>
         </div>
 
@@ -167,7 +167,7 @@ export function ProductCarousel() {
             href="/produkty"
             className="group inline-flex items-center gap-2 border-b border-gold/40 pb-1 text-sm uppercase tracking-[0.18em] text-forest-deep transition-colors hover:border-gold hover:text-gold-deep"
           >
-            Zobrazit všechny produkty
+            Zobrazit všechny koncepty
             <ArrowRight
               className="h-4 w-4 transition-transform group-hover:translate-x-1"
               strokeWidth={1.5}

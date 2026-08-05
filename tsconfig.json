@@ -10,7 +10,8 @@
     "node_modules",
     "src",
     "vite.config.ts",
-    "PENTARIVA-WEB-PRO-HOSTING-2026-07-29"
+    "PENTARIVA-WEB-PRO-HOSTING-2026-07-29",
+    "Pentariva Digital Ecosystem"
   ],
   "compilerOptions": {
     "target": "ES2022",

@@ -8,9 +8,9 @@ import {
 } from "@/components/pentariva/PublicPage";
 import { PRODUCT_CONCEPTS } from "@/content/product-concepts";
 
-const TITLE = "Produkty PENTARIVA — připravované botanické portfolio";
+const TITLE = "Produkty PENTARIVA — botanické portfolio ve vývoji";
 const DESCRIPTION =
-  "Objevte koncept připravovaného portfolia PENTARIVA. Produkty zatím nejsou v prodeji; představujeme jejich roli, principy a místo v každodenních rituálech.";
+  "Objevte koncept vznikajícího portfolia PENTARIVA, jeho roli, principy a místo v každodenních rituálech.";
 
 const NEEDS = [
   {
@@ -30,7 +30,7 @@ const NEEDS = [
   },
   {
     title: "Porozumění produktu",
-    body: "Srozumitelné informace o účelu, budoucím složení a způsobu používání.",
+    body: "Srozumitelné informace o účelu, vznikajícím složení a způsobu používání.",
     icon: BookOpen,
   },
 ] as const;
@@ -52,13 +52,12 @@ export default function ProductsPage() {
         lead={
           <>
             <p>
-              Produkty PENTARIVA nevznikají jako izolované položky katalogu.
-              Každý koncept propojujeme s rituálem, vzděláváním, transparentními
-              informacemi a možností získat pomoc.
+              Každý produktový koncept PENTARIVA zapojujeme do propojeného portfolia, které jej
+              spojuje s rituálem, vzděláváním, transparentními informacemi a možností získat pomoc.
             </p>
             <p className="mt-4">
-              Níže představujeme směr budoucího portfolia. Žádný z uvedených
-              konceptů zatím není možné objednat.
+              Níže představujeme směr vznikajícího portfolia. Každý uvedený koncept má transparentní
+              stav „ve vývoji“.
             </p>
           </>
         }
@@ -69,18 +68,13 @@ export default function ProductsPage() {
           <SectionHeading
             eyebrow="Začněte tím, co hledáte"
             title="Člověk před produktem."
-            body="Budoucí nabídka bude uspořádána podle potřeb a životních situací, nikoliv podle interních skladových kategorií."
+            body="Nabídku uspořádáváme podle potřeb a životních situací člověka."
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {NEEDS.map(({ title, body, icon: Icon }) => (
-              <article
-                key={title}
-                className="border border-forest-deep/10 bg-ivory p-7"
-              >
+              <article key={title} className="border border-forest-deep/10 bg-ivory p-7">
                 <Icon className="h-5 w-5 text-gold-deep" strokeWidth={1.35} />
-                <h3 className="mt-6 font-serif-display text-2xl text-forest-deep">
-                  {title}
-                </h3>
+                <h3 className="mt-6 font-serif-display text-2xl text-forest-deep">{title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink/70">{body}</p>
               </article>
             ))}
@@ -129,9 +123,7 @@ export default function ProductsPage() {
                   <h3 className="mt-3 font-serif-display text-2xl leading-tight text-forest-deep">
                     {product.shortName}
                   </h3>
-                  <p className="mt-4 text-sm leading-relaxed text-ink/70">
-                    {product.intention}
-                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-ink/70">{product.intention}</p>
                   <span
                     className="mt-7 inline-flex items-center gap-2 text-[0.67rem] uppercase text-forest-deep"
                     style={{ letterSpacing: "0.2em" }}
@@ -149,9 +141,8 @@ export default function ProductsPage() {
 
           <div className="mt-12">
             <ConceptNotice title="Transparentně">
-              Produkty nejsou v prodeji, nemají cenu a nelze je vložit do košíku.
-              Konečné receptury, tvrzení, upozornění a způsob používání zveřejníme
-              až po odborném, legislativním a kvalitativním schválení.
+              Prodejní stav produktů je „ve vývoji“. Ceny a nákupní funkce aktivujeme společně se
+              schválenými recepturami, tvrzeními, upozorněními a způsobem používání.
             </ConceptNotice>
           </div>
         </div>
@@ -164,25 +155,21 @@ export default function ProductsPage() {
               eyebrow="Jak portfolio vzniká"
               title="Důvěra před uvedením produktu."
               dark
-              body="Každý budoucí produkt musí nejprve prokázat svou srozumitelnou roli, kvalitu, bezpečnost a přirozené místo v ekosystému PENTARIVA."
+              body="Každý produkt před uvedením prokazuje svou srozumitelnou roli, kvalitu, bezpečnost a přirozené místo v ekosystému PENTARIVA."
             />
           </div>
           <ol className="space-y-7 lg:col-span-5 lg:col-start-8">
             {[
               "Definujeme skutečnou potřebu a zamýšlený rituál.",
-              "Připravíme recepturu, dokumentaci a odbornou kontrolu.",
-              "Teprve po schválení zveřejníme úplný detail a dostupnost.",
+              "Tvoříme recepturu, dokumentaci a odbornou kontrolu.",
+              "Po schválení zveřejňujeme úplný detail a dostupnost.",
             ].map((step, index) => (
               <li
                 key={step}
                 className="grid grid-cols-[2.5rem_1fr] gap-4 border-t border-gold/20 pt-5"
               >
-                <span className="font-serif-display text-gold">
-                  0{index + 1}
-                </span>
-                <span className="text-sm leading-relaxed text-cream/75">
-                  {step}
-                </span>
+                <span className="font-serif-display text-gold">0{index + 1}</span>
+                <span className="text-sm leading-relaxed text-cream/75">{step}</span>
               </li>
             ))}
           </ol>
@@ -196,10 +183,12 @@ export default function ProductsPage() {
               Chcete nejprve porozumět souvislostem?
             </p>
             <p className="mt-2 text-sm text-ink/65">
-              Pokračujte do Znalostního centra nebo poznejte připravovanou Poradnu.
+              Pokračujte do Znalostního centra nebo poznejte vznikající Poradnu.
             </p>
           </div>
           <div className="flex flex-wrap gap-6">
+            <TextLink href="/svet-pentariva/veda-a-vyvoj">Věda a vývoj</TextLink>
+            <TextLink href="/svet-pentariva/kvalita">Kvalita</TextLink>
             <TextLink href="/vzdelavani">Vzdělávání</TextLink>
             <TextLink href="/poradna">PENTARIVA Poradna</TextLink>
           </div>

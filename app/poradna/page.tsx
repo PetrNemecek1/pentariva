@@ -17,7 +17,7 @@ const SUPPORT_AREAS = [
   {
     icon: PackageSearch,
     title: "Orientace v produktech",
-    body: "Pomoc porozumět zamýšlené roli, formě a budoucímu použití produktů.",
+    body: "Pomoc porozumět zamýšlené roli, formě a způsobu použití produktů.",
     status: "S portfoliem",
   },
   {
@@ -29,14 +29,14 @@ const SUPPORT_AREAS = [
   {
     icon: Headphones,
     title: "Zákaznická podpora",
-    body: "Budoucí pomoc s účtem, objednávkou, doručením a běžnými otázkami.",
+    body: "Podpora pro účet, objednávku, doručení a běžné otázky.",
     status: "Po spuštění prodeje",
   },
   {
     icon: MessageCircleMore,
     title: "Individuální konzultace",
-    body: "Připravovaný formát pro otázky, které nelze zodpovědět obecně.",
-    status: "Připravujeme",
+    body: "Individuální formát pro otázky vyžadující osobní kontext.",
+    status: "Ve vývoji",
   },
   {
     icon: CircleHelp,
@@ -59,16 +59,16 @@ export default function AdvisoryPage() {
             Teprve potom doporučujeme.
           </>
         }
-        status="Služby postupně připravujeme"
+        status="Služby vznikají postupně"
         lead={
           <>
             <p>
-              Poradna propojí srozumitelné informace, lidskou podporu a jasné
-              hranice odpovědnosti. Každý dotaz má nejprve dostat poctivý kontext.
+              Poradna propojuje srozumitelné informace, lidskou podporu a jasné hranice
+              odpovědnosti. Každý dotaz má nejprve dostat poctivý kontext.
             </p>
             <p className="mt-4">
-              V této fázi představujeme strukturu služby. Kontaktní kanály,
-              rezervace a produktové poradenství zatím nejsou aktivní.
+              V této fázi představujeme strukturu služby. Kontaktní kanály, rezervace a produktové
+              poradenství mají stav ve vývoji.
             </p>
           </>
         }
@@ -77,9 +77,9 @@ export default function AdvisoryPage() {
       <section className="bg-ivory-warm py-24 lg:py-28">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           <SectionHeading
-            eyebrow="Jak vám budeme pomáhat"
+            eyebrow="Jak vám pomáháme"
             title="Správná úroveň pomoci pro každou otázku."
-            body="Od rychlé orientace přes praktickou podporu až po individuální rozhovor. Jednotlivé služby spustíme teprve tehdy, když budou odborně i provozně připravené."
+            body="Od rychlé orientace přes praktickou podporu až po individuální rozhovor. Jednotlivé služby aktivujeme s odpovídající odbornou a provozní připraveností."
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {SUPPORT_AREAS.map(({ icon: Icon, title, body, status }) => (
@@ -88,12 +88,8 @@ export default function AdvisoryPage() {
                 className="flex flex-col border border-forest-deep/10 bg-ivory p-7"
               >
                 <Icon className="h-5 w-5 text-gold-deep" strokeWidth={1.35} />
-                <h2 className="mt-5 font-serif-display text-2xl text-forest-deep">
-                  {title}
-                </h2>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/68">
-                  {body}
-                </p>
+                <h2 className="mt-5 font-serif-display text-2xl text-forest-deep">{title}</h2>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-ink/68">{body}</p>
                 <span
                   className="mt-6 border-t border-gold-deep/20 pt-4 text-[0.6rem] uppercase text-gold-deep"
                   style={{ letterSpacing: "0.22em" }}
@@ -111,16 +107,15 @@ export default function AdvisoryPage() {
           <div className="lg:col-span-5">
             <SectionHeading
               eyebrow="Hranice a odpovědnost"
-              title="Poradna nebude nahrazovat zdravotní péči."
+              title="Poradna podporuje orientaci a odpovědné rozhodování."
               dark
-              body="Budoucí služba bude pomáhat s orientací v ekosystému PENTARIVA a s obecnými informacemi. Diagnóza, léčba a individuální zdravotní rozhodnutí patří kvalifikovaným zdravotnickým odborníkům."
+              body="Služba pomáhá s orientací v ekosystému PENTARIVA a s obecnými informacemi. Diagnóza, léčba a individuální zdravotní rozhodnutí patří kvalifikovaným zdravotnickým odborníkům."
             />
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
             <ConceptNotice title="Právě nyní" dark>
-              Nezobrazujeme nefunkční formulář ani předstíraný rezervační kalendář.
-              Dokud nebude služba skutečně personálně a technicky dostupná,
-              ponecháváme její stav transparentně označený jako připravovaný.
+              Aktuální stav transparentně označuje fázi vývoje personálního i technického zázemí
+              služby.
             </ConceptNotice>
             <div className="mt-8 flex flex-wrap gap-6">
               <TextLink href="/vzdelavani" dark>
@@ -130,7 +125,7 @@ export default function AdvisoryPage() {
                 Koncept produktů
               </TextLink>
               <TextLink href="/poradna/faq" dark>
-                Budoucí FAQ
+                Časté otázky
               </TextLink>
             </div>
           </div>

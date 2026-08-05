@@ -21,7 +21,7 @@ const PATHS = [
     number: "02",
     title: "Vzdělávání",
     description:
-      "Získejte srozumitelné a ověřené informace, které vám pomohou lépe porozumět produktům i vlastnímu životnímu stylu.",
+      "Získejte srozumitelné a ověřené informace, které pomáhají lépe porozumět produktům i vlastnímu životnímu stylu.",
     cta: "Začít se vzdělávat",
     to: "/vzdelavani",
     image: cardEducationAsset.url,
@@ -75,8 +75,8 @@ export function PathSection() {
             Vyberte si svou cestu světem <span className="tracking-[0.04em]">PENTARIVA</span>
           </h2>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 sm:text-lg">
-            Produkty, vzdělávání, komunita, poradenství a příběh značky tvoří jeden
-            propojený ekosystém. Začněte tam, kde právě potřebujete.
+            Produkty, vzdělávání, komunita, poradenství a příběh značky tvoří jeden propojený
+            ekosystém. Začněte tam, kde právě potřebujete.
           </p>
         </div>
 
@@ -111,9 +111,7 @@ export function PathSection() {
                 >
                   {path.title}
                 </h3>
-                <p className="text-[13.5px] leading-relaxed text-cream/70">
-                  {path.description}
-                </p>
+                <p className="text-[13.5px] leading-relaxed text-cream/70">{path.description}</p>
                 <div className="mt-4">
                   <span className="inline-flex items-center gap-2 text-[13.5px] text-gold transition-colors group-hover:text-gold-soft">
                     {path.cta}

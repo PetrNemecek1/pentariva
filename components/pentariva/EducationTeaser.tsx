@@ -1,27 +1,38 @@
-import { ArrowRight, BookOpen, Play, HelpCircle } from "lucide-react";
+import { ArrowRight, BookOpen, CirclePlay, HelpCircle, Presentation } from "lucide-react";
 import { GoldOrnament } from "./GoldOrnament";
 
 const TEASERS = [
   {
     icon: BookOpen,
-    kind: "Připravovaný článek",
+    kind: "Redakční článek",
     title: "Jak rozumět složení bylinných doplňků stravy",
-    body: "Pracovní téma praktického textu o tom, na co se dívat na obalu a jak rozlišit ověřená tvrzení.",
+    body: "Praktický text o etiketě, formě bylinných složek, denní dávce, tvrzeních a bezpečnostních souvislostech.",
     to: "/vzdelavani/clanky",
+    action: "Číst článek",
   },
   {
     icon: HelpCircle,
-    kind: "Připravovaný průvodce",
+    kind: "Praktický průvodce",
     title: "Jak vytvořit každodenní bylinný rituál",
-    body: "Koncept šesti kroků pro vytvoření jednoduchého a dlouhodobě udržitelného návyku.",
+    body: "Šest konkrétních kroků pro jednoduchý, bezpečný a dlouhodobě udržitelný návyk.",
     to: "/vzdelavani/pruvodci",
+    action: "Otevřít průvodce",
   },
   {
-    icon: Play,
-    kind: "Připravovaný webinář",
-    title: "Rovnováha a spánek: pohled odborníků",
-    body: "Návrh budoucího setkání s odbornými hosty o spánku, regeneraci a dlouhodobé vitalitě.",
+    icon: CirclePlay,
+    kind: "Obrazová série · obsahový koncept",
+    title: "Pět smyslů v každodenním bylinném rituálu",
+    body: "Obrazový formát propojuje praktický postup, smyslovou pozornost a srozumitelný kontext v jednom klidném celku.",
+    to: "/vzdelavani/videa",
+    action: "Projít koncept",
+  },
+  {
+    icon: Presentation,
+    kind: "Online setkání · metodická osnova",
+    title: "Rovnováha a spánek: souvislosti každodenního rytmu",
+    body: "Profesionálně vedené setkání propojuje večerní návyky, smyslové prostředí a odpovědnou orientaci v bylinách.",
     to: "/vzdelavani/webinare",
+    action: "Projít program",
   },
 ] as const;
 
@@ -32,10 +43,7 @@ export function EducationTeaser() {
         <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <GoldOrnament className="text-gold-deep" width={120} />
-            <p
-              className="mt-8 text-eyebrow text-gold-deep"
-              style={{ letterSpacing: "0.32em" }}
-            >
+            <p className="mt-8 text-eyebrow text-gold-deep" style={{ letterSpacing: "0.32em" }}>
               ZNALOSTNÍ CENTRUM
             </p>
             <h2
@@ -48,26 +56,14 @@ export function EducationTeaser() {
               Nejdříve vysvětlujeme. Teprve potom doporučujeme.
             </h2>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink/70">
-              Články, průvodci, videa a webináře vám pomohou porozumět tématu
-              a udělat informované rozhodnutí. Každý finální obsah bude před
-              zveřejněním procházet odbornou revizí.
+              Články, průvodci, videa a webináře pomáhají porozumět tématu a udělat informované
+              rozhodnutí. Každý formát jasně uvádí svůj obsahový a odborný stav.
             </p>
           </div>
-          <a
-            href="/vzdelavani"
-            className="group inline-flex shrink-0 items-center gap-3 border border-forest px-6 py-3 text-[11px] text-forest transition-colors hover:bg-forest hover:text-cream"
-            style={{ letterSpacing: "0.24em", fontWeight: 500 }}
-          >
-            OTEVŘÍT ZNALOSTNÍ CENTRUM
-            <ArrowRight
-              className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
-              strokeWidth={1.6}
-            />
-          </a>
         </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {TEASERS.map(({ icon: Icon, kind, title, body, to }) => (
+        <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {TEASERS.map(({ icon: Icon, kind, title, body, to, action }) => (
             <a
               key={title}
               href={to}
@@ -95,7 +91,7 @@ export function EducationTeaser() {
                 className="inline-flex items-center gap-2 border-b border-gold-deep/50 pb-1 text-[11px] text-gold-deep transition-colors group-hover:border-gold-deep group-hover:text-forest"
                 style={{ letterSpacing: "0.24em", fontWeight: 500 }}
               >
-                OTEVŘÍT TÉMA
+                {action.toUpperCase()}
                 <ArrowRight
                   className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
                   strokeWidth={1.6}

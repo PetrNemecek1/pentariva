@@ -5,7 +5,7 @@ const TRUST_ITEMS = [
   { icon: Leaf, label: "PŘÍRODNÍ RECEPTURY" },
   { icon: FlaskConical, label: "MODERNÍ VÝVOJ" },
   { icon: Handshake, label: "PARTNERSKÁ KOMUNITA" },
-  { icon: Globe2, label: "EVROPSKÁ BUDOUCNOST" },
+  { icon: Globe2, label: "EVROPSKÝ ROZMĚR" },
 ] as const;
 
 export function Hero() {
@@ -28,8 +28,7 @@ export function Hero() {
         <div
           className="absolute inset-x-0 bottom-0 h-44"
           style={{
-            background:
-              "linear-gradient(180deg, rgba(10,18,12,0) 0%, rgba(10,18,12,0.5) 100%)",
+            background: "linear-gradient(180deg, rgba(10,18,12,0) 0%, rgba(10,18,12,0.5) 100%)",
           }}
         />
 
@@ -39,54 +38,63 @@ export function Hero() {
             {/* Extra soft, localized glow behind the text block — lifts it without a visible box */}
             <div className="hero-text-glow absolute -inset-x-6 -inset-y-5 rounded-[36px] lg:-inset-x-10" />
             <div className="relative">
-            <h1
-              className="mt-10 font-serif-display text-cream"
-              style={{
-                fontSize: "clamp(2rem, 4.2vw, 4.25rem)",
-                lineHeight: 1.02,
-                letterSpacing: "-0.02em",
-                textShadow:
-                  "0 1px 2px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.25)",
-              }}
-            >
-              Z hlubin kořenů.
-              <br />
-              Budujeme budoucnost
-              <br />
-              přirozené vitality.
-            </h1>
-
-            <p
-              className="mt-8 max-w-xl text-[15px] leading-relaxed text-cream/95 sm:text-base"
-              style={{
-                textShadow:
-                  "0 1px 2px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.3), 0 8px 20px rgba(0,0,0,0.25)",
-              }}
-            >
-              Spojujeme tradiční bylinné receptury, moderní vývoj,
-              digitální technologie a evropskou partnerskou komunitu
-              do jednoho živého ekosystému péče o člověka.
-            </p>
-
-            <div className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-10">
-              <a
-                href="/produkty"
-                className="group inline-flex items-center gap-3 whitespace-nowrap bg-gold/80 px-10 py-4 text-[11px] text-forest-deep transition-all hover:bg-gold-soft/80"
-                style={{ letterSpacing: "0.28em", fontWeight: 600 }}
+              <h1
+                className="mt-10 font-serif-display text-cream"
+                style={{
+                  fontSize: "clamp(2rem, 4.2vw, 4.25rem)",
+                  lineHeight: 1.02,
+                  letterSpacing: "-0.02em",
+                  textShadow:
+                    "0 1px 2px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.25)",
+                }}
               >
-                OBJEVIT PRODUKTY PENTARIVA
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={1.6} />
-              </a>
-              <a
-                href="/svet-pentariva"
-                className="group inline-flex items-center gap-3 whitespace-nowrap border border-gold/80 px-10 py-4 text-[11px] text-cream transition-all hover:bg-gold-soft/80 hover:text-forest-deep"
-                style={{ letterSpacing: "0.28em", fontWeight: 600, textShadow: "0 1px 2px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.3)" }}
+                Z hlubin kořenů.
+                <br />
+                Rozvíjíme svět
+                <br />
+                přirozené vitality.
+              </h1>
+
+              <p
+                className="mt-8 max-w-xl text-[15px] leading-relaxed text-cream/95 sm:text-base"
+                style={{
+                  textShadow:
+                    "0 1px 2px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.3), 0 8px 20px rgba(0,0,0,0.25)",
+                }}
               >
-                VSTOUPIT DO SVĚTA PENTARIVA
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={1.6} />
-              </a>
+                Spojujeme tradiční bylinné receptury, moderní vývoj, digitální technologie a
+                evropskou partnerskou komunitu do jednoho živého ekosystému péče o člověka.
+              </p>
+
+              <div className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-10">
+                <a
+                  href="/produkty"
+                  className="group inline-flex items-center gap-3 whitespace-nowrap bg-gold/80 px-10 py-4 text-[11px] text-forest-deep transition-all hover:bg-gold-soft/80"
+                  style={{ letterSpacing: "0.28em", fontWeight: 600 }}
+                >
+                  OBJEVIT PRODUKTY PENTARIVA
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    strokeWidth={1.6}
+                  />
+                </a>
+                <a
+                  href="/svet-pentariva"
+                  className="group inline-flex items-center gap-3 whitespace-nowrap border border-gold/80 px-10 py-4 text-[11px] text-cream transition-all hover:bg-gold-soft/80 hover:text-forest-deep"
+                  style={{
+                    letterSpacing: "0.28em",
+                    fontWeight: 600,
+                    textShadow: "0 1px 2px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  VSTOUPIT DO SVĚTA PENTARIVA
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    strokeWidth={1.6}
+                  />
+                </a>
+              </div>
             </div>
-          </div>
           </div>
 
           {/* Trust bar — bottom edge, over the photo */}

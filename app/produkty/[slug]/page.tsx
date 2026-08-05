@@ -7,38 +7,24 @@ import {
   SectionHeading,
   TextLink,
 } from "@/components/pentariva/PublicPage";
-import {
-  getProductConcept,
-  PRODUCT_CONCEPTS,
-} from "@/content/product-concepts";
+import { getProductConcept, PRODUCT_CONCEPTS } from "@/content/product-concepts";
 
-type ProductPageProps = {
-  params: Promise<{ slug: string }>;
-};
+type ProductPageProps = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
   return PRODUCT_CONCEPTS.map(({ slug }) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: ProductPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const product = getProductConcept(slug);
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const product = getProductConcept((await params).slug);
   return {
-    title: product
-      ? `${product.name} — koncept PENTARIVA`
-      : "Koncept produktu — PENTARIVA",
-    description:
-      product?.description ?? "Připravovaný produktový koncept PENTARIVA.",
+    title: product ? `${product.name} — koncept PENTARIVA` : "Koncept produktu — PENTARIVA",
+    description: product?.description ?? "Produktový koncept PENTARIVA ve vývoji.",
   };
 }
 
-export default async function ProductConceptPage({
-  params,
-}: ProductPageProps) {
-  const { slug } = await params;
-  const product = getProductConcept(slug);
+export default async function ProductConceptPage({ params }: ProductPageProps) {
+  const product = getProductConcept((await params).slug);
   if (!product) notFound();
 
   return (
@@ -68,16 +54,13 @@ export default async function ProductConceptPage({
                   className="absolute left-5 top-5 border border-gold-deep/25 bg-ivory/95 px-4 py-2 text-[0.62rem] uppercase text-gold-deep"
                   style={{ letterSpacing: "0.24em" }}
                 >
-                  Koncept · není v prodeji
+                  Koncept · ve vývoji
                 </span>
               </div>
             </div>
 
             <div className="flex flex-col justify-center lg:col-span-5 lg:col-start-8">
-              <p
-                className="text-eyebrow text-gold-deep"
-                style={{ letterSpacing: "0.3em" }}
-              >
+              <p className="text-eyebrow text-gold-deep" style={{ letterSpacing: "0.3em" }}>
                 {product.format}
               </p>
               <h1
@@ -92,13 +75,11 @@ export default async function ProductConceptPage({
               <p className="mt-7 font-serif-display text-2xl italic leading-snug text-gold-deep">
                 {product.intention}
               </p>
-              <p className="mt-7 text-base leading-relaxed text-ink/72">
-                {product.description}
-              </p>
+              <p className="mt-7 text-base leading-relaxed text-ink/72">{product.description}</p>
               <div className="mt-10">
                 <ConceptNotice title="Stav produktu">
-                  Toto je redakční koncept budoucího portfolia. Produkt zatím nemá
-                  schválenou recepturu, cenu ani dostupnost a nelze jej objednat.
+                  Toto je redakční koncept vznikajícího portfolia. Receptura, cena, dostupnost a
+                  objednávková funkce procházejí vývojem.
                 </ConceptNotice>
               </div>
             </div>
@@ -117,14 +98,8 @@ export default async function ProductConceptPage({
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
             {product.principles.map((principle) => (
-              <div
-                key={principle}
-                className="flex gap-4 border border-forest-deep/10 bg-ivory p-6"
-              >
-                <Check
-                  className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep"
-                  strokeWidth={1.5}
-                />
+              <div key={principle} className="flex gap-4 border border-forest-deep/10 bg-ivory p-6">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep" strokeWidth={1.5} />
                 <p className="text-sm leading-relaxed text-ink/72">{principle}</p>
               </div>
             ))}
@@ -139,7 +114,7 @@ export default async function ProductConceptPage({
               eyebrow="Pro koho koncept vzniká"
               title="Srozumitelná role. Realistické očekávání."
               dark
-              body="Budoucí doporučení nebude vycházet z univerzálních slibů, ale z kontextu, potřeb a transparentních informací."
+              body="Doporučení vychází z kontextu, skutečných potřeb a transparentních informací."
             />
           </div>
           <div className="space-y-5 lg:col-span-6 lg:col-start-7">
@@ -147,21 +122,15 @@ export default async function ProductConceptPage({
               const icons = [Leaf, ShieldCheck, FlaskConical];
               const Icon = icons[index % icons.length];
               return (
-                <div
-                  key={item}
-                  className="flex items-center gap-5 border-b border-gold/18 pb-5"
-                >
-                  <Icon
-                    className="h-5 w-5 shrink-0 text-gold"
-                    strokeWidth={1.3}
-                  />
+                <div key={item} className="flex items-center gap-5 border-b border-gold/18 pb-5">
+                  <Icon className="h-5 w-5 shrink-0 text-gold" strokeWidth={1.3} />
                   <p className="text-sm leading-relaxed text-cream/75">{item}</p>
                 </div>
               );
             })}
-            <ConceptNotice title="Doplníme po schválení" dark>
-              Přesné složení, dávkování, povinná upozornění, původ surovin a
-              odborně ověřené informace zveřejníme až u finálního produktu.
+            <ConceptNotice title="Součást schválení" dark>
+              Přesné složení, dávkování, povinná upozornění, původ surovin a odborně ověřené
+              informace zveřejňujeme u finálního produktu.
             </ConceptNotice>
           </div>
         </div>
@@ -174,7 +143,7 @@ export default async function ProductConceptPage({
               Produkt dává smysl teprve v souvislostech.
             </p>
             <p className="mt-2 text-sm text-ink/65">
-              Pokračujte do Znalostního centra nebo do připravované Poradny.
+              Pokračujte do Znalostního centra nebo do vznikající Poradny.
             </p>
           </div>
           <div className="flex flex-wrap gap-6">

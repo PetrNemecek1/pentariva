@@ -1,4 +1,5 @@
 import { GoldOrnament } from "./GoldOrnament";
+import footerEmblem from "@/assets/pentariva-footer-emblem-gold.png";
 
 const COLUMNS = [
   {
@@ -9,7 +10,7 @@ const COLUMNS = [
       { label: "Věda a vývoj", to: "/svet-pentariva/veda-a-vyvoj" },
       { label: "Kvalita", to: "/svet-pentariva/kvalita" },
       { label: "Udržitelnost", to: "/svet-pentariva/udrzitelnost" },
-      { label: "Budoucnost", to: "/svet-pentariva/budoucnost" },
+      { label: "Směr rozvoje", to: "/svet-pentariva/budoucnost" },
       { label: "Pro média", to: "/svet-pentariva/pro-media" },
     ],
   },
@@ -19,7 +20,10 @@ const COLUMNS = [
       { label: "Podle potřeb", to: "/produkty/potreby" },
       { label: "Kolekce PENTARIVA", to: "/produkty/kolekce" },
       { label: "Znalostní centrum", to: "/vzdelavani" },
+      { label: "Články", to: "/vzdelavani/clanky" },
       { label: "Průvodci", to: "/vzdelavani/pruvodci" },
+      { label: "Videa", to: "/vzdelavani/videa" },
+      { label: "Webináře", to: "/vzdelavani/webinare" },
       { label: "Slovník pojmů", to: "/vzdelavani/slovnik" },
       { label: "Nejčastější otázky", to: "/vzdelavani/faq" },
     ],
@@ -42,28 +46,44 @@ export function Footer() {
     <footer className="bg-forest-deep text-cream">
       <div className="mx-auto max-w-[1400px] px-6 py-20 lg:px-12">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_2fr]">
-          <div>
-            <span
-              className="font-serif-display text-3xl text-cream"
-              style={{ letterSpacing: "0.24em", fontWeight: 500 }}
+          <div className="text-center">
+            <a
+              href="/"
+              className="mx-auto block w-full max-w-[320px]"
+              aria-label="PENTARIVA — hlavní strana"
             >
-              PENTARIVA
-            </span>
-            <div className="mt-3 flex items-center gap-3">
-              <span className="h-px w-8 bg-gold-soft/70" />
-              <span
-                className="text-[11px] text-gold-soft"
-                style={{ letterSpacing: "0.32em", fontWeight: 500 }}
-              >
-                HERBAL RITUALS · INNER BALANCE
+              <span className="block">
+                <img
+                  src={footerEmblem.src}
+                  width={1254}
+                  height={1254}
+                  loading="lazy"
+                  decoding="async"
+                  alt="Grafický znak PENTARIVA"
+                  className="mx-auto -mb-5 h-auto w-[210px] drop-shadow-[0_10px_28px_rgba(200,165,86,0.12)]"
+                />
+
+                <span
+                  className="block font-serif-display text-[2.15rem] leading-none text-gold-soft sm:text-[2.45rem]"
+                  style={{ letterSpacing: "0.2em", fontWeight: 500 }}
+                >
+                  PENTARIVA
+                </span>
+
+                <span
+                  className="mt-4 block w-full whitespace-nowrap text-center text-[0.55rem] text-gold-soft/90 sm:text-[0.6rem]"
+                  style={{ letterSpacing: "0.16em", fontWeight: 500 }}
+                >
+                  Z HLUBIN KOŘENŮ&nbsp;-&nbsp;PRO CELÝ ŽIVOT
+                </span>
               </span>
-            </div>
-            <p className="mt-8 max-w-md text-sm leading-relaxed text-cream/70">
-              Evropský ekosystém přírodní vitality. Spojujeme tradiční bylinné receptury,
-              moderní vývoj, digitální technologie a partnerskou komunitu do jednoho živého
-              celku péče o člověka.
+            </a>
+
+            <p className="mx-auto mt-7 max-w-md text-sm leading-relaxed text-cream/70">
+              PENTARIVA má duši. Propojuje tradiční bylinné poznání, moderní vývoj, digitální
+              technologie a partnerskou komunitu v jeden evropský ekosystém přirozené vitality.
             </p>
-            <div className="mt-8">
+            <div className="mt-8 flex justify-center">
               <a
                 href="/online-kancelar"
                 className="inline-flex items-center border border-gold/70 px-6 py-3 text-[11px] text-gold transition-colors hover:bg-gold hover:text-forest-deep"

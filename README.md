@@ -35,10 +35,11 @@ Pokud zatím vlastní doménu nemáte, může proměnná obsahovat přidělenou
 
 - hlavní stránka
 - produkty a čtyři produktové koncepty
-- vzdělávání
+- vzdělávání včetně článku, průvodce, obrazové série, webináře a osmi témat
 - komunita
 - poradna
 - online kancelář a přihlášení
-- Svět PENTARIVA včetně kapitol, hodnot a budoucnosti
+- Svět PENTARIVA včetně kapitol, příběhu, hodnot, vědy a vývoje, kvality,
+  budoucnosti a sekce pro média
 - připravované informační a právní podstránky
 - PDF ke stažení a zvukový obsah

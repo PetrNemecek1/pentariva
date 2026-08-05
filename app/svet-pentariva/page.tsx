@@ -1,16 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Play,
-  Volume2,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Download, Play, Volume2 } from "lucide-react";
 import { Header } from "@/components/pentariva/Header";
 import { Footer } from "@/components/pentariva/Footer";
+import { InlineLink } from "@/components/pentariva/PublicPage";
 import heroV2Asset from "@/assets/svet-pentariva-hero-v2.png.asset.json";
 import chapterOneAsset from "@/assets/PENTARIVA_-_CHAPTER_I.png.asset.json";
 import chapterTwoAsset from "@/assets/PENTARIVA_-_CHAPTER_II-3.png.asset.json";
@@ -23,16 +17,9 @@ const CHAPTER_III_IMAGE = chapterThreeAsset.url;
 const EDITORIAL_WIDTHS = [480, 768, 1122] as const;
 const CLOSING_WIDTHS = [768, 1280, 1915] as const;
 
-function editorialSrcSet(
-  name: string,
-  widths: readonly number[],
-  format: "avif" | "webp",
-) {
+function editorialSrcSet(name: string, widths: readonly number[], format: "avif" | "webp") {
   return widths
-    .map(
-      (width) =>
-        `/images/svet-pentariva/${name}-${width}.${format} ${width}w`,
-    )
+    .map((width) => `/images/svet-pentariva/${name}-${width}.${format} ${width}w`)
     .join(", ");
 }
 
@@ -110,7 +97,7 @@ const SENSES = [
   },
   {
     label: "CHUŤ",
-    body: "Chuť není jediný okamžik. Je to vývoj, rovnováha a doznívání jednotlivých rostlin.",
+    body: "Chuť se rozvíjí v čase, rovnováze a doznívání jednotlivých rostlin.",
   },
   {
     label: "DOTEK",
@@ -129,11 +116,11 @@ const INNER_FORCES = [
 const PILLARS = [
   {
     label: "ČISTOTA",
-    body: "Pečlivě vybíráme suroviny, partnery i výrobní procesy. Kvalita pro nás nezačíná výsledným produktem, ale každým rozhodnutím, které mu předchází.",
+    body: "Pečlivě vybíráme suroviny, partnery i výrobní procesy. Kvalita pro nás vzniká v každém rozhodnutí, které výslednému produktu předchází.",
   },
   {
     label: "DŮVĚRA",
-    body: "Stavíme na otevřenosti, srozumitelnosti a dlouhodobých vztazích. Důvěra nevzniká prohlášením. Vzniká důsledností.",
+    body: "Stavíme na otevřenosti, srozumitelnosti a dlouhodobých vztazích. Důvěra roste z důslednosti v každém rozhodnutí.",
   },
   {
     label: "ODBORNOST",
@@ -145,7 +132,7 @@ const PILLARS = [
   },
   {
     label: "VIZE",
-    body: "PENTARIVA nevzniká pro jednu sezónu. Budujeme značku, která se může rozvíjet, inovovat a vytvářet hodnotu v dlouhém časovém horizontu.",
+    body: "PENTARIVA tvoříme jako značku, která se rozvíjí, inovuje a vytváří hodnotu v dlouhém časovém horizontu.",
   },
 ] as const;
 
@@ -161,13 +148,24 @@ const PILLAR_POSITIONS = [
 /*  Small primitives                                                          */
 /* -------------------------------------------------------------------------- */
 
-function ChapterLabel({ roman, kicker, tone = "light" }: { roman: string; kicker: string; tone?: "light" | "dark" }) {
+function ChapterLabel({
+  roman,
+  kicker,
+  tone = "light",
+}: {
+  roman: string;
+  kicker: string;
+  tone?: "light" | "dark";
+}) {
   const numberCls = tone === "dark" ? "text-gold-soft/90" : "text-gold-deep/80";
   const ruleCls = tone === "dark" ? "bg-gold-soft/40" : "bg-gold/30";
   const kickerCls = tone === "dark" ? "text-gold-soft/85" : "text-gold-deep/70";
   return (
     <div className="flex items-baseline gap-4">
-      <span className={`font-serif-display ${numberCls}`} style={{ fontSize: "0.95rem", letterSpacing: "0.14em" }}>
+      <span
+        className={`font-serif-display ${numberCls}`}
+        style={{ fontSize: "0.95rem", letterSpacing: "0.14em" }}
+      >
         {roman}
       </span>
       <span className={`h-px w-10 ${ruleCls}`} aria-hidden />
@@ -200,9 +198,7 @@ function ChapterNavigation() {
     };
 
     setScrollEdges((current) =>
-      current.left === next.left && current.right === next.right
-        ? current
-        : next,
+      current.left === next.left && current.right === next.right ? current : next,
     );
   }, []);
 
@@ -240,16 +236,11 @@ function ChapterNavigation() {
     const list = listRef.current;
     if (!list || window.matchMedia("(min-width: 1024px)").matches) return;
 
-    const activeItem = list.querySelector<HTMLElement>(
-      `[data-chapter-id="${active}"]`,
-    );
+    const activeItem = list.querySelector<HTMLElement>(`[data-chapter-id="${active}"]`);
     if (!activeItem) return;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const centeredLeft =
-      activeItem.offsetLeft - (list.clientWidth - activeItem.clientWidth) / 2;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const centeredLeft = activeItem.offsetLeft - (list.clientWidth - activeItem.clientWidth) / 2;
     list.scrollTo({
       left: centeredLeft,
       behavior: reduceMotion ? "auto" : "smooth",
@@ -280,9 +271,7 @@ function ChapterNavigation() {
                     aria-current={isActive ? "location" : undefined}
                     className="group block border-t border-transparent pt-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep/60"
                     style={{
-                      borderTopColor: isActive
-                        ? "rgba(120,90,30,0.55)"
-                        : undefined,
+                      borderTopColor: isActive ? "rgba(120,90,30,0.55)" : undefined,
                     }}
                   >
                     <div className="flex items-baseline gap-3">
@@ -370,14 +359,18 @@ function WorldHero() {
             Jeden živý ekosystém.
           </h1>
 
-          <div className="mt-10 max-w-xl space-y-5 text-forest-deep/75" style={{ fontSize: "1.05rem", lineHeight: 1.75 }}>
+          <div
+            className="mt-10 max-w-xl space-y-5 text-forest-deep/75"
+            style={{ fontSize: "1.05rem", lineHeight: 1.75 }}
+          >
             <p>Než vznikl první produkt, vznikla myšlenka.</p>
             <p>
-              Že člověka nelze vnímat po částech. Že skutečná péče vzniká propojením přírody, poznání,
+              Člověka vnímáme jako celek. Skutečná péče vzniká propojením přírody, poznání,
               každodenního života a lidské blízkosti.
             </p>
             <p>
-              Těchto sedm kapitol odhaluje svět PENTARIVA — svět, jehož přirozeným řádem je číslo pět.
+              Těchto sedm kapitol odhaluje svět PENTARIVA — svět, jehož přirozeným řádem je číslo
+              pět.
             </p>
           </div>
 
@@ -517,19 +510,24 @@ function ChapterOne() {
       headline={<>Proč právě pět</>}
       intro={
         <>
-          <p className="font-serif-display italic text-forest-deep/90" style={{ fontSize: "1.3rem", lineHeight: 1.55 }}>
-            Pět není číslo, které jsme si vybrali. Je to řád, který jsme objevili.
+          <p
+            className="font-serif-display italic text-forest-deep/90"
+            style={{ fontSize: "1.3rem", lineHeight: 1.55 }}
+          >
+            V čísle pět jsme objevili přirozený řád.
           </p>
           <p>
-            V člověku, přírodě i každodenním životě se některé věci neustále vracejí ve vzájemných souvislostech.
+            V člověku, přírodě i každodenním životě se některé věci neustále vracejí ve vzájemných
+            souvislostech.
           </p>
           <p>
-            Pět bodů vytváří celek. Pět smyslů proměňuje okamžik v prožitek. Pět vnitřních sil utváří přirozený rytmus.
-            Pět pilířů drží směr značky. Pět zakladatelů spojuje rozdílné zkušenosti v jednu vizi.
+            Pět bodů vytváří celek. Pět smyslů proměňuje okamžik v prožitek. Pět vnitřních sil
+            utváří přirozený rytmus. Pět pilířů drží směr značky. Pět zakladatelů spojuje rozdílné
+            zkušenosti v jednu vizi.
           </p>
           <p>
-            PENTARIVA nevnímá číslo pět jako dekoraci. Vnímá jej jako připomínku, že skutečná rovnováha vzniká tehdy,
-            když jednotlivé části začnou spolupracovat.
+            PENTARIVA vnímá číslo pět jako připomínku, že skutečná rovnováha vzniká tehdy, když
+            jednotlivé části začnou spolupracovat.
           </p>
         </>
       }
@@ -543,20 +541,12 @@ function ChapterOne() {
             <picture className="contents">
               <source
                 type="image/avif"
-                srcSet={editorialSrcSet(
-                  "chapter-1",
-                  EDITORIAL_WIDTHS,
-                  "avif",
-                )}
+                srcSet={editorialSrcSet("chapter-1", EDITORIAL_WIDTHS, "avif")}
                 sizes="(min-width: 1024px) 60vw, calc(100vw - 3rem)"
               />
               <source
                 type="image/webp"
-                srcSet={editorialSrcSet(
-                  "chapter-1",
-                  EDITORIAL_WIDTHS,
-                  "webp",
-                )}
+                srcSet={editorialSrcSet("chapter-1", EDITORIAL_WIDTHS, "webp")}
                 sizes="(min-width: 1024px) 60vw, calc(100vw - 3rem)"
               />
               <img
@@ -652,9 +642,10 @@ function ChapterTwo() {
         <>
           <p>Na člověka se nedíváme po částech.</p>
           <p>
-            Věříme, že skutečná péče vzniká tehdy, když vnímáme souvislosti mezi tělem, myslí a každodenním životem.
+            Věříme, že skutečná péče vzniká tehdy, když vnímáme souvislosti mezi tělem, myslí a
+            každodenním životem.
           </p>
-          <p>Proto nehledáme rychlá řešení. Hledáme rovnováhu, která vydrží.</p>
+          <p>Proto tvoříme rovnováhu, která vydrží.</p>
         </>
       }
       closing={<>Nepečujeme o jednotlivé části. Pečujeme o člověka jako celek.</>}
@@ -664,20 +655,12 @@ function ChapterTwo() {
           <picture className="contents">
             <source
               type="image/avif"
-              srcSet={editorialSrcSet(
-                "chapter-2",
-                EDITORIAL_WIDTHS,
-                "avif",
-              )}
+              srcSet={editorialSrcSet("chapter-2", EDITORIAL_WIDTHS, "avif")}
               sizes="(min-width: 1024px) 58vw, calc(100vw - 3rem)"
             />
             <source
               type="image/webp"
-              srcSet={editorialSrcSet(
-                "chapter-2",
-                EDITORIAL_WIDTHS,
-                "webp",
-              )}
+              srcSet={editorialSrcSet("chapter-2", EDITORIAL_WIDTHS, "webp")}
               sizes="(min-width: 1024px) 58vw, calc(100vw - 3rem)"
             />
             <img
@@ -752,11 +735,17 @@ function ProductAudioPreview() {
   return (
     <div className="border border-forest-deep/12 bg-ivory-warm/50 p-6 lg:p-8">
       <div className="flex flex-col gap-1">
-        <span className="text-[0.68rem] uppercase text-gold-deep/70" style={{ letterSpacing: "0.28em" }}>
+        <span
+          className="text-[0.68rem] uppercase text-gold-deep/70"
+          style={{ letterSpacing: "0.28em" }}
+        >
           Zvuková krajina PENTARIVA
         </span>
-        <span className="font-serif-display text-forest-deep/70 italic" style={{ fontSize: "1rem" }}>
-          Zvukový prožitek připravujeme.
+        <span
+          className="font-serif-display text-forest-deep/70 italic"
+          style={{ fontSize: "1rem" }}
+        >
+          Pět smyslů. Jeden dech.
         </span>
       </div>
 
@@ -764,26 +753,30 @@ function ProductAudioPreview() {
         <button
           type="button"
           disabled
-          className="flex h-12 w-12 cursor-not-allowed items-center justify-center rounded-full border border-forest-deep/15 bg-ivory/60 text-forest-deep/35"
-          aria-label="Zvuková krajina se připravuje"
+          className="flex h-12 w-12 cursor-default items-center justify-center rounded-full border border-forest-deep/30 bg-ivory text-forest-deep/65"
+          aria-label="Přehrávač zvukové krajiny Pět smyslů. Jeden dech."
         >
           <Play className="h-5 w-5 translate-x-[1px]" />
         </button>
 
         <div className="flex-1">
           <div className="h-[2px] w-full bg-forest-deep/10">
-            <div className="h-full w-0 bg-gold-deep/70" aria-hidden />
+            <div
+              className="h-full bg-gold-deep/70 transition-[width]"
+              style={{ width: "0%" }}
+              aria-hidden
+            />
           </div>
           <div
             className="mt-2 flex justify-between font-sans text-[0.7rem] text-forest-deep/60"
             style={{ letterSpacing: "0.12em" }}
           >
             <span>0:00</span>
-            <span>—:—</span>
+            <span>0:00</span>
           </div>
         </div>
 
-        <div className="col-span-2 ml-auto flex items-center gap-2 text-forest-deep/30 sm:col-auto">
+        <label className="col-span-2 ml-auto flex items-center gap-2 text-forest-deep/60 sm:col-auto">
           <Volume2 className="h-4 w-4" aria-hidden />
           <span className="sr-only">Hlasitost</span>
           <input
@@ -791,14 +784,16 @@ function ProductAudioPreview() {
             min={0}
             max={1}
             step={0.01}
-            value={0}
+            value={0.7}
             disabled
             readOnly
-            className="h-1 w-20 cursor-not-allowed accent-gold-deep"
+            className="h-1 w-20 cursor-default accent-gold-deep opacity-65"
             aria-label="Hlasitost"
           />
-        </div>
+        </label>
       </div>
+
+      <audio preload="none" aria-label="Přehrávač zvukové krajiny PENTARIVA." />
     </div>
   );
 }
@@ -820,32 +815,24 @@ function ChapterThree() {
         <>
           <p>Každý den vnímáme svět očima, sluchem, čichem, chutí i dotykem.</p>
           <p>
-            Teprve když všechny smysly spolupracují, vzniká skutečný prožitek — okamžik, který nás propojuje s okolím
-            i se sebou samými.
+            Teprve když všechny smysly spolupracují, vzniká skutečný prožitek — okamžik, který nás
+            propojuje s okolím i se sebou samými.
           </p>
         </>
       }
-      closing={<>Skutečná rovnováha není vidět. Je cítit.</>}
+      closing={<>Skutečnou rovnováhu cítíme.</>}
     >
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-20">
         <div className="lg:col-span-5">
           <picture className="contents">
             <source
               type="image/avif"
-              srcSet={editorialSrcSet(
-                "chapter-3",
-                EDITORIAL_WIDTHS,
-                "avif",
-              )}
+              srcSet={editorialSrcSet("chapter-3", EDITORIAL_WIDTHS, "avif")}
               sizes="(min-width: 1024px) 45vw, calc(100vw - 3rem)"
             />
             <source
               type="image/webp"
-              srcSet={editorialSrcSet(
-                "chapter-3",
-                EDITORIAL_WIDTHS,
-                "webp",
-              )}
+              srcSet={editorialSrcSet("chapter-3", EDITORIAL_WIDTHS, "webp")}
               sizes="(min-width: 1024px) 45vw, calc(100vw - 3rem)"
             />
             <img
@@ -918,13 +905,13 @@ function ChapterFour() {
       intro={
         <>
           <p>
-            Uvnitř člověka se každý den setkává to, co si myslíme, jak dýcháme, kde nacházíme svůj střed, jak se
-            pohybujeme a jak dokážeme obnovovat vlastní sílu.
+            Uvnitř člověka se každý den setkává to, co si myslíme, jak dýcháme, kde nacházíme svůj
+            střed, jak se pohybujeme a jak dokážeme obnovovat vlastní sílu.
           </p>
-          <p>Žádná z těchto oblastí nestojí sama. Společně vytvářejí rytmus, ve kterém žijeme.</p>
+          <p>Všech pět oblastí společně vytváří rytmus, ve kterém žijeme.</p>
         </>
       }
-      closing={<>Rovnováha neznamená zastavit se. Znamená pohybovat se v souladu se sebou.</>}
+      closing={<>Rovnováha je plynulý pohyb v souladu se sebou.</>}
     >
       <div className="grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-6">
@@ -935,20 +922,12 @@ function ChapterFour() {
             <picture className="contents">
               <source
                 type="image/avif"
-                srcSet={editorialSrcSet(
-                  "chapter-4",
-                  EDITORIAL_WIDTHS,
-                  "avif",
-                )}
+                srcSet={editorialSrcSet("chapter-4", EDITORIAL_WIDTHS, "avif")}
                 sizes="(min-width: 1024px) 50vw, calc(100vw - 3rem)"
               />
               <source
                 type="image/webp"
-                srcSet={editorialSrcSet(
-                  "chapter-4",
-                  EDITORIAL_WIDTHS,
-                  "webp",
-                )}
+                srcSet={editorialSrcSet("chapter-4", EDITORIAL_WIDTHS, "webp")}
                 sizes="(min-width: 1024px) 50vw, calc(100vw - 3rem)"
               />
               <img
@@ -965,7 +944,10 @@ function ChapterFour() {
         </div>
         <ol className="lg:col-span-6 space-y-8" role="list">
           {INNER_FORCES.map((f, i) => (
-            <li key={f.label} className="grid grid-cols-[3.5rem_1fr] gap-6 border-l border-gold-soft/25 pl-6">
+            <li
+              key={f.label}
+              className="grid grid-cols-[3.5rem_1fr] gap-6 border-l border-gold-soft/25 pl-6"
+            >
               <span
                 className="font-serif-display text-gold-soft/70"
                 style={{ fontSize: "1.15rem", letterSpacing: "0.14em" }}
@@ -996,8 +978,8 @@ function ChapterFour() {
         style={{ fontSize: "1.02rem", lineHeight: 1.85 }}
       >
         <p>
-          PENTARIVA vnímá rovnováhu jako živý proces. Není to dokonalý stav, kterého jednou dosáhneme. Je to citlivá
-          souhra každodenních rozhodnutí, péče a pozornosti, kterou věnujeme sami sobě.
+          PENTARIVA vnímá rovnováhu jako živý proces — citlivou souhru každodenních rozhodnutí, péče
+          a pozornosti, kterou věnujeme sami sobě.
         </p>
       </div>
     </ChapterShell>
@@ -1028,7 +1010,14 @@ function PillarSystemGraphic({
         fill="none"
         aria-hidden="true"
       >
-        <circle cx="50" cy="50" r="41" stroke="currentColor" strokeWidth="0.3" className="text-gold/25" />
+        <circle
+          cx="50"
+          cy="50"
+          r="41"
+          stroke="currentColor"
+          strokeWidth="0.3"
+          className="text-gold/25"
+        />
         <polygon
           points={polygonPoints}
           stroke="currentColor"
@@ -1059,8 +1048,22 @@ function PillarSystemGraphic({
             />
           </g>
         ))}
-        <circle cx="50" cy="50" r="19.5" stroke="currentColor" strokeWidth="0.45" className="text-gold/35" />
-        <circle cx="50" cy="50" r="17.5" stroke="currentColor" strokeWidth="0.25" className="text-gold/20" />
+        <circle
+          cx="50"
+          cy="50"
+          r="19.5"
+          stroke="currentColor"
+          strokeWidth="0.45"
+          className="text-gold/35"
+        />
+        <circle
+          cx="50"
+          cy="50"
+          r="17.5"
+          stroke="currentColor"
+          strokeWidth="0.25"
+          className="text-gold/20"
+        />
       </svg>
 
       <div className="absolute left-1/2 top-1/2 flex h-[34%] w-[34%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-gold/30 bg-ivory/95 px-3 text-center">
@@ -1133,7 +1136,10 @@ function ChapterFive() {
       }
       intro={
         <>
-          <p>PENTARIVA nestojí na jednom produktu ani na jednom okamžiku.</p>
+          <p>
+            PENTARIVA stojí na <InlineLink href="/svet-pentariva/hodnoty">pěti pilířích</InlineLink>
+            , které společně určují její směr.
+          </p>
           <p>
             Stojí na pěti pilířích, které určují, jak přemýšlíme, jak tvoříme a jak budujeme vztahy.
           </p>
@@ -1209,19 +1215,64 @@ function ChapterSix() {
       }
       intro={
         <>
-          <p>PENTARIVA nevznikla z jednoho pohledu.</p>
-          <p>Vznikla setkáním pěti rozdílných zkušeností, odpovědností a životních cest.</p>
-          <p>Každý zakladatel přináší vlastní perspektivu. Společně však sdílejí jeden směr.</p>
+          <p>PENTARIVA spojuje pět rozdílných zkušeností, odpovědností a životních cest.</p>
+          <p>Každý zakladatel přináší vlastní perspektivu a všichni sdílejí jeden směr.</p>
+          <p>Společná vize získává konkrétní podobu v každém rozhodnutí, vztahu a službě.</p>
         </>
       }
       closing={
         <>
           Pět rozdílných cest se spojilo v jednom rozhodnutí:
           <br />
-          Vytvořit značku, která bude mít smysl i za mnoho let.
+          Tvořit značku se smyslem na mnoho let.
         </>
       }
-    />
+    >
+      <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <figure className="lg:col-span-5">
+          <div className="overflow-hidden border border-gold/15 bg-cream/5">
+            <img
+              src="/images/svet-pentariva/roman-zich-zakladatel-1254.webp"
+              srcSet="/images/svet-pentariva/roman-zich-zakladatel-720.webp 720w, /images/svet-pentariva/roman-zich-zakladatel-1254.webp 1254w"
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              width={1254}
+              height={1254}
+              loading="lazy"
+              decoding="async"
+              alt="Roman Zich, spoluzakladatel PENTARIVA, při práci nad vzdělávacím a partnerským systémem značky."
+              className="aspect-square h-auto w-full object-cover"
+            />
+          </div>
+          <figcaption
+            className="mt-4 text-[0.65rem] uppercase text-cream/45"
+            style={{ letterSpacing: "0.22em" }}
+          >
+            Roman Zich · spoluzakladatel PENTARIVA
+          </figcaption>
+        </figure>
+
+        <div className="lg:col-span-6 lg:col-start-7">
+          <p className="text-eyebrow text-gold" style={{ letterSpacing: "0.3em" }}>
+            Hlas zakladatele
+          </p>
+          <h3
+            className="mt-5 font-serif-display text-cream"
+            style={{ fontSize: "clamp(2.1rem, 3.8vw, 3.6rem)", lineHeight: 1.05 }}
+          >
+            Hodnoty dávají růstu pevný směr.
+          </h3>
+          <p className="mt-7 max-w-xl text-base leading-[1.85] text-cream/72">
+            Roman Zich vnáší do PENTARIVA zkušenost s obchodní strategií, vedením lidí a rozvojem
+            partnerských sítí. Jeho pohled spojuje jasný systém s osobní odpovědností každého
+            člověka, který značku reprezentuje.
+          </p>
+          <blockquote className="mt-9 border-l border-gold/45 pl-6 font-serif-display text-2xl leading-snug text-gold-soft sm:text-3xl">
+            „Skutečný růst znamená dopad. Vzdělání dává lidem jistotu, hodnoty drží směr a důvěra
+            proměňuje spolupráci v dlouhodobé partnerství.“
+          </blockquote>
+        </div>
+      </div>
+    </ChapterShell>
   );
 }
 
@@ -1242,7 +1293,10 @@ function BusinessProfileDownload() {
         <Download className="h-4 w-4" />
         Stáhnout Business Profile
       </a>
-      <span className="text-[0.62rem] uppercase text-gold-deep/70" style={{ letterSpacing: "0.28em" }}>
+      <span
+        className="text-[0.62rem] uppercase text-gold-deep/70"
+        style={{ letterSpacing: "0.28em" }}
+      >
         PDF · 14 stran · 3,1 MB
       </span>
     </div>
@@ -1265,8 +1319,15 @@ function ChapterSeven() {
       headline={<>Jedna PENTARIVA</>}
       intro={
         <>
-          <p>Sedm kapitol odhaluje různé části jednoho příběhu.</p>
-          <p>Člověka, jeho smysly, vnitřní síly, hodnoty značky i lidi, kteří jí dali první směr.</p>
+          <p>
+            Sedm kapitol odhaluje různé části{" "}
+            <InlineLink href="/svet-pentariva/pribeh">jednoho příběhu</InlineLink>.
+          </p>
+          <p>
+            Člověka, jeho smysly, vnitřní síly,{" "}
+            <InlineLink href="/svet-pentariva/hodnoty">hodnoty značky</InlineLink> i lidi, kteří jí
+            dali první směr.
+          </p>
           <p>Každá část má vlastní význam. Teprve společně však vytvářejí svět PENTARIVA.</p>
         </>
       }
@@ -1277,7 +1338,11 @@ function ChapterSeven() {
             <li
               key={l}
               className="font-serif-display text-forest-deep/60"
-              style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", letterSpacing: "0.02em", lineHeight: 1.25 }}
+              style={{
+                fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
+                letterSpacing: "0.02em",
+                lineHeight: 1.25,
+              }}
             >
               {l}
             </li>
@@ -1302,11 +1367,18 @@ function ChapterSeven() {
         style={{ fontSize: "1.05rem", lineHeight: 1.8 }}
       >
         <p>
-          PENTARIVA je živý ekosystém, který propojuje přírodu, člověka, poznání, péči a dlouhodobou vizi.
+          PENTARIVA je živý ekosystém, který propojuje přírodu, člověka,{" "}
+          <InlineLink href="/svet-pentariva/veda-a-vyvoj">poznání</InlineLink>, péči a dlouhodobou
+          vizi.
         </p>
         <p>
-          Nevzniká jako uzavřený svět. Vzniká jako prostor, který se může rozvíjet spolu s lidmi, produkty,
-          partnery a zkušenostmi, jež do něj vstupují.
+          PENTARIVA je otevřený prostor, který se rozvíjí spolu s lidmi,{" "}
+          <InlineLink href="/svet-pentariva/kvalita">kvalitou produktů</InlineLink>, partnery a
+          zkušenostmi, jež do něj vstupují.
+        </p>
+        <p>
+          Ověřené dokumenty, fotografie a redakční souvislosti zpřístupňuje{" "}
+          <InlineLink href="/svet-pentariva/pro-media">mediální centrum PENTARIVA</InlineLink>.
         </p>
       </div>
 
@@ -1347,20 +1419,12 @@ function EditorialClosing() {
           <picture className="contents">
             <source
               type="image/avif"
-              srcSet={editorialSrcSet(
-                "closing",
-                CLOSING_WIDTHS,
-                "avif",
-              )}
+              srcSet={editorialSrcSet("closing", CLOSING_WIDTHS, "avif")}
               sizes="(min-width: 1100px) 1000px, calc(100vw - 3rem)"
             />
             <source
               type="image/webp"
-              srcSet={editorialSrcSet(
-                "closing",
-                CLOSING_WIDTHS,
-                "webp",
-              )}
+              srcSet={editorialSrcSet("closing", CLOSING_WIDTHS, "webp")}
               sizes="(min-width: 1100px) 1000px, calc(100vw - 3rem)"
             />
             <img

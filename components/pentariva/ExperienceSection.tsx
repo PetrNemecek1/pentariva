@@ -18,9 +18,8 @@ const CARDS: ExperienceCard[] = [
   {
     id: "poradna",
     title: "Individuální konzultace PENTARIVA",
-    text:
-      "Připravovaný formát Poradny propojí srozumitelnou orientaci, naslouchání a jasné hranice odpovědnosti. Konzultace spustíme až s odborně a provozně připravenou službou.",
-    cta: "Jak bude Poradna fungovat",
+    text: "Koncept Poradny propojuje srozumitelnou orientaci, naslouchání a jasné hranice odpovědnosti. Služba roste společně s odbornou a provozní připraveností.",
+    cta: "Jak Poradna funguje",
     href: "/poradna",
     image: exp01.url,
     imageAlt:
@@ -29,19 +28,16 @@ const CARDS: ExperienceCard[] = [
   {
     id: "komunita",
     title: "Komunita PENTARIVA",
-    text:
-      "Poznejte koncept komunity, která propojí vzdělávání, osobní rozvoj, setkávání a postupně vznikající formy spolupráce. Členské prostředí i jeho pravidla nyní připravujeme.",
+    text: "Poznejte komunitu, která propojuje vzdělávání, osobní rozvoj, setkávání a postupně vznikající formy spolupráce. Členské prostředí i jeho pravidla vznikají právě teď.",
     cta: "Poznat komunitu",
     href: "/komunita",
     image: exp02.url,
-    imageAlt:
-      "Skupina lidí u dubového stolu v botanické kavárně s produkty PENTARIVA",
+    imageAlt: "Skupina lidí u dubového stolu v botanické kavárně s produkty PENTARIVA",
   },
   {
     id: "partnerstvi",
     title: "Partnerství PENTARIVA",
-    text:
-      "Budoucí partnerský model je určený pro odborníky, provozy a firmy, které sdílejí hodnoty PENTARIVA. Konkrétní nabídku zveřejníme až s reálným portfoliem a podmínkami.",
+    text: "Partnerský model propojuje odborníky, provozy a firmy, které sdílejí hodnoty PENTARIVA. Konkrétní nabídka vzniká společně s reálným portfoliem a jasnými podmínkami.",
     cta: "Poznat směr partnerství",
     href: "/partnerstvi",
     image: exp03.url,
@@ -60,12 +56,11 @@ export function ExperienceSection() {
             className="mt-8 max-w-4xl font-serif-display text-forest-deep"
             style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.1 }}
           >
-            Víc než jen bylinné produkty
+            Bylinné produkty v živém ekosystému
           </h2>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 sm:text-lg">
-            PENTARIVA propojuje kvalitní bylinné receptury s osobním
-            poradenstvím, aktivní komunitou a partnerstvím pro jednotlivce
-            i firmy.
+            PENTARIVA propojuje kvalitní bylinné receptury s osobním poradenstvím, aktivní komunitou
+            a partnerstvím pro jednotlivce i firmy.
           </p>
         </div>
 
@@ -100,9 +95,7 @@ function ExperienceCardView({ card }: { card: ExperienceCard }) {
         >
           {card.title}
         </h3>
-        <p className="text-[14.5px] leading-relaxed text-ink/75">
-          {card.text}
-        </p>
+        <p className="text-[14.5px] leading-relaxed text-ink/75">{card.text}</p>
 
         <div className="mt-auto pt-4">
           <a

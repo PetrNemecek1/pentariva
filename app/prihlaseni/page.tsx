@@ -16,20 +16,19 @@ export default function SignInPage() {
           <>
             Bezpečný vstup
             <br />
-            připravujeme.
+            vzniká.
           </>
         }
-        status="Zatím není aktivní"
+        status="Ve vývoji"
         lead={
           <>
             <p>
-              Online kancelář bude používat jednu bezpečnou identitu pro celý
-              ekosystém PENTARIVA.
+              Architektura Online kanceláře používá jednu bezpečnou identitu pro celý ekosystém
+              PENTARIVA.
             </p>
             <p className="mt-4">
-              Přihlašovací formulář zobrazíme až ve chvíli, kdy bude služba
-              technicky připravená a budou jasně nastavené podmínky ochrany
-              osobních údajů.
+              Přihlašovací formulář tvoří součást technicky ověřené služby a jasně nastavených
+              podmínek ochrany osobních údajů.
             </p>
           </>
         }
@@ -41,17 +40,16 @@ export default function SignInPage() {
             <LockKeyhole className="h-6 w-6" strokeWidth={1.3} />
           </div>
           <h2 className="mt-7 font-serif-display text-4xl text-forest-deep">
-            Váš účet zatím není potřeba zakládat.
+            Veřejná část webu je otevřená každému.
           </h2>
           <p className="mt-5 text-base leading-relaxed text-ink/70">
-            Registrace, obnova hesla ani přihlašování nyní nejsou dostupné.
-            Veřejnou část webu můžete používat bez účtu.
+            Účet vstupuje do ekosystému společně s aktivní registrací. Veřejnou část webu používáte
+            volně a otevřeně.
           </p>
           <div className="mt-9 text-left">
             <ConceptNotice title="Proč je formulář skrytý">
-              Nechceme sbírat údaje dříve, než je dokážeme bezpečně a smysluplně
-              využít. Tlačítko v navigaci proto vede na toto transparentní
-              vysvětlení, nikoliv do nefunkčního formuláře.
+              Osobní údaje sbíráme pouze v aktivní a bezpečně definované službě. Navigace proto vede
+              k transparentnímu vysvětlení aktuálního stavu.
             </ConceptNotice>
           </div>
           <div className="mt-9 flex flex-wrap justify-center gap-6">

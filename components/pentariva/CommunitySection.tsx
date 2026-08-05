@@ -13,7 +13,7 @@ const HIGHLIGHTS = [
   },
   {
     label: "Hodnota před odměnou",
-    text: "Členství staví na vzdělávání, službách a událostech, ne na tlaku na výkon.",
+    text: "Členství staví na vzdělávání, službách, událostech a svobodném tempu každého člověka.",
   },
 ] as const;
 
@@ -51,17 +51,14 @@ export function CommunitySection() {
                 className="mt-3 font-serif-display text-cream"
                 style={{ fontSize: "1.2rem", lineHeight: 1.25 }}
               >
-                „Nejsme fórum pod články. Jsme společný svět.“
+                „Tvoříme společný svět.“
               </p>
             </div>
           </div>
 
           <div>
             <GoldOrnament className="text-gold-deep" width={120} />
-            <p
-              className="mt-8 text-eyebrow text-gold-deep"
-              style={{ letterSpacing: "0.32em" }}
-            >
+            <p className="mt-8 text-eyebrow text-gold-deep" style={{ letterSpacing: "0.32em" }}>
               KOMUNITA PENTARIVA
             </p>
             <h2
@@ -78,9 +75,8 @@ export function CommunitySection() {
               <span className="italic">Postupně se rozšiřující svět.</span>
             </h2>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink/70">
-              Každý registrovaný uživatel bude vstupovat do stejného členského
-              prostředí. Sám rozhodne, jaké výhody, vzdělávání a formy spolupráce
-              využije — bez nutnosti zakládat další účty.
+              Každý registrovaný uživatel vstupuje do stejného členského prostředí. Sám si vybírá
+              výhody, vzdělávání a formy spolupráce, které využívá pod jediným účtem.
             </p>
 
             <ul className="mt-10 space-y-6">
@@ -106,7 +102,7 @@ export function CommunitySection() {
                 className="group inline-flex items-center gap-3 bg-forest-deep px-7 py-3.5 text-[11px] text-cream transition-colors hover:bg-forest"
                 style={{ letterSpacing: "0.26em", fontWeight: 500 }}
               >
-                JAK BUDE FUNGOVAT REGISTRACE
+                JAK FUNGUJE REGISTRACE
                 <ArrowRight
                   className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
                   strokeWidth={1.6}

@@ -22,12 +22,14 @@ export function Wordmark({ className = "", tagline = true, tone = "cream" }: Wor
       </span>
       {tagline && (
         <div className="mt-2 flex items-center gap-3">
-          <span className={`h-px w-8 ${tone === "cream" ? "bg-gold-soft/70" : "bg-gold-deep/70"}`} />
+          <span
+            className={`h-px w-8 ${tone === "cream" ? "bg-gold-soft/70" : "bg-gold-deep/70"}`}
+          />
           <span
             className={`text-[10px] sm:text-[11px] ${taglineColor}`}
             style={{ letterSpacing: "0.32em", fontWeight: 500 }}
           >
-            HERBAL RITUALS · INNER BALANCE
+            Z HLUBIN KOŘENŮ · PRO CELÝ ŽIVOT
           </span>
         </div>
       )}

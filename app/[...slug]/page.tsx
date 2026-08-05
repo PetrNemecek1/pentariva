@@ -23,47 +23,11 @@ const SHARED_ITEMS = [
 ] as const;
 
 const PAGES: Record<string, PreparationPage> = {
-  "svet-pentariva/pribeh": {
-    eyebrow: "Svět PENTARIVA",
-    title: "Náš příběh",
-    summary:
-      "Připravujeme ucelený příběh vzniku značky, jejích kořenů a směru, kterým chce růst.",
-    parentLabel: "Svět PENTARIVA",
-    parentHref: "/svet-pentariva",
-    items: SHARED_ITEMS,
-  },
-  "svet-pentariva/veda-a-vyvoj": {
-    eyebrow: "Svět PENTARIVA",
-    title: "Věda a vývoj",
-    summary:
-      "Tato část vysvětlí budoucí proces vývoje, odborné kontroly a práci s důkazy.",
-    parentLabel: "Svět PENTARIVA",
-    parentHref: "/svet-pentariva",
-    items: SHARED_ITEMS,
-  },
-  "svet-pentariva/kvalita": {
-    eyebrow: "Svět PENTARIVA",
-    title: "Kvalita",
-    summary:
-      "Připravujeme transparentní popis nároků na suroviny, dokumentaci, výrobu a kontrolu.",
-    parentLabel: "Svět PENTARIVA",
-    parentHref: "/svet-pentariva",
-    items: SHARED_ITEMS,
-  },
   "svet-pentariva/udrzitelnost": {
     eyebrow: "Svět PENTARIVA",
     title: "Udržitelnost",
     summary:
-      "Budoucí stránka popíše konkrétní principy a měřitelné kroky, nikoliv obecná zelená prohlášení.",
-    parentLabel: "Svět PENTARIVA",
-    parentHref: "/svet-pentariva",
-    items: SHARED_ITEMS,
-  },
-  "svet-pentariva/pro-media": {
-    eyebrow: "Svět PENTARIVA",
-    title: "Pro média",
-    summary:
-      "Připravujeme ověřené podklady, příběh značky, kontakty a materiály pro redakční využití.",
+      "Stránka vzniká na konkrétních principech, měřitelných krocích a doložitelných údajích.",
     parentLabel: "Svět PENTARIVA",
     parentHref: "/svet-pentariva",
     items: SHARED_ITEMS,
@@ -71,8 +35,7 @@ const PAGES: Record<string, PreparationPage> = {
   "produkty/potreby": {
     eyebrow: "Produkty",
     title: "Produkty podle potřeb",
-    summary:
-      "Tato cesta bude pomáhat začít u životní situace a porozumět dostupným možnostem bez tlaku na nákup.",
+    summary: "Tato cesta začíná u životní situace a přehledně představuje dostupné možnosti.",
     parentLabel: "Produkty",
     parentHref: "/produkty",
     items: SHARED_ITEMS,
@@ -81,7 +44,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Produkty",
     title: "Kolekce PENTARIVA",
     summary:
-      "Kolekce zveřejníme až s reálným, odborně a legislativně připraveným portfoliem.",
+      "Kolekce získávají prostor společně s reálným, odborně a legislativně ověřeným portfoliem.",
     parentLabel: "Produkty",
     parentHref: "/produkty",
     items: SHARED_ITEMS,
@@ -89,8 +52,7 @@ const PAGES: Record<string, PreparationPage> = {
   "vzdelavani/clanky": {
     eyebrow: "Znalostní centrum",
     title: "Odborné články",
-    summary:
-      "Připravujeme první redakční témata a proces odborné kontroly před zveřejněním.",
+    summary: "Rozvíjíme první redakční témata a proces odborné kontroly před zveřejněním.",
     parentLabel: "Vzdělávání",
     parentHref: "/vzdelavani",
     items: SHARED_ITEMS,
@@ -98,8 +60,7 @@ const PAGES: Record<string, PreparationPage> = {
   "vzdelavani/pruvodci": {
     eyebrow: "Znalostní centrum",
     title: "Průvodci",
-    summary:
-      "Vzniknou praktické a srozumitelné cesty od otázky k informovanému rozhodnutí.",
+    summary: "Praktické a srozumitelné cesty vedou od otázky k informovanému rozhodnutí.",
     parentLabel: "Vzdělávání",
     parentHref: "/vzdelavani",
     items: SHARED_ITEMS,
@@ -108,7 +69,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Znalostní centrum",
     title: "Webináře",
     summary:
-      "Program spustíme až s ověřenými tématy, odbornými hosty a skutečnými termíny.",
+      "Program vzniká z ověřených témat, spolupráce s odbornými hosty a potvrzených termínů.",
     parentLabel: "Vzdělávání",
     parentHref: "/vzdelavani",
     items: SHARED_ITEMS,
@@ -117,7 +78,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Znalostní centrum",
     title: "Slovník pojmů",
     summary:
-      "Slovník bude vysvětlovat odborné i produktové pojmy klidným a přesným jazykem.",
+      "Strukturu slovníku stavíme na klidném a přesném vysvětlení odborných i produktových pojmů.",
     parentLabel: "Vzdělávání",
     parentHref: "/vzdelavani",
     items: SHARED_ITEMS,
@@ -125,8 +86,7 @@ const PAGES: Record<string, PreparationPage> = {
   "vzdelavani/faq": {
     eyebrow: "Znalostní centrum",
     title: "Nejčastější otázky",
-    summary:
-      "Odpovědi budeme doplňovat podle skutečných dotazů a stavu služeb PENTARIVA.",
+    summary: "Odpovědi doplňujeme podle skutečných dotazů a aktuálního stavu služeb PENTARIVA.",
     parentLabel: "Vzdělávání",
     parentHref: "/vzdelavani",
     items: SHARED_ITEMS,
@@ -134,8 +94,7 @@ const PAGES: Record<string, PreparationPage> = {
   "komunita/o-komunite": {
     eyebrow: "Komunita",
     title: "O komunitě",
-    summary:
-      "Podrobný členský model zveřejníme společně s reálnými službami a pravidly.",
+    summary: "Podrobný členský model propojujeme s reálnými službami a jasnými pravidly.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -143,8 +102,7 @@ const PAGES: Record<string, PreparationPage> = {
   "komunita/clenske-vyhody": {
     eyebrow: "Komunita",
     title: "Členské výhody",
-    summary:
-      "Výhody představíme až ve chvíli, kdy budou skutečně dostupné a dlouhodobě udržitelné.",
+    summary: "Členské výhody vážeme na skutečnou dostupnost a dlouhodobou udržitelnost.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -152,8 +110,7 @@ const PAGES: Record<string, PreparationPage> = {
   "komunita/udalosti": {
     eyebrow: "Komunita",
     title: "Události",
-    summary:
-      "Kalendář zveřejníme s prvními potvrzenými online nebo osobními setkáními.",
+    summary: "Kalendář získává obsah z potvrzených online a osobních setkání.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -162,7 +119,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Komunita",
     title: "Ambasadorský program",
     summary:
-      "Program je v návrhu. Zatím nenabízíme provize, doporučovací odkazy ani příjmové přísliby.",
+      "Program je ve vývoji a soustředí se na jasná pravidla, skutečnou podporu a odpovědnou spolupráci.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -171,7 +128,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Komunita",
     title: "B2B spolupráce",
     summary:
-      "Partnerský model připravíme až společně s reálným portfoliem a jasnými obchodními podmínkami.",
+      "Partnerský model vzniká společně s reálným portfoliem a jasnými obchodními podmínkami.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -180,7 +137,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Komunita",
     title: "Registrace",
     summary:
-      "Bezpečnou registraci spustíme společně s Online kanceláří a transparentními pravidly práce s údaji.",
+      "Bezpečná registrace vzniká jako součást Online kanceláře a transparentních pravidel práce s údaji.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -188,8 +145,7 @@ const PAGES: Record<string, PreparationPage> = {
   "poradna/faq": {
     eyebrow: "Poradna",
     title: "Časté otázky",
-    summary:
-      "Odpovědi vzniknou z reálných dotazů a budou odpovídat skutečně dostupným službám.",
+    summary: "Odpovědi vycházejí z reálných dotazů a odpovídají skutečně dostupným službám.",
     parentLabel: "Poradna",
     parentHref: "/poradna",
     items: SHARED_ITEMS,
@@ -197,8 +153,7 @@ const PAGES: Record<string, PreparationPage> = {
   partnerstvi: {
     eyebrow: "PENTARIVA",
     title: "Partnerství",
-    summary:
-      "Budoucí partnerskou nabídku zveřejníme až s produkty, podporou a konkrétními podmínkami.",
+    summary: "Partnerskou nabídku spojujeme s produkty, podporou a konkrétními podmínkami.",
     parentLabel: "Komunita",
     parentHref: "/komunita",
     items: SHARED_ITEMS,
@@ -207,7 +162,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "PENTARIVA",
     title: "Vyhledávání",
     summary:
-      "Vyhledávání spustíme, až bude web obsahovat dostatek plnohodnotných stránek a znalostních materiálů.",
+      "Vyhledávání získává plný význam společně s růstem plnohodnotných stránek a znalostních materiálů.",
     parentLabel: "Hlavní strana",
     parentHref: "/",
     items: SHARED_ITEMS,
@@ -215,8 +170,7 @@ const PAGES: Record<string, PreparationPage> = {
   "pravni/obchodni-podminky": {
     eyebrow: "Právní informace",
     title: "Obchodní podmínky",
-    summary:
-      "Obchodní podmínky zveřejníme před spuštěním skutečného prodeje nebo placených služeb.",
+    summary: "Obchodní podmínky tvoří součást spuštění skutečného prodeje a placených služeb.",
     parentLabel: "Hlavní strana",
     parentHref: "/",
     items: SHARED_ITEMS,
@@ -225,7 +179,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Právní informace",
     title: "Ochrana osobních údajů",
     summary:
-      "Úplné zásady zveřejníme před spuštěním registrace, formulářů a dalších způsobů zpracování údajů.",
+      "Úplné zásady tvoří součást aktivace registrace, formulářů a dalších způsobů zpracování údajů.",
     parentLabel: "Hlavní strana",
     parentHref: "/",
     items: SHARED_ITEMS,
@@ -234,7 +188,7 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "Právní informace",
     title: "Cookies",
     summary:
-      "Informace a případné nastavení souhlasů doplníme podle technologií, které bude veřejný web skutečně používat.",
+      "Rozsah informací a nastavení souhlasů odpovídá technologiím skutečně používaným na veřejném webu.",
     parentLabel: "Hlavní strana",
     parentHref: "/",
     items: SHARED_ITEMS,
@@ -246,8 +200,7 @@ export default async function PreparationPageView({
 }: {
   params: Promise<{ slug: string[] }>;
 }) {
-  const { slug } = await params;
-  const page = PAGES[slug.join("/")];
+  const page = PAGES[(await params).slug.join("/")];
   if (!page) notFound();
 
   return (
@@ -255,13 +208,13 @@ export default async function PreparationPageView({
       <EditorialHero
         eyebrow={page.eyebrow}
         title={page.title}
-        status="Připravujeme"
+        status="Ve vývoji"
         lead={
           <>
             <p>{page.summary}</p>
             <p className="mt-4">
-              Odkaz ponecháváme viditelný, protože patří do cílové struktury
-              webu. Plnohodnotný obsah doplníme v další fázi.
+              Odkaz zůstává viditelný jako součást cílové struktury webu. Plnohodnotný obsah právě
+              vzniká.
             </p>
           </>
         }
@@ -276,29 +229,21 @@ export default async function PreparationPageView({
             <SectionHeading
               eyebrow="Obsah ve vývoji"
               title="Místo je připravené. Obsah vzniká."
-              body="Nechceme nahrazovat skutečný obsah prázdnou šablonou nebo zdánlivě funkčním prvkem. Proto zde otevřeně ukazujeme stav přípravy."
+              body="Tato stránka otevřeně ukazuje skutečný stav přípravy a dává prostor plnohodnotnému obsahu."
             />
           </div>
           <div className="space-y-5 lg:col-span-6 lg:col-start-7">
             {page.items.map((item, index) => {
               const Icon = index === 0 ? Layers3 : Sparkles;
               return (
-                <div
-                  key={item}
-                  className="flex gap-5 border border-forest-deep/10 bg-ivory p-6"
-                >
-                  <Icon
-                    className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep"
-                    strokeWidth={1.3}
-                  />
+                <div key={item} className="flex gap-5 border border-forest-deep/10 bg-ivory p-6">
+                  <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" strokeWidth={1.3} />
                   <p className="text-sm leading-relaxed text-ink/70">{item}</p>
                 </div>
               );
             })}
             <div className="pt-4">
-              <TextLink href={page.parentHref}>
-                Zpět: {page.parentLabel}
-              </TextLink>
+              <TextLink href={page.parentHref}>Zpět: {page.parentLabel}</TextLink>
             </div>
           </div>
         </div>

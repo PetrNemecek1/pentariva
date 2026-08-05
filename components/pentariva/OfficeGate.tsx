@@ -12,10 +12,7 @@ export function OfficeGate() {
           <div className="relative grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
             <div>
               <GoldOrnament className="text-gold" width={120} />
-              <p
-                className="mt-8 text-eyebrow text-gold"
-                style={{ letterSpacing: "0.32em" }}
-              >
+              <p className="mt-8 text-eyebrow text-gold" style={{ letterSpacing: "0.32em" }}>
                 ONLINE KANCELÁŘ PENTARIVA
               </p>
               <h2
@@ -28,10 +25,9 @@ export function OfficeGate() {
                 Vaše osobní a pracovní prostředí v ekosystému PENTARIVA.
               </h2>
               <p className="mt-6 max-w-xl text-base leading-relaxed text-cream/75">
-                Po budoucím spuštění zde na jednom místě najdete objednávky,
-                členské výhody, vzdělávání, události, dokumenty i přístup k Poradně.
-                Rozsah se přizpůsobí vaší roli — využijete jen to, co skutečně
-                potřebujete.
+                Online kancelář vzniká jako společné místo pro objednávky, členské výhody,
+                vzdělávání, události, dokumenty i přístup k Poradně. Její rozsah se přizpůsobuje
+                roli každého uživatele.
               </p>
             </div>
 
@@ -41,7 +37,7 @@ export function OfficeGate() {
                 className="group inline-flex items-center gap-3 bg-gold px-8 py-4 text-[11px] text-forest-deep transition-all hover:bg-gold-soft"
                 style={{ letterSpacing: "0.28em", fontWeight: 600 }}
               >
-                VSTOUPIT DO ONLINE KANCELÁŘE
+                PROHLÉDNOUT KONCEPT KANCELÁŘE
                 <ArrowRight
                   className="h-4 w-4 transition-transform group-hover:translate-x-1"
                   strokeWidth={1.6}
@@ -52,15 +48,15 @@ export function OfficeGate() {
                 className="group inline-flex items-center gap-2 border-b border-gold/60 pb-1 text-[11px] text-gold transition-colors hover:border-gold hover:text-gold-soft"
                 style={{ letterSpacing: "0.28em", fontWeight: 500 }}
               >
-                VYTVOŘIT ÚČET PENTARIVA
+                JAK FUNGUJE ČLENSTVÍ
                 <ArrowRight
                   className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
                   strokeWidth={1.6}
                 />
               </a>
               <p className="max-w-sm text-xs leading-relaxed text-cream/60 lg:text-right">
-                Jedna registrace pro celý ekosystém. Vaše role se rozšiřují postupně
-                bez nutnosti zakládat další účty.
+                Jedna registrace propojuje celý ekosystém. Vaše role se rozšiřují postupně pod
+                jediným účtem.
               </p>
             </div>
           </div>

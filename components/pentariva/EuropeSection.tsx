@@ -2,7 +2,7 @@ import { GoldOrnament } from "./GoldOrnament";
 
 const STATS = [
   { value: "5", label: "PILÍŘŮ EKOSYSTÉMU" },
-  { value: "12", label: "EVROPSKÝCH TRHŮ V PLÁNU" },
+  { value: "12", label: "TRHŮ V EVROPSKÉ ARCHITEKTUŘE" },
   { value: "1", label: "DIGITÁLNÍ IDENTITA" },
   { value: "∞", label: "MOŽNOSTÍ ZAPOJENÍ" },
 ] as const;
@@ -13,10 +13,7 @@ export function EuropeSection() {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <GoldOrnament className="text-gold" width={140} />
-          <p
-            className="mt-8 text-eyebrow text-gold"
-            style={{ letterSpacing: "0.32em" }}
-          >
+          <p className="mt-8 text-eyebrow text-gold" style={{ letterSpacing: "0.32em" }}>
             PŘIPRAVENI PRO EVROPU
           </p>
           <h2
@@ -26,12 +23,12 @@ export function EuropeSection() {
               lineHeight: 1.1,
             }}
           >
-            Budujeme evropskou partnerskou síť přirozené vitality.
+            PENTARIVA rozvíjí evropskou síť přirozené vitality.
           </h2>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-cream/75">
-            PENTARIVA vzniká jako jednotný digitální ekosystém, jehož architektura je
-            připravena na vícejazyčné prostředí, mezinárodní spolupráci a dlouhodobý
-            růst — vždy s důrazem na kvalitu, bezpečnost a odpovědnost.
+            PENTARIVA vzniká jako jednotný digitální ekosystém, jehož architektura je připravena na
+            vícejazyčné prostředí, mezinárodní spolupráci a dlouhodobý růst — vždy s důrazem na
+            kvalitu, bezpečnost a odpovědnost.
           </p>
         </div>
 
