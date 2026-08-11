@@ -20,7 +20,6 @@ const TOC = [
   { id: "smysl", label: "Smysl tématu" },
   { id: "co-si-odnesete", label: "Co si odnesete" },
   { id: "program", label: "Program setkání" },
-  { id: "vedeni", label: "Kdo vzdělávání vede" },
   { id: "hranice", label: "Otázky a bezpečné hranice" },
   { id: "termin", label: "Termín a dostupnost" },
 ] as const;
@@ -89,7 +88,7 @@ export default function SleepWebinarPage() {
       <EducationMeta
         readingTime="Předpokládaná délka 60 minut"
         level="Úvodní online setkání"
-        review="Metodiku tvoří Barbara Kočková"
+        review="Metodiku tvoří tým PENTARIVA"
       />
 
       <EducationArticleLayout toc={TOC}>
@@ -191,27 +190,6 @@ export default function SleepWebinarPage() {
               </li>
             ))}
           </ol>
-        </EducationSection>
-
-        <EducationSection
-          id="vedeni"
-          eyebrow="Metodická páteř"
-          title="Barbara Kočková propojuje obsah, prodejní tým a Poradnu."
-        >
-          <p>
-            Barbara Kočková odpovídá za jednotnou metodiku vzdělávání: za přípravu prodejců, práci s
-            produktovými informacemi, vedení online formátů a za to, aby poradenský tým používal
-            stejný srozumitelný jazyk a stejné bezpečnostní hranice.
-          </p>
-          <p>
-            Odborné zdravotní a legislativní části procházejí odpovídající externí či interní
-            revizí. Medicínské posouzení zajišťuje lékař, lékárník nebo jiný kvalifikovaný
-            zdravotnický odborník.
-          </p>
-          <EducationCallout title="Odborná skladba programu">
-            Barbara Kočková tvoří metodiku setkání. Hosty a rozsah jejich odbornosti zveřejňujeme
-            společně se schváleným programem.
-          </EducationCallout>
         </EducationSection>
 
         <EducationSection

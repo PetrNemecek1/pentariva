@@ -42,8 +42,7 @@ const CHAPTERS = [
   { roman: "III", title: "Pět smyslů", id: "kapitola-3" },
   { roman: "IV", title: "Pět vnitřních sil", id: "kapitola-4" },
   { roman: "V", title: "Pět pilířů", id: "kapitola-5" },
-  { roman: "VI", title: "Pět zakladatelů", id: "kapitola-6" },
-  { roman: "VII", title: "Jedna PENTARIVA", id: "kapitola-7" },
+  { roman: "VI", title: "Jedna PENTARIVA", id: "kapitola-6" },
 ] as const;
 
 const FIVE_PREVIEW = [
@@ -51,7 +50,7 @@ const FIVE_PREVIEW = [
   { label: "SMYSLY", hint: "Okamžik se stává prožitkem." },
   { label: "VNITŘNÍ SÍLY", hint: "Rytmus, ve kterém žijeme." },
   { label: "PILÍŘE", hint: "Směr, který drží značku." },
-  { label: "ZAKLADATELÉ", hint: "Rozdílné cesty, jedna vize." },
+  { label: "EKOSYSTÉM", hint: "Rozdílné oblasti, jeden celek." },
 ] as const;
 
 const FIVE_POINTS = [
@@ -522,8 +521,8 @@ function ChapterOne() {
           </p>
           <p>
             Pět bodů vytváří celek. Pět smyslů proměňuje okamžik v prožitek. Pět vnitřních sil
-            utváří přirozený rytmus. Pět pilířů drží směr značky. Pět zakladatelů spojuje rozdílné
-            zkušenosti v jednu vizi.
+            utváří přirozený rytmus. Pět pilířů drží směr značky. Pět oblastí ekosystému propojuje
+            rozdílné zkušenosti v jednu vizi.
           </p>
           <p>
             PENTARIVA vnímá číslo pět jako připomínku, že skutečná rovnováha vzniká tehdy, když
@@ -1196,88 +1195,7 @@ function ChapterFive() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Chapter VI — Pět zakladatelů. Jedna vize.                                  */
-/* -------------------------------------------------------------------------- */
-
-function ChapterSix() {
-  return (
-    <ChapterShell
-      id="kapitola-6"
-      roman="VI"
-      kicker="Kapitola"
-      tone="dark"
-      headline={
-        <>
-          Pět zakladatelů.
-          <br />
-          Jedna vize.
-        </>
-      }
-      intro={
-        <>
-          <p>PENTARIVA spojuje pět rozdílných zkušeností, odpovědností a životních cest.</p>
-          <p>Každý zakladatel přináší vlastní perspektivu a všichni sdílejí jeden směr.</p>
-          <p>Společná vize získává konkrétní podobu v každém rozhodnutí, vztahu a službě.</p>
-        </>
-      }
-      closing={
-        <>
-          Pět rozdílných cest se spojilo v jednom rozhodnutí:
-          <br />
-          Tvořit značku se smyslem na mnoho let.
-        </>
-      }
-    >
-      <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
-        <figure className="lg:col-span-5">
-          <div className="overflow-hidden border border-gold/15 bg-cream/5">
-            <img
-              src="/images/svet-pentariva/roman-zich-zakladatel-1254.webp"
-              srcSet="/images/svet-pentariva/roman-zich-zakladatel-720.webp 720w, /images/svet-pentariva/roman-zich-zakladatel-1254.webp 1254w"
-              sizes="(min-width: 1024px) 40vw, 100vw"
-              width={1254}
-              height={1254}
-              loading="lazy"
-              decoding="async"
-              alt="Roman Zich, spoluzakladatel PENTARIVA, při práci nad vzdělávacím a partnerským systémem značky."
-              className="aspect-square h-auto w-full object-cover"
-            />
-          </div>
-          <figcaption
-            className="mt-4 text-[0.65rem] uppercase text-cream/45"
-            style={{ letterSpacing: "0.22em" }}
-          >
-            Roman Zich · spoluzakladatel PENTARIVA
-          </figcaption>
-        </figure>
-
-        <div className="lg:col-span-6 lg:col-start-7">
-          <p className="text-eyebrow text-gold" style={{ letterSpacing: "0.3em" }}>
-            Hlas zakladatele
-          </p>
-          <h3
-            className="mt-5 font-serif-display text-cream"
-            style={{ fontSize: "clamp(2.1rem, 3.8vw, 3.6rem)", lineHeight: 1.05 }}
-          >
-            Hodnoty dávají růstu pevný směr.
-          </h3>
-          <p className="mt-7 max-w-xl text-base leading-[1.85] text-cream/72">
-            Roman Zich vnáší do PENTARIVA zkušenost s obchodní strategií, vedením lidí a rozvojem
-            partnerských sítí. Jeho pohled spojuje jasný systém s osobní odpovědností každého
-            člověka, který značku reprezentuje.
-          </p>
-          <blockquote className="mt-9 border-l border-gold/45 pl-6 font-serif-display text-2xl leading-snug text-gold-soft sm:text-3xl">
-            „Skutečný růst znamená dopad. Vzdělání dává lidem jistotu, hodnoty drží směr a důvěra
-            proměňuje spolupráci v dlouhodobé partnerství.“
-          </blockquote>
-        </div>
-      </div>
-    </ChapterShell>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Chapter VII — Jedna PENTARIVA                                              */
+/*  Chapter VI — Jedna PENTARIVA                                               */
 /* -------------------------------------------------------------------------- */
 
 function BusinessProfileDownload() {
@@ -1304,29 +1222,23 @@ function BusinessProfileDownload() {
 }
 
 function ChapterSeven() {
-  const lines = [
-    "Pět bodů.",
-    "Pět smyslů.",
-    "Pět vnitřních sil.",
-    "Pět pilířů.",
-    "Pět zakladatelů.",
-  ];
+  const lines = ["Pět bodů.", "Pět smyslů.", "Pět vnitřních sil.", "Pět pilířů.", "Pět oblastí ekosystému."];
   return (
     <ChapterShell
-      id="kapitola-7"
-      roman="VII"
+      id="kapitola-6"
+      roman="VI"
       kicker="Kapitola"
       headline={<>Jedna PENTARIVA</>}
       intro={
         <>
           <p>
-            Sedm kapitol odhaluje různé části{" "}
+            Šest kapitol odhaluje různé části{" "}
             <InlineLink href="/svet-pentariva/pribeh">jednoho příběhu</InlineLink>.
           </p>
           <p>
-            Člověka, jeho smysly, vnitřní síly,{" "}
-            <InlineLink href="/svet-pentariva/hodnoty">hodnoty značky</InlineLink> i lidi, kteří jí
-            dali první směr.
+            Člověka, jeho smysly, vnitřní síly a{" "}
+            <InlineLink href="/svet-pentariva/hodnoty">hodnoty značky</InlineLink>, které dávají
+            celému ekosystému společný směr.
           </p>
           <p>Každá část má vlastní význam. Teprve společně však vytvářejí svět PENTARIVA.</p>
         </>
@@ -1459,7 +1371,6 @@ export default function SvetPentarivaV2Page() {
         <ChapterThree />
         <ChapterFour />
         <ChapterFive />
-        <ChapterSix />
         <ChapterSeven />
         <EditorialClosing />
       </main>

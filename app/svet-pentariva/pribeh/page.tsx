@@ -3,7 +3,6 @@ import { GoldOrnament } from "@/components/pentariva/GoldOrnament";
 import { PublicPage, SectionHeading, TextLink } from "@/components/pentariva/PublicPage";
 const brandBookPdfUrl = "/downloads/PENTARIVA-Brand-Book.pdf";
 import openPage from "@/assets/story-open-page.jpg";
-import romanDiary from "@/assets/story-roman-diary.png";
 import rootsPage from "@/assets/story-roots-page.jpg";
 
 const STORY_STEPS = [
@@ -20,7 +19,7 @@ const STORY_STEPS = [
   {
     number: "03",
     title: "Společná vize",
-    body: "Barbara Kočková a Roman Zich propojují péči o člověka se strategií, systémem a odpovědným růstem.",
+    body: "Společná vize propojuje péči o člověka se strategií, systémem a odpovědným růstem.",
   },
   {
     number: "04",
@@ -66,8 +65,8 @@ export default function StoryPage() {
           aria-hidden
           className="pointer-events-none absolute -left-40 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 rounded-full border border-gold/10"
         />
-        <div className="relative mx-auto grid max-w-[1400px] items-center gap-14 px-6 py-20 lg:grid-cols-12 lg:px-12 lg:py-28">
-          <div className="lg:col-span-6">
+        <div className="relative mx-auto max-w-[1400px] px-6 py-20 lg:px-12 lg:py-28">
+          <div className="max-w-4xl">
             <GoldOrnament className="text-gold" width={140} />
             <p className="mt-8 text-eyebrow text-gold" style={{ letterSpacing: "0.32em" }}>
               Náš příběh
@@ -86,27 +85,6 @@ export default function StoryPage() {
               vzdělávání, produkty a partnerství.
             </p>
           </div>
-
-          <figure className="relative lg:col-span-6">
-            <div className="absolute -inset-4 border border-gold/18" aria-hidden />
-            <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
-              <img
-                src={romanDiary.src}
-                width={1537}
-                height={1023}
-                decoding="async"
-                alt="Roman Zich s rodinným bylinným deníkem v knihovně PENTARIVA."
-                className="h-full w-full object-cover object-center"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-forest-deep/35 via-transparent to-transparent" />
-            </div>
-            <figcaption
-              className="mt-5 text-[0.62rem] uppercase text-gold-soft/75"
-              style={{ letterSpacing: "0.24em" }}
-            >
-              Roman Zich · rodinný bylinný deník · kořen příběhu
-            </figcaption>
-          </figure>
         </div>
       </section>
 
@@ -126,11 +104,11 @@ export default function StoryPage() {
                 Každý příběh začíná jediným zápisem.
               </h2>
               <p>
-                Před více než šedesáti lety začala maminka Barbary Kočkové zapisovat do bylinného
-                deníku zkušenosti, receptury a poznatky, které sbírala během života.
+                Před více než šedesáti lety začaly v rodinném bylinném deníku vznikat zápisy
+                zkušeností, receptur a poznatků shromažďovaných během života.
               </p>
               <p>
-                Barbara deník po letech našla na půdě. Jeho stránky vrátily rodinným zkušenostem
+                Deník byl po letech znovu objeven na půdě. Jeho stránky vrátily rodinným zkušenostem
                 hlas a staly se jedním z kořenů PENTARIVA.
               </p>
               <p className="border-l border-gold-deep/45 pl-6 font-serif-display text-2xl leading-snug text-gold-deep">
@@ -205,8 +183,7 @@ export default function StoryPage() {
             </h2>
             <div className="mt-8 space-y-5 text-base leading-[1.85] text-ink/72">
               <p>
-                Strategická zkušenost Romana Zicha a vzdělávací, lidská zkušenost Barbary Kočkové
-                dávají rodinnému kořenu současný směr.
+                Strategická, vzdělávací a lidská zkušenost týmu dává rodinnému kořenu současný směr.
               </p>
               <p>
                 Příběh značky propojuje bylinné poznání, odpovědný vývoj, digitální technologie,
