@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 .next
 .vercel
+out
+.firebase
 /PENTARIVA-WEB-PRO-HOSTING-2026-07-29/
 /Pentariva Digital Ecosystem/
 dist

@@ -195,6 +195,10 @@ const PAGES: Record<string, PreparationPage> = {
   },
 };
 
+export function generateStaticParams() {
+  return Object.keys(PAGES).map((path) => ({ slug: path.split("/") }));
+}
+
 export default async function PreparationPageView({
   params,
 }: {
