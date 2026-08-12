@@ -2,8 +2,8 @@ import { Download } from "lucide-react";
 import { GoldOrnament } from "@/components/pentariva/GoldOrnament";
 import { PublicPage, SectionHeading, TextLink } from "@/components/pentariva/PublicPage";
 const brandBookPdfUrl = "/downloads/PENTARIVA-Brand-Book.pdf";
-import openPage from "@/assets/story-open-page.jpg";
-import rootsPage from "@/assets/story-roots-page.jpg";
+import openPage from "@/assets/story-open-page.webp";
+import rootsPage from "@/assets/story-roots-page.webp";
 
 const STORY_STEPS = [
   {

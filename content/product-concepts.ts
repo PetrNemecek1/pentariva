@@ -1,7 +1,7 @@
-import product01 from "@/assets/product-01.jpg";
-import product02 from "@/assets/product-02.jpg";
-import product03 from "@/assets/product-03.jpg";
-import product04 from "@/assets/product-04.jpg";
+import product01 from "@/assets/product-01.webp";
+import product02 from "@/assets/product-02.webp";
+import product03 from "@/assets/product-03.webp";
+import product04 from "@/assets/product-04.webp";
 
 export type ProductConcept = {
   slug: string;

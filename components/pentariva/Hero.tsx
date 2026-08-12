@@ -1,5 +1,5 @@
 import { ArrowRight, Leaf, FlaskConical, Handshake, Globe2, Star } from "lucide-react";
-import heroImage from "@/assets/pentariva-homepage-hero.png";
+import heroImage from "@/assets/pentariva-homepage-hero.webp";
 
 const TRUST_ITEMS = [
   { icon: Leaf, label: "PŘÍRODNÍ RECEPTURY" },

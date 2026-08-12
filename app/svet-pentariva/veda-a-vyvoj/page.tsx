@@ -10,7 +10,7 @@ import {
   Search,
   ShieldCheck,
 } from "lucide-react";
-import scienceImage from "@/assets/svet-veda.jpg";
+import scienceImage from "@/assets/svet-veda.webp";
 import { GoldOrnament } from "@/components/pentariva/GoldOrnament";
 import {
   ConceptNotice,

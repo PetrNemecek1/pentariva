@@ -1,5 +1,5 @@
 import { GoldOrnament } from "./GoldOrnament";
-import footerEmblem from "@/assets/pentariva-footer-emblem-gold.png";
+import footerEmblem from "@/assets/pentariva-footer-emblem-gold.webp";
 
 const COLUMNS = [
   {

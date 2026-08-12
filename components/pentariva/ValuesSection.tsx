@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { GoldOrnament } from "./GoldOrnament";
-import pentarivaEmblem from "@/assets/pentariva-footer-emblem-gold.png";
+import pentarivaEmblem from "@/assets/pentariva-footer-emblem-gold.webp";
 import {
   ArrowRight,
   HeartHandshake,

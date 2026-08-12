@@ -13,8 +13,8 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
-import craftImage from "@/assets/svet-craft.jpg";
-import ecosystemImage from "@/assets/svet-ekosystem-quality-pentariva-logo.png";
+import craftImage from "@/assets/svet-craft.webp";
+import ecosystemImage from "@/assets/svet-ekosystem-quality-pentariva-logo.webp";
 import { GoldOrnament } from "@/components/pentariva/GoldOrnament";
 import {
   ConceptNotice,
