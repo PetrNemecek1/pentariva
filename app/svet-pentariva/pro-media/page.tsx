@@ -1,7 +1,5 @@
 import type { ComponentType } from "react";
-import { ArrowDownToLine, BookOpen, Camera, Check, FileText, Mic2 } from "lucide-react";
-import pavelPortrait from "@/assets/pavel-boucek-media-portrait.png";
-import pavelPresentation from "@/assets/pavel-boucek-media-presentation.png";
+import { ArrowDownToLine, BookOpen, Check, FileText } from "lucide-react";
 const brandBookPdfUrl = "/downloads/PENTARIVA-Brand-Book.pdf";
 import { GoldOrnament } from "@/components/pentariva/GoldOrnament";
 import { PublicPage, SectionHeading, TextLink } from "@/components/pentariva/PublicPage";
@@ -96,14 +94,14 @@ export default function MediaPage() {
   return (
     <PublicPage className="bg-ivory text-ink">
       <section className="relative overflow-hidden bg-forest-deep text-cream">
-        <div className="mx-auto grid min-h-[760px] max-w-[1720px] lg:grid-cols-[0.86fr_1.14fr]">
-          <div className="relative z-10 flex flex-col justify-center px-6 py-20 lg:px-12 lg:py-28 xl:px-20">
+        <div className="mx-auto max-w-[1400px] px-6 py-20 lg:px-12 lg:py-28 xl:px-20">
+          <div className="max-w-3xl">
             <GoldOrnament className="text-gold" width={136} />
             <p className="mt-9 text-eyebrow text-gold" style={{ letterSpacing: "0.32em" }}>
               Pro média
             </p>
             <h1
-              className="mt-6 max-w-3xl font-serif-display text-cream"
+              className="mt-6 font-serif-display text-cream"
               style={{ fontSize: "clamp(3rem, 6vw, 6.2rem)", lineHeight: 0.96 }}
             >
               Silný příběh.
@@ -127,83 +125,37 @@ export default function MediaPage() {
               <ArrowDownToLine className="h-4 w-4" strokeWidth={1.4} />
             </a>
           </div>
-
-          <figure className="relative min-h-[520px] overflow-hidden lg:min-h-[760px]">
-            <img
-              src={pavelPresentation.src}
-              width={1402}
-              height={1122}
-              fetchPriority="high"
-              alt="Pavel Bouček při prezentaci značky PENTARIVA."
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
-            <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-1/3 bg-gradient-to-r from-forest-deep to-transparent lg:block" />
-            <figcaption className="absolute bottom-7 right-7 border border-gold/30 bg-forest-deep/88 px-5 py-4 text-right shadow-xl backdrop-blur-sm">
-              <span
-                className="block text-[0.58rem] uppercase text-gold"
-                style={{ letterSpacing: "0.24em" }}
-              >
-                Média · kultura · partnerství
-              </span>
-              <span className="mt-1.5 block font-serif-display text-2xl text-cream">
-                Pavel Bouček
-              </span>
-            </figcaption>
-          </figure>
         </div>
       </section>
 
       <section className="bg-ivory py-24 lg:py-32">
-        <div className="mx-auto max-w-[1520px] px-6 lg:px-12">
-          <div className="grid items-start gap-14 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-24 xl:gap-32">
-            <figure>
-              <div className="relative overflow-hidden bg-forest-deep/5">
-                <img
-                  src={pavelPortrait.src}
-                  width={1254}
-                  height={1254}
-                  loading="lazy"
-                  decoding="async"
-                  alt="Pavel Bouček, spolumajitel PENTARIVA."
-                  className="aspect-square h-auto w-full object-cover"
-                />
-              </div>
-              <figcaption
-                className="mt-4 text-[0.6rem] uppercase text-forest-deep/50"
-                style={{ letterSpacing: "0.22em" }}
-              >
-                Pavel Bouček · spolumajitel PENTARIVA
-              </figcaption>
-            </figure>
-
-            <div>
-              <p className="text-eyebrow text-gold-deep" style={{ letterSpacing: "0.3em" }}>
-                Osobnost a přesah
+        <div className="mx-auto max-w-[1100px] px-6 lg:px-12">
+          <div>
+            <p className="text-eyebrow text-gold-deep" style={{ letterSpacing: "0.3em" }}>
+              Osobnost a přesah
+            </p>
+            <h2
+              className="mt-5 font-serif-display text-forest-deep"
+              style={{ fontSize: "clamp(2.6rem, 4.5vw, 4.8rem)", lineHeight: 1 }}
+            >
+              Věda dává přesnost. Média dávají hlas.
+            </h2>
+            <div className="mt-8 max-w-3xl space-y-5 text-base leading-[1.85] text-ink/72">
+              <p>
+                Tým PENTARIVA spojuje vědecké vzdělání s dlouholetou zkušeností v médiích,
+                managementu a kulturním prostředí. Přístup ke značce staví na porozumění podstatě
+                přírody, vesmíru a souvislostí, které formují lidské hledání smyslu.
               </p>
-              <h2
-                className="mt-5 font-serif-display text-forest-deep"
-                style={{ fontSize: "clamp(2.6rem, 4.5vw, 4.8rem)", lineHeight: 1 }}
-              >
-                Věda dává přesnost. Média dávají hlas.
-              </h2>
-              <div className="mt-8 space-y-5 text-base leading-[1.85] text-ink/72">
-                <p>
-                  Pavel Bouček vystudoval fyziku a část své profesní dráhy působil jako gymnaziální
-                  profesor. Vědecké vzdělání mu otevřelo pohled do podstaty přírody, vesmíru a
-                  souvislostí, které formují lidské hledání smyslu.
-                </p>
-                <p>
-                  Více než třicet let se pohybuje v médiích, managementu, televizním prostředí a
-                  hudební produkci. Jeho zkušenost zahrnuje hlavní televizní kanály, rozvoj
-                  hudebních projektů, podporu mladých interpretů, festivaly i prostředí filmu a
-                  televize.
-                </p>
-                <p>
-                  V PENTARIVA propojuje analytické myšlení, obchodní zkušenost, cit pro obsah a
-                  kulturní přesah. Přináší značce schopnost vyprávět silné myšlenky s přesností,
-                  respektem a porozuměním pro současná média.
-                </p>
-              </div>
+              <p>
+                Zkušenost zahrnuje více než třicet let pohybu v médiích, televizním prostředí a
+                hudební produkci - hlavní televizní kanály, rozvoj hudebních projektů, podporu
+                mladých interpretů, festivaly i prostředí filmu a televize.
+              </p>
+              <p>
+                V PENTARIVA se propojuje analytické myšlení, obchodní zkušenost, cit pro obsah a
+                kulturní přesah. Přináší značce schopnost vyprávět silné myšlenky s přesností,
+                respektem a porozuměním pro současná média.
+              </p>
             </div>
           </div>
 
@@ -212,11 +164,11 @@ export default function MediaPage() {
               className="text-[0.62rem] uppercase text-gold-deep"
               style={{ letterSpacing: "0.24em" }}
             >
-              Pavelův pohled na PENTARIVA
+              Pohled týmu PENTARIVA
             </p>
             <p className="max-w-4xl font-serif-display text-2xl leading-snug text-forest-deep sm:text-3xl lg:text-[2.15rem]">
-              Příroda je v jeho pohledu největší dar a PENTARIVA přirozeným průsečíkem poznání,
-              médií, hudby, podnikání a hledání smyslu.
+              Příroda je největší dar a PENTARIVA přirozeným průsečíkem poznání, médií, hudby,
+              podnikání a hledání smyslu.
             </p>
           </div>
         </div>
@@ -255,8 +207,8 @@ export default function MediaPage() {
               />
             </div>
             <p className="text-sm leading-[1.75] text-ink/60 lg:col-span-4 lg:col-start-9">
-              Při publikaci fotografií uvádějte jméno Pavel Bouček a značku PENTARIVA. Úpravy, které
-              mění význam, barevnost nebo proporce snímku, vynechte.
+              Při publikaci fotografií uvádějte značku PENTARIVA. Úpravy, které mění význam,
+              barevnost nebo proporce snímku, vynechte.
             </p>
           </div>
 
@@ -278,24 +230,6 @@ export default function MediaPage() {
               meta="PDF · 3,0 MB"
               href="/downloads/PENTARIVA-Business-Profile.pdf"
               fileName="PENTARIVA-Business-Profile.pdf"
-            />
-            <DownloadCard
-              icon={Camera}
-              eyebrow="Portrét"
-              title="Pavel Bouček III"
-              description="Čtvercový portrét spolumajitele PENTARIVA vhodný pro medailonky, rozhovory a profesní profily."
-              meta="PNG · 1254 × 1254"
-              href={pavelPortrait.src}
-              fileName="PENTARIVA-Pavel-Boucek-portret.png"
-            />
-            <DownloadCard
-              icon={Mic2}
-              eyebrow="Média a prezentace"
-              title="Pavel Bouček IV"
-              description="Horizontální prezentační fotografie vhodná pro články, tiskové materiály a témata spojená s médii."
-              meta="PNG · 1402 × 1122"
-              href={pavelPresentation.src}
-              fileName="PENTARIVA-Pavel-Boucek-media.png"
             />
           </div>
         </div>
