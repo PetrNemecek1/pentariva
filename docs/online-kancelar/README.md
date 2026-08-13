@@ -22,6 +22,18 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [08-platby.md](08-platby.md) | Stripe (test mode) za PaymentProvider rozhraním, webhook flow, refundy, plán go-live |
 | [09-provoz-email-naklady.md](09-provoz-email-naklady.md) | Resend + DNS, prostředí, CI/CD, zálohy, monitoring, náklady, runbook |
 | [10-implementacni-plan.md](10-implementacni-plan.md) | **Začni tady po přečtení 00–04**: epiky, tickety, milníky M1–M3, guardrails |
+| [11-dns-forpsi.md](11-dns-forpsi.md) | Provozní deník DNS změn na Forpsi (pentariva.com, office subdoména, Resend) |
+| [12-zadani-akademie-obsah.md](12-zadani-akademie-obsah.md) | Zadání pro ChatGPT/Gemini — generování obsahu lekcí a kvízu Akademie |
+
+## Stav implementace (2026-08-13)
+
+- **Epik 0 hotový**: repo [`pentariva-office`](https://github.com/PetrNemecek1/pentariva-office)
+  založeno a nasazeno na `https://pentariva-office.web.app` (custom doména
+  `office.pentariva.com` čeká na DNS, viz `11-dns-forpsi.md`). CI/CD, Supabase
+  projekt lokálně inicializovaný, brand parity s marketing webem.
+- **Epik 1 (schéma + provizní engine + zlaté testy)** — další krok, zatím
+  neimplementováno (`supabase/migrations` prázdné).
+- Doména `pentariva.com` přidána ve Firebase, čeká na DNS na Forpsi.
 
 ## Precedence při rozporu
 
