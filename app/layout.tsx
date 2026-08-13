@@ -16,7 +16,7 @@ const sans = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://pentariva.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://pentariva.com",
   ),
   title: {
     default: "PENTARIVA — Evropský ekosystém přirozené vitality",
@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     "Spojujeme tradiční bylinné receptury, moderní vývoj, digitální technologie a evropskou partnerskou komunitu do jednoho živého ekosystému péče o člověka.",
   authors: [{ name: "PENTARIVA" }],
   applicationName: "PENTARIVA",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "PENTARIVA — Evropský ekosystém přirozené vitality",
     description:
@@ -33,6 +36,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "cs_CZ",
     siteName: "PENTARIVA",
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
