@@ -475,7 +475,7 @@ BEGIN
     INSERT INTO commission_entries (order_id, order_flow, entry_type, beneficiary_profile_id,
                                     base_haleru, rate_bp, amount_haleru, status, hold_until)
     VALUES (o.id, o.business_flow, 'company_margin', NULL,
-            o.goods_paid_haleru, 0, v_margin, 'available', o.paid_at);
+            o.goods_paid_haleru, 0, v_margin, 'available', now());
   END IF;
 END $$;
 ```

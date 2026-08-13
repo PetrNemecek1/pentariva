@@ -897,13 +897,18 @@ BEGIN
   END IF;
 
   -- Firemní margin = přesný dopočet base − Σ příjemců (D5); available IHNED (D2).
+  -- hold_until = now(), NE o.paid_at: chk_hold vyžaduje hold_until >= created_at
+  -- a fn_generate_commissions vždy běží PO paid_at (webhook nastaví paid_at dřív,
+  -- než se tahle funkce zavolá), takže o.paid_at by chk_hold vždy porušilo.
+  -- Stejný vzorec jako u leadership_alloc ("mimo hold", hodnota je informační).
+  -- (Nalezeno a opraveno při ověření Epiku 1 proti reálnému Postgresu 2026-08-13.)
   v_margin := o.goods_paid_haleru - v_recipients;
   IF v_margin < 0 THEN RAISE EXCEPTION 'company_margin < 0 (runtime guard D5)'; END IF;
   IF v_margin > 0 THEN
     INSERT INTO commission_entries (order_id, order_flow, entry_type, beneficiary_profile_id,
                                     base_haleru, rate_bp, amount_haleru, status, hold_until)
     VALUES (o.id, o.business_flow, 'company_margin', NULL,
-            o.goods_paid_haleru, 0, v_margin, 'available', o.paid_at);
+            o.goods_paid_haleru, 0, v_margin, 'available', now());
   END IF;
 END $$;
 COMMENT ON FUNCTION fn_generate_commissions IS 'Jediný producent commission_entries; idempotentní (early-exit jen přes kalkulační typy + uq_commission_once). Invariant D5: Σ kalkulačních entries = goods_paid. Kontrola worked example (katalog 1000 Kč, community_own od D): goods_paid=70000; C gen1 15 %=10500, B gen2 6 %=4200, A gen3 4 %=2800, pool 2 %=1400, margin=70000−18900=51100 (511 Kč = „PENTARIVĚ zbývá"). Σ=70000. Organic 1000 Kč: kredit 3000, margin 97000 (970 Kč). Trade entry 1000 Kč: acquirer 7000, margin 63000 (630 Kč).';
