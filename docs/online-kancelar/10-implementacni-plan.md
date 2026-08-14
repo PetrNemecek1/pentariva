@@ -1,8 +1,8 @@
 # 10 — Implementační plán MVP (finální)
 
 > Závazný, samostatně spustitelný plán pro AI implementátora. Podřizuje se precedenci:
-> `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R14) →
-> `02-technicka-rozhodnuti.md` (D1–D34) → `04-datovy-model.md` (kanonické schéma) →
+> `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R15) →
+> `02-technicka-rozhodnuti.md` (D1–D35) → `04-datovy-model.md` (kanonické schéma) →
 > `05-provizni-engine.md` → `06-bezpecnost-rls.md`, `07-aplikace.md`, `08-platby.md`,
 > `09-provoz-email-naklady.md` → tento plán. **Jediný zdroj DDL je `04-datovy-model.md`
 > (D1)** — tento dokument žádnou tabulku nedefinuje; všechny názvy tabulek, sloupců,
@@ -166,10 +166,10 @@ kanonickými toky.
 - **E2-T2** (2,5 h): Edge Function `register` (`07` §3): (a) zákazník s referral
   kódem → `role='customer'`, `owner_ambassador_id` = vlastník kódu, zápis
   `referral_events kind='registration'`; (b) organický zákazník; (c) **B2B
-  samoobslužná registrace `?typ=b2b` (D14)** → profil + řádek `b2b_companies`
+  samoobslužná registrace `?type=b2b` (D14)** → profil + řádek `b2b_companies`
   (`pipeline_status='new_contact'`, `approved_at NULL`) — účet čeká na schválení,
   do té doby nakupuje jako běžný zákazník.
-- **E2-T3** (2 h): UI `(verejne)`: přihlášení (heslo i magic link), registrace
+- **E2-T3** (2 h): UI `(public)`: přihlášení (heslo i magic link), registrace
   (předvyplněný uzamčený kód z query/cookie, přepínač B2B), reset hesla.
 - **E2-T4** (1,5 h): `AuthGuard`, `RoleGuard`, `AppShell` (sidebar/topbar dle role,
   routing mapa `07` §4); mentor/leader se chovají jako ambassador, `b2b_manager`
@@ -190,7 +190,7 @@ funkci.
 **Cíl:** nákupní cesta až po `awaiting_payment` se správnými cenami na halíř pro
 všechna 4 flow, s dopravou dle R14 a dárky dle D18a.
 
-- **E3-T1** (2 h): UI `/obchod` (ceny per role z `v_current_prices` /
+- **E3-T1** (2 h): UI `/shop` (ceny per role z `v_current_prices` /
   `trade_level_params`), detail v dialogu, košík (context + localStorage).
 - **E3-T2** (3 h): Edge Function `checkout` (`08` §4): klient posílá jen
   `product_id + quantity + credit_used`; server přepočítá ceny ze serverového
@@ -198,14 +198,14 @@ všechna 4 flow, s dopravou dle R14 a dárky dle D18a.
   1 500 Kč z `app_settings` (R14)**, rezervuje kredit (`spend` pod advisory
   lockem), založí `orders` + `order_items` a překlopí `draft → awaiting_payment`
   (`fn_validate_order_pricing`). Kanonický vzorec D7 vč. dopravy platí na halíř.
-- **E3-T3** (2 h): UI `/kosik` + `/pokladna`: rekapitulace dle vzorce D7 (zboží −
+- **E3-T3** (2 h): UI `/cart` + `/checkout`: rekapitulace dle vzorce D7 (zboží −
   sleva + doprava − kredit = k úhradě), pole „Uplatnit kredit" (max dostupný
   kredit ∧ max hodnota zboží — doprava vždy penězi, D6; čerpá se nejprve klubový,
   pak provizní, `08` §4.1).
-- **E3-T4** (1,5 h): UI `/objednavky` (+ `?id=` detail s položkami vč. dárků
+- **E3-T4** (1,5 h): UI `/orders` (+ `?id=` detail s položkami vč. dárků
   `is_gift`); ambasador přepínač „moje / mých zákazníků".
-- **E3-T5** (2 h): Admin `/admin/produkty` (CRUD `products` + `product_prices`,
-  foto do Storage) a `/admin/objednavky` (přehled, přechody dle
+- **E3-T5** (2 h): Admin `/admin/products` (CRUD `products` + `product_prices`,
+  foto do Storage) a `/admin/orders` (přehled, přechody dle
   `order_status_transitions`, expedice `paid → shipped`).
 - **E3-T6** (1,5 h): **Dárky k objednávce (D18a, R13):** admin může do objednávky
   přidat položku `is_gift=true` s cenou 0 (CHECK `chk_gift_zero`); zobrazuje se
@@ -256,16 +256,16 @@ example (f) včetně clawbacků; kreditní objednávka projde bez brány.
 - **E5-T1** (1 h): pg_cron `settle-commissions` denně 01:30 UTC →
   `SELECT fn_settle_commissions();` (`09` §1.5) — jediný aplikační cron nad
   penězi.
-- **E5-T2** (2 h): UI `/provize`: **dvě čísla dle R12** z `v_credit_overview`
+- **E5-T2** (2 h): UI `/commissions`: **dvě čísla dle R12** z `v_credit_overview`
   (kind `commission`): *Dostupný kredit* a *Čeká na aktivaci* + „aktivace
   nejblíže {next_activation_at}"; ledger tabulka z `commission_entries` (typ,
   částka, stav `pending|available|reversed`, důvod storna).
-- **E5-T3** (2 h): UI `/vyplaty` + EF `request-payout`: žádost o výplatu
+- **E5-T3** (2 h): UI `/payouts` + EF `request-payout`: žádost o výplatu
   provizního kreditu (min. `app_settings.payout_min_haleru` = 500 Kč; klubový
   kredit vyplatit nelze); stavy `requested → approved → paid | rejected |
   cancelled`; schválení vytváří rezervační `payout` transakci, zamítnutí ji vrací
   `adjustment` (`06` §5.2). Flag `PAYOUTS_ENABLED=false` do vzniku IČO (R8).
-- **E5-T4** (1,5 h): Admin `/admin/vyplaty`: schválit/zamítnout/označit `paid`
+- **E5-T4** (1,5 h): Admin `/admin/payouts`: schválit/zamítnout/označit `paid`
   (po ručním převodu), CSV export příkazů.
 - **E5-T5** (1,5 h): pgTAP: P-HOLD, P-SETTLE-IDEMP, B-MIN-PAYOUT, P-SPEND-RACE
   (`05` §10 č. 14–16, 22).
@@ -282,16 +282,16 @@ dvojí schválení téže žádosti nemožné.
   obrat, dvě provizní čísla (R12), zákazníci celkem/noví, posledních 5 objednávek,
   blok „Můj odkaz", statické doporučení „Další krok".
 - **E6-T2** (1,5 h): **Karta Osobní cíl (D32):** progress
-  `turnover_month_haleru / monthly_goal_haleru`; nastavení cíle v `/ucet`
+  `turnover_month_haleru / monthly_goal_haleru`; nastavení cíle v `/account`
   (zapisuje `profiles.monthly_goal_haleru`, parsování `parseKcToHaleru`).
 - **E6-T3** (1,5 h): Dashboard zákazníka (klubový kredit **dvěma čísly dle R12**,
   kind `club`), dashboard Trade partnera (úroveň + sleva, „objednat znovu",
   stav „čeká na schválení" u neschválené B2B registrace), dashboard admina
   (obraty, provizní náklady, čekající žádosti).
-- **E6-T4** (2,5 h): CRM `/zakaznici`: tabulka dle §4 zadání; detail s historií
+- **E6-T4** (2,5 h): CRM `/customers`: tabulka dle §4 zadání; detail s historií
   objednávek, **poznámkami `crm_notes` a zájmovými tagy `interest_tags` ⟷
   `customer_interest_tags` (D33)** — číselník §4 (spánek, stres, imunita, …).
-- **E6-T5** (1,5 h): `/ucet`: profil, změna hesla, osobní cíl.
+- **E6-T5** (1,5 h): `/account`: profil, změna hesla, osobní cíl.
 - **E6-T6** (1,5 h): pgTAP + vitest: čísla dashboardu sedí s ručním SQL přepočtem
   na halíř; ambasador B nevidí zákazníky ambasadora A; poznámky vidí jen autor
   a admin.
@@ -304,23 +304,23 @@ a tagy; cíl se zobrazuje jen vlastníkovi.
 **Cíl:** kompletní atribuční smyčka link → klik → registrace → trvalá atribuce →
 provize; jediná úprava repa `pentariva` (D29).
 
-- **E7-T1** (2 h): Marketing web: statická routa `/r/[kod]`
+- **E7-T1** (2 h): Marketing web: statická routa `/r/[code]`
   (`public/r/index.html` + Firebase rewrite) dle `07` §6 — validace kódu, zápis
   kliku do **`referral_events`** (`kind='click'`, `visitor_hash`, anon RLS jen na
   tento INSERT), cookie `pnt_ref` (30 dní, last-touch), redirect na
-  `office.pentariva.com/registrace?kod={kod}`.
-- **E7-T2** (2 h): UI `/muj-odkaz`: osobní link + copy + QR (balíček `qrcode`),
+  `office.pentariva.com/register?code={code}`.
+- **E7-T2** (2 h): UI `/my-link`: osobní link + copy + QR (balíček `qrcode`),
   generátor produktových linků (nový řádek `referral_codes` s `product_id`,
   D12), konverzní statistiky z `referral_events` (kliky, registrace, obrat
   přivedených).
 - **E7-T3** (1 h): Produktový link → po registraci/přihlášení redirect na
-  `/obchod?produkt={product_id}` (otevřený dialog).
+  `/shop?product={product_id}` (otevřený dialog).
 - **E7-T4** (1,5 h): pgTAP: registrace přes kód nastaví `owner_ambassador_id`
   trvale; atribuce existujícího účtu se linkem nemění; `referral_events` páruje
   registraci na kód.
 - **E7-T5** (2,5 h): Playwright smoke test kritické cesty (kapitola 3.3).
 
-**Akceptace:** `/r/{kód}` → registrace → nákup zákazníka vygeneruje
+**Akceptace:** `/r/{code}` → registrace → nákup zákazníka vygeneruje
 `personal_customer` 20 % + `club_credit` 3 % (smoke test); kliky se počítají;
 poslední kliknutý kód vyhrává jen do registrace.
 
@@ -353,7 +353,7 @@ B2B účet Trade ceny nevidí.
 **Cíl:** Modul 1 s kvízem (D34) jako jediná samoobslužná cesta k roli ambassador
 (D11).
 
-- **E9-T1** (2 h): UI `/akademie`: moduly (`academy_modules`), lekce (video —
+- **E9-T1** (2 h): UI `/academy`: moduly (`academy_modules`), lekce (video —
   YouTube unlisted embed / Supabase Storage dle dodaného obsahu + `body_md`),
   progress (`academy_progress`).
 - **E9-T2** (2,5 h): **QuizRunner (D34):** otázky z `academy_quiz_questions`
@@ -362,10 +362,10 @@ B2B účet Trade ceny nevidí.
   neomezeny; **u Modulu 1 žádné ruční „označit dokončeno"**.
 - **E9-T3** (2 h): Žádost o povýšení (D11): po `passed` CTA → souhlas s podmínkami
   + potvrzení 18+ → `ambassador_applications`; admin schválení
-  (`/admin/uzivatele`) SECURITY DEFINER funkcí: `role='ambassador'`,
+  (`/admin/users`) SECURITY DEFINER funkcí: `role='ambassador'`,
   `owner_ambassador_id → sponsor_id`, trigger dopočte `path/depth`; e-maily
   #10/#11 (`09` §1.5).
-- **E9-T4** (1,5 h): Admin `/admin/akademie`: CRUD modulů, lekcí a kvízových
+- **E9-T4** (1,5 h): Admin `/admin/academy`: CRUD modulů, lekcí a kvízových
   otázek; seed struktury Modulu 1 (placeholder texty — finální obsah dodá
   zadavatel, viz kapitola 7).
 - **E9-T5** (2 h): pgTAP: kvíz pod 80 % roli nemění; žádost bez `passed` pokusu
@@ -380,13 +380,13 @@ neexistuje.
 
 **Cíl:** admin ovládá vše bez DB konzole; každá akce má audit.
 
-- **E10-T1** (2 h): `/admin/uzivatele`: vyhledávání, detail (sponzor, role,
+- **E10-T1** (2 h): `/admin/users`: vyhledávání, detail (sponzor, role,
   kódy), změna role a deaktivace přes RPC s auditem; založení root ambasadora
   (`is_network_root`); oprava sponzora do 14 dnů (`fn_admin_change_sponsor`).
-- **E10-T2** (2 h): `/admin/provize`: ledger s filtry, vratka objednávky
+- **E10-T2** (2 h): `/admin/commissions`: ledger s filtry, vratka objednávky
   (`fn_refund_order`), **leadership pool: zůstatek + ruční alokace
   `fn_allocate_leadership`** (Σ alokací ≤ pool, D15).
-- **E10-T3** (1,5 h): `/admin/nastaveni`: editace `app_settings`,
+- **E10-T3** (1,5 h): `/admin/settings`: editace `app_settings`,
   `commission_rates`, `trade_level_params` — každá změna auditována; sazby se
   nikde nehardcodují.
 - **E10-T4** (1,5 h): **Milníkové dárky (D18b, R13):** admin evidence
@@ -401,10 +401,10 @@ přepočtem; alokace poolu nikdy nepřekročí pool.
 
 ### Epik 11 — Reporty + transakční e-maily (8 h)
 
-**Cíl:** routa `/reporty` (D31) a kompletní sada 11 MVP šablon (`09` §1.5) — nic
+**Cíl:** routa `/reports` (D31) a kompletní sada 11 MVP šablon (`09` §1.5) — nic
 víc.
 
-- **E11-T1** (2,5 h): **UI `/reporty` (D31):** osobní výkon (měsíční řady
+- **E11-T1** (2,5 h): **UI `/reports` (D31):** osobní výkon (měsíční řady
   z `v_monthly_personal_turnover`), souhrn zákazníků a provizí
   (`v_ambassador_dashboard`, `v_credit_overview`), tabulka objednávek s filtrem
   období; **Export CSV** u každé tabulky (klient, Blob, UTF-8 s BOM). Žádné
@@ -532,7 +532,7 @@ Exit kritéria:
    ambasador se správným sponzorem.
 6. B2B: 1 samoobslužná registrace schválena (D14) a 1 firma provedena pipeline
    po `active_partner` s Trade objednávkou a získavatelskou provizí.
-7. `/reporty` s CSV exportem funguje; všech 11 e-mailových šablon odchází.
+7. `/reports` s CSV exportem funguje; všech 11 e-mailových šablon odchází.
 
 ### M3 — Go-live (po vzniku IČO)
 

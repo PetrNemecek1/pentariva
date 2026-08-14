@@ -11,9 +11,9 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 
 | Soubor | Obsah |
 |---|---|
-| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R14, fáze |
+| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R15, fáze |
 | [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21) |
-| [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D34 — závazný pro vše ostatní |
+| [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D35 — závazný pro vše ostatní |
 | [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | **Zdroj pravdy pro peníze** — finální provizní model, závazný worked example |
 | [04-datovy-model.md](04-datovy-model.md) | **Kanonické DDL** — jediný zdroj schématu (tabulky, enumy, funkce, views, RLS-ready) |
 | [05-provizni-engine.md](05-provizni-engine.md) | Pravidla výpočtu provizí, 6 worked examples (a)–(f), 24 testovacích invariantů |
@@ -37,7 +37,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 
 ## Precedence při rozporu
 
-`03` (peníze) → `00` (R1–R14) → `02` (D1–D34) → `04` (schéma) → `05` (engine) → ostatní.
+`03` (peníze) → `00` (R1–R15) → `02` (D1–D35) → `04` (schéma) → `05` (engine) → ostatní.
 
 ## Neporušitelná pravidla pro implementaci
 

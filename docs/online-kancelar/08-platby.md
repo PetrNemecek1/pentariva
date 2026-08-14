@@ -303,7 +303,7 @@ Klient (office.pentariva.com)  EF checkout            Stripe        EF payments-
         |  (5) UPDATE payments SET provider_payment_id=session.id, status='pending' -------------->|
  (6) <-- 200 {redirectUrl} --------|                     |                     |                    |
  (7) redirect na Stripe Checkout (karta / Apple Pay / Google Pay)              |                    |
- (8) <-- redirect na success_url /objednavky/{id}/dekujeme                     |                    |
+ (8) <-- redirect na success_url /checkout/result?order={id}                     |                    |
         |  stránka ukazuje „Ověřujeme platbu…" a polluje stav objednávky       |                    |
         |  !! redirect NENÍ důkaz zaplacení — pravdu určuje výhradně webhook !!|                    |
         |                          |  (9) POST checkout.session.completed ---->|                    |
@@ -437,7 +437,7 @@ z budoucích akruálů.
 - Odesílatel `office@pentariva.com` přes Resend (D24); šablony a přesné texty
   definuje dokument transakčních e-mailů; odeslání vždy až **po commitu**
   peněžní transakce, selhání jen loguje Sentry (platba na e-mail nečeká).
-- Účetní podklad do go-live = CSV exporty objednávek z `/reporty` (D31).
+- Účetní podklad do go-live = CSV exporty objednávek z `/reports` (D31).
 - **Go-live:** napojení na **Fakturoid** (API v3) — vystavování dokladů
   a jejich sync; do té doby je zdrojem pravdy DB. Per-transakční evidence
   poplatků brány se v MVP nevede — `payments.amount_haleru` je brutto

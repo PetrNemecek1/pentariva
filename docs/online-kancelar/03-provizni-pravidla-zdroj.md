@@ -83,7 +83,7 @@ Tři úrovně (příklad na katalogové ceně 1 000 Kč):
 3. Stack: Supabase (Postgres, auth, storage, edge functions) + Next.js; aplikace na
    office.pentariva.com; statický hosting na stávajícím Firebase.
 4. Domény: pentariva.com se stane primární doménou (uživatel převede), pentariva.cz
-   na ni povede. Doporučovací linky: pentariva.com/r/{kód}.
+   na ni povede. Doporučovací linky: pentariva.com/r/{code}.
 5. E-maily: Resend.com (účet existuje).
 6. Benefit club 15/20/25 + VIP úrovně: NEJSOU v MVP (zákazník = plná cena + 3% kredit);
    navrhnout jako konfigurovatelnou vrstvu do Fáze 2+.

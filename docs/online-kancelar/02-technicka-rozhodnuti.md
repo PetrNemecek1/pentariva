@@ -1,9 +1,9 @@
-# Kanonická technická rozhodnutí (D1–D34)
+# Kanonická technická rozhodnutí (D1–D35)
 
 > Tento dokument je **závazný kontrakt** pro všechny ostatní dokumenty i implementaci.
 > Vznikl syntézou návrhové fáze (7 specialistů), dvou nezávislých auditů peněžní logiky
 > a oponentury úplnosti. Precedence při rozporu:
-> `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R14) → tento soubor
+> `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R15) → tento soubor
 > → `04-datovy-model.md` (kanonické schéma) → `05-provizni-engine.md` → ostatní.
 
 ## Ledger a peníze
@@ -102,15 +102,22 @@
   Firebase Hosting (nový hosting target ve stávajícím projektu pentariva-web),
   office.pentariva.com; shadcn/ui + brand tokeny z marketing webu; supabase-js +
   TanStack Query; react-hook-form + zod; generované DB typy.
-- **D29 Marketing web**: přidat statickou routu `/r/[kod]` (uloží kód, přesměruje na
+- **D29 Marketing web**: přidat statickou routu `/r/[code]` (uloží kód, přesměruje na
   registraci v office) — jediná úprava stávajícího repa pentariva.
-- **D31 Reporty v MVP**: routa `/reporty` (osobní výkon, zákazníci, objednávky, CSV
+- **D31 Reporty v MVP**: routa `/reports` (osobní výkon, zákazníci, objednávky, CSV
   export) + admin exporty. Nic víc (report builder = Fáze 2).
 - **D32 Osobní cíl**: `profiles.monthly_goal_haleru`, v MVP nastavovaný uživatelem.
 - **D33 CRM**: `crm_notes` + zájmové okruhy zákazníka (tagy dle §4 zadání) v kanonickém
   schématu.
 - **D34 Akademie**: moduly/lekce/progress + kvíz (otázky, pokusy, práh 80 %) — Modul 1
   podmiňuje povýšení (D11). Žádné ruční „označit dokončeno" u Modulu 1.
+- **D35 Jazyk a i18n (R15 zadavatele)**: programová vrstva výhradně anglicky — URL
+  routy a query parametry (`/login`, `/shop`, `/checkout/result`, `?code=`,
+  `?type=b2b`), názvy souborů, identifikátory, DB (to platilo už dřív). UI texty
+  v MVP česky, psané přímo v komponentách; **Fáze 2** je extrahuje do locale
+  slovníků (cs jako výchozí, en jako druhý jazyk) a přidá přepínač jazyka — proto
+  se čeština nikdy nesmí dostat do URL, kódu ani identifikátorů, jinak by
+  vícejazyčnost znamenala breaking change URL struktury.
 
 ## Co v MVP záměrně NENÍ (D30)
 

@@ -119,7 +119,7 @@ Bonusy: osobní prodej, týmový výkon, dosažení úrovně, kvartální cíl, 
 B2B akvizice, retenční bonus.
 
 ## 9. Event Manager modul
-Uživatel vidí: nadcházející akce, pozvánky, události; přihlášení/rezervace/registrace,
+Uživatel vidí: nadcházející akce, pozvánky, události; přihlášení/rezervace/register,
 kapacita, záznamy, historie účasti. Vedení vidí: kdo se přihlásil/přišel/nepřišel.
 Časem důležité — eventy, školení, setkání, pobyty.
 

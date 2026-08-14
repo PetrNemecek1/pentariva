@@ -1,8 +1,8 @@
 # 05 — Provizní engine (finální specifikace)
 
 > Závazná specifikace peněžní logiky. Precedence při rozporu (dle `02-technicka-rozhodnuti.md`):
-> `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R14) →
-> `02-technicka-rozhodnuti.md` (D1–D34) → `04-datovy-model.md` (kanonické schéma) → tento dokument.
+> `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R15) →
+> `02-technicka-rozhodnuti.md` (D1–D35) → `04-datovy-model.md` (kanonické schéma) → tento dokument.
 > **Jediný zdroj DDL je `04-datovy-model.md` (D1)** — tento dokument žádné `CREATE TABLE`
 > nedefinuje; všechny názvy tabulek, sloupců, ENUMů a funkcí přebírá odsud a citované
 > plpgsql funkce jsou kanonicky definované v `04-datovy-model.md` §2.17 a §3.1.
@@ -35,7 +35,7 @@
   `chk_flow_type` a trigger — viz `04-datovy-model.md` §5. (D7)
 - **Atribuce je trvalá** — ROZHODNUTÍ dle mise `00-zadani-a-rozhodnuti.md` („doporučovací
   linky s trvalou atribucí") a D9: `owner_ambassador_id` zákazníka se nastaví při registraci
-  přes `pentariva.com/r/{kód}` a mění ho jen admin; sponzor partnera je neměnný (admin
+  přes `pentariva.com/r/{code}` a mění ho jen admin; sponzor partnera je neměnný (admin
   oprava jen do 14 dnů od registrace přes `fn_admin_change_sponsor`). Objednávka navíc
   snapshotuje `orders.attributed_ambassador_id` v okamžiku vytvoření — pozdější změny
   atribuce historické provize nemění.

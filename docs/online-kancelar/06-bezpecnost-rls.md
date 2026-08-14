@@ -47,11 +47,11 @@ prvním přihlášení musí zapsat TOTP — bez `aal2` neuvidí žádná admin 
 
 Tok (závazný):
 
-1. `pentariva.com/r/{kód}` (statická routa na stávajícím Firebase hostingu, D29) uloží
-   first-party cookie `pnt_ref={kód}` s platností **30 dní, last-click wins**, zaloguje
+1. `pentariva.com/r/{code}` (statická routa na stávajícím Firebase hostingu, D29) uloží
+   first-party cookie `pnt_ref={code}` s platností **30 dní, last-click wins**, zaloguje
    klik přes edge funkci `log-referral-event` (INSERT do `referral_events` s
    `kind='click'` a `visitor_hash` = hash IP+UA, žádná PII) a přesměruje na
-   `office.pentariva.com/registrace?ref={kód}`.
+   `office.pentariva.com/register?code={code}`.
 2. Registrační formulář načte kód z `?ref` nebo cookie a pošle ho v
    `options.data.referral_code` při `supabase.auth.signUp()` / `signInWithOtp()`.
    Součástí registrace jsou povinné checkboxy VOP + zásad zpracování; verze dokumentů
@@ -239,7 +239,7 @@ uživatele. Mentor/leader = sloupec ambasador (Fáze 2 přidá týmové pohledy)
 | Akademie — vlastní progres + pokusy kvízu | R+W² | R+W² | R+W² | R+W² | R+W² | R+W² | R |
 | Žádost o povýšení (`ambassador_applications`) | W (RPC) | — | — | — | — | — | rozhoduje (fn) |
 | Milníkové dárky — vlastní | R | R | R | R | R | R | RW |
-| Reporty (`/reporty`, D31) | A (vlastní) | A | A | A | A (vlastní) | A (B2B) | vše |
+| Reporty (`/reports`, D31) | A (vlastní) | A | A | A | A (vlastní) | A (B2B) | vše |
 | Konfigurace (`app_settings`, `commission_rates`), texty, školení | — | — | — | — | — | — | RW (fn s auditem) |
 | Správa uživatelů, rolí, schvalování | — | — | — | — | — | — | RW |
 | Audit log | — | — | — | — | — | — | R |

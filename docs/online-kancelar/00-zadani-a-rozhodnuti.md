@@ -32,7 +32,7 @@ Není to klasické MLM — je to vztahový systém s třígenerační odměnou. 
 | R1 | MVP obsahuje plné objednávky **včetně platební brány** (online platba kartou). |
 | R2 | Provize: primárně **kredit na nákupy**; volitelně **výplata na účet nejdříve 15 dní od prodeje** (ochranná lhůta na vratky). Vratka provizi stornuje kompenzačním záznamem. |
 | R3 | Stack: **Supabase** (Postgres + Auth + Storage + Edge Functions) + **Next.js** aplikace. |
-| R4 | Aplikace poběží na **office.pentariva.com**; pentariva.com se stane primární doménou, pentariva.cz na ni povede. Referral linky `pentariva.com/r/{kód}`. |
+| R4 | Aplikace poběží na **office.pentariva.com**; pentariva.com se stane primární doménou, pentariva.cz na ni povede. Referral linky `pentariva.com/r/{code}`. |
 | R5 | Transakční e-maily přes **Resend.com** (účet existuje). |
 | R6 | Benefit club 15/20/25 a VIP úrovně **nejsou v MVP** — zákazník platí plnou cenu a dostává 3% Club kredit. Slevové úrovně = konfigurovatelná vrstva ve Fázi 2. |
 | R7 | Leadership bonus „až 2 %" se v MVP **účtuje do firemního poolu** s ruční alokací adminem. |
@@ -43,6 +43,7 @@ Není to klasické MLM — je to vztahový systém s třígenerační odměnou. 
 | R12 | 15denní ochranná lhůta platí **pro všechno** — provizní i klubový kredit se aktivuje až 15 dní od zaplacení. UI musí zobrazovat dvě čísla: **dostupný kredit** a **kredit čekající na aktivaci** (s datem aktivace). |
 | R13 | „Přiřadit dárek" = **obojí**: (a) položka zdarma k objednávce (fyzický dárek v balíčku), (b) evidence milníkových dárků (komu, za co, kdy). |
 | R14 | Doprava v MVP: paušál **99 Kč, zdarma od 1 500 Kč** — obě hodnoty konfigurovatelné v administraci. Provize se počítají **vždy jen ze zboží**, nikdy z dopravy. |
+| R15 | **Programová vrstva anglicky** (doména je .com): URL routy, query parametry, identifikátory a kód výhradně anglicky (`/login`, `/shop`, `/checkout/result`, `?code=`, `?type=b2b`). UI texty zatím česky; celý systém i web budou **multilanguage** (viz D35 — extrakce textů do locale slovníků, Fáze 2). Do URL, kódu ani identifikátorů nikdy nepatří čeština. |
 
 ## Fáze
 

@@ -2,7 +2,7 @@
 
 > **Jediný zdroj DDL celého systému (D1).** Žádný jiný dokument nesmí definovat vlastní
 > `CREATE TABLE` — jen odkazovat sem. Model implementuje kontrakt
-> `02-technicka-rozhodnuti.md` (D1–D34), rozhodnutí zadavatele R1–R14
+> `02-technicka-rozhodnuti.md` (D1–D35), rozhodnutí zadavatele R1–R15
 > (`00-zadani-a-rozhodnuti.md`) a finální provizní model
 > (`03-provizni-pravidla-zdroj.md`) — peníze na halíř dle závazného worked example.
 
@@ -242,7 +242,7 @@ CREATE TABLE referral_events (
   created_at            timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT chk_registration_profile CHECK (kind <> 'registration' OR registered_profile_id IS NOT NULL)
 );
-COMMENT ON TABLE referral_events IS 'Kliky na referral linky a z nich vzešlé registrace (D12). Zapisuje edge routa /r/[kod]; slouží ke konverzním statistikám ambasadora.';
+COMMENT ON TABLE referral_events IS 'Kliky na referral linky a z nich vzešlé registrace (D12). Zapisuje edge routa /r/[code]; slouží ke konverzním statistikám ambasadora.';
 CREATE INDEX idx_referral_events_code ON referral_events (referral_code_id, created_at DESC);
 ```
 
@@ -1098,7 +1098,7 @@ Další klíčové přístupy:
 - **Settlement job**: `idx_commission_release` (partial na `pending`).
 - **Výpis kreditu**: `idx_credit_tx_profile (profile_id, kind, created_at DESC)`.
 - **B2B pipeline board**: `idx_b2b_pipeline`; follow-upy `idx_b2b_manager (…, next_action_due)`.
-- **Reporty D31** (`/reporty`, CSV): čtou výhradně `v_monthly_personal_turnover`, `v_ambassador_dashboard`, `v_credit_overview` a `orders` — žádné vlastní agregační tabulky (žádná `partner_monthly_stats`).
+- **Reporty D31** (`/reports`, CSV): čtou výhradně `v_monthly_personal_turnover`, `v_ambassador_dashboard`, `v_credit_overview` a `orders` — žádné vlastní agregační tabulky (žádná `partner_monthly_stats`).
 
 ## 4. ER přehled (textově)
 

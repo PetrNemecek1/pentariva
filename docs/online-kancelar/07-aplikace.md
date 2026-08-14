@@ -1,7 +1,7 @@
 # 07 — Architektura aplikace (office.pentariva.com)
 
 > Závazný dokument pro implementaci Next.js aplikace Online kanceláře. Podřizuje se
-> kontraktu `02-technicka-rozhodnuti.md` (D1–D34) a kanonickému schématu
+> kontraktu `02-technicka-rozhodnuti.md` (D1–D35) a kanonickému schématu
 > `04-datovy-model.md` — všechny názvy tabulek, sloupců, ENUMů a funkcí v tomto
 > dokumentu jsou PŘEVZATY odtud a nesmí se přejmenovávat. Peníze na halíř dle
 > `03-provizni-pravidla-zdroj.md`.
@@ -35,37 +35,37 @@ pentariva-office/
 ├── app/                          # POUZE routing — page.tsx je 3řádkový re-export z features
 │   ├── globals.css               # brand tokeny zkopírované z repa pentariva
 │   ├── layout.tsx                # fonty (next/font), QueryClientProvider, Toaster
-│   ├── (verejne)/                # bez auth guardu
-│   │   ├── prihlaseni/page.tsx
-│   │   ├── registrace/page.tsx   # čte ?kod= a ?typ=b2b přes useSearchParams (v <Suspense>)
-│   │   ├── zapomenute-heslo/page.tsx
-│   │   └── reset-hesla/page.tsx
-│   ├── (aplikace)/               # layout.tsx = <AuthGuard> + <AppShell> (sidebar, topbar)
+│   ├── (public)/                # bez auth guardu
+│   │   ├── login/page.tsx
+│   │   ├── register/page.tsx   # čte ?code= a ?type=b2b přes useSearchParams (v <Suspense>)
+│   │   ├── forgot-password/page.tsx
+│   │   └── reset-password/page.tsx
+│   ├── (app)/               # layout.tsx = <AuthGuard> + <AppShell> (sidebar, topbar)
 │   │   ├── layout.tsx
 │   │   ├── dashboard/page.tsx
-│   │   ├── obchod/page.tsx       # katalog; detail produktu = dialog, ne samostatná routa
-│   │   ├── kosik/page.tsx
-│   │   ├── pokladna/page.tsx
-│   │   ├── pokladna/vysledek/page.tsx   # návratová URL z platební brány (?order=...)
-│   │   ├── objednavky/page.tsx   # detail přes ?id=
-│   │   ├── zakaznici/page.tsx    # CRM ambasadora; detail přes ?id=
-│   │   ├── muj-odkaz/page.tsx    # osobní link, QR, produktové linky
-│   │   ├── provize/page.tsx      # dostupný vs čekající kredit (R12) + ledger
-│   │   ├── vyplaty/page.tsx      # žádosti o výplatu na účet (payout_requests)
-│   │   ├── reporty/page.tsx      # D31: osobní výkon, CSV export
-│   │   ├── akademie/page.tsx     # moduly/lekce přes ?modul= a ?lekce=; kvíz Modulu 1 (D34)
-│   │   └── ucet/page.tsx         # profil, osobní cíl (profiles.monthly_goal_haleru)
+│   │   ├── shop/page.tsx       # katalog; detail produktu = dialog, ne samostatná routa
+│   │   ├── cart/page.tsx
+│   │   ├── checkout/page.tsx
+│   │   ├── checkout/result/page.tsx   # návratová URL z platební brány (?order=...)
+│   │   ├── orders/page.tsx   # detail přes ?id=
+│   │   ├── customers/page.tsx    # CRM ambasadora; detail přes ?id=
+│   │   ├── my-link/page.tsx    # osobní link, QR, produktové linky
+│   │   ├── commissions/page.tsx      # dostupný vs čekající kredit (R12) + ledger
+│   │   ├── payouts/page.tsx      # žádosti o výplatu na účet (payout_requests)
+│   │   ├── reports/page.tsx      # D31: osobní výkon, CSV export
+│   │   ├── academy/page.tsx     # moduly/lekce přes ?module= a ?lesson=; kvíz Modulu 1 (D34)
+│   │   └── account/page.tsx         # profil, osobní cíl (profiles.monthly_goal_haleru)
 │   └── admin/                    # layout.tsx = <RoleGuard role="admin">
 │       ├── layout.tsx
 │       ├── page.tsx              # přehled (obraty, provizní náklady, počty)
-│       ├── uzivatele/page.tsx    # role, deaktivace, root ambasador, schvalování ambassador_applications
-│       ├── produkty/page.tsx
-│       ├── objednavky/page.tsx   # přehled, stavy, vratka (fn_refund_order), CSV export
-│       ├── provize/page.tsx      # ledger, storna, leadership pool (fn_allocate_leadership)
-│       ├── vyplaty/page.tsx      # zpracování payout_requests
+│       ├── users/page.tsx    # role, deaktivace, root ambasador, schvalování ambassador_applications
+│       ├── products/page.tsx
+│       ├── orders/page.tsx   # přehled, stavy, vratka (fn_refund_order), CSV export
+│       ├── commissions/page.tsx      # ledger, storna, leadership pool (fn_allocate_leadership)
+│       ├── payouts/page.tsx      # zpracování payout_requests
 │       ├── b2b/page.tsx          # pipeline board b2b_companies + schvalování B2B registrací + Trade úrovně
-│       ├── akademie/page.tsx     # správa modulů, lekcí a kvízových otázek
-│       └── nastaveni/page.tsx    # app_settings, commission_rates, trade_level_params
+│       ├── academy/page.tsx     # správa modulů, lekcí a kvízových otázek
+│       └── settings/page.tsx    # app_settings, commission_rates, trade_level_params
 │
 ├── features/                     # 1 modul = 1 doména; NIC se neimportuje napříč features
 │   ├── auth/                     # LoginForm, RegisterForm (zákazník + B2B), AuthGuard, RoleGuard;
@@ -139,7 +139,7 @@ by nepřidal žádnou bezpečnostní hodnotu; SEO je u přihlášené aplikace i
 Závazné důsledky, se kterými implementace musí počítat:
 
 1. **RLS je jediná skutečná bezpečnostní hranice (D22).** Client-side
-   `AuthGuard`/`RoleGuard` jsou pouze UX (přesměrování na /prihlaseni, skrytí menu) —
+   `AuthGuard`/`RoleGuard` jsou pouze UX (přesměrování na /login, skrytí menu) —
    obejít je umí každý, kdo otevře DevTools. Proto: každá tabulka má RLS zapnuté, anon
    key je z principu veřejný, `service_role` klíč se NIKDY nedostane do Next.js kódu
    (žije jen v secrets Edge Functions).
@@ -147,7 +147,7 @@ Závazné důsledky, se kterými implementace musí počítat:
    stránky jsou client components (`"use client"`) nad statickou skořápkou. Server-side
    operace = Supabase Edge Functions.
 3. **Žádné dynamické segmenty** (`[id]` vyžaduje `generateStaticParams`, což u DB dat
-   nejde). Konvence: **detail = query param** (`/objednavky?id=…`, `/registrace?kod=…`),
+   nejde). Konvence: **detail = query param** (`/orders?id=…`, `/register?code=…`),
    čtený přes `useSearchParams` v komponentě obalené `<Suspense>`.
 4. **Platební webhooky jdou do Supabase Edge Functions**, ne do Next.js — brána volá
    `https://<projekt>.supabase.co/functions/v1/payment-webhook`.
@@ -165,9 +165,9 @@ Závazné důsledky, se kterými implementace musí počítat:
 
 ## 3. Registrace a vznik rolí (D11, D14)
 
-Registrační stránka je jedna: `/registrace`, varianty řídí query parametry.
+Registrační stránka je jedna: `/register`, varianty řídí query parametry.
 
-1. **Zákazník přes referral link** (`/registrace?kod=X`): registrace přes doporučovací
+1. **Zákazník přes referral link** (`/register?code=X`): registrace přes doporučovací
    link vytváří **VŽDY zákazníka** (`role='customer'`) — nikdy přímo ambasadora. Edge
    Function `register` rozřeší kód přes `referral_codes` (citext, case-insensitive),
    nastaví `profiles.owner_ambassador_id` na vlastníka kódu (trvalá atribuce, sponzorem
@@ -185,7 +185,7 @@ Registrační stránka je jedna: `/registrace`, varianty řídí query parametry
    `owner_ambassador_id → sponsor_id` (dosavadní ambasador = sponzor, trigger dopočítá
    `path`/`depth`). Root ambasadory zakládá výhradně admin (`is_network_root`).
    **Žádný „pozvánkový link rovnou do role ambasador" neexistuje.**
-4. **B2B samoobslužná registrace (D14)** (`/registrace?typ=b2b`): formulář s údaji firmy
+4. **B2B samoobslužná registrace (D14)** (`/register?type=b2b`): formulář s údaji firmy
    (název, segment dle číselníku `b2b_companies.segment`, kontakt). Edge Function
    `register` vytvoří účet + řádek `b2b_companies` s `profile_id`,
    `pipeline_status='new_contact'` a `approved_at=NULL` — účet je ve stavu **„čeká na
@@ -204,17 +204,17 @@ Po přihlášení vždy redirect na `/dashboard`. Sloupec „ambassador" platí 
 
 | Cesta | customer | ambassador | trade_partner | admin | Poznámka |
 |---|---|---|---|---|---|
-| `/prihlaseni`, `/registrace`, `/zapomenute-heslo`, `/reset-hesla` | veřejné | veřejné | veřejné | veřejné | `/registrace?kod=X` (zákazník) nebo `?typ=b2b` (B2B žádost, §3) |
+| `/login`, `/register`, `/forgot-password`, `/reset-password` | veřejné | veřejné | veřejné | veřejné | `/register?code=X` (zákazník) nebo `?type=b2b` (B2B žádost, §3) |
 | `/dashboard` | ✓ | ✓ | ✓ | ✓ | obsah per role (§7.2–7.3), karta osobního cíle (D32) |
-| `/obchod`, `/kosik`, `/pokladna`, `/pokladna/vysledek` | ✓ | ✓ | ✓ | ✓ | ceny per role z DB: katalogová / partnerská (70 %) / Trade dle `trade_level_params` (platí 70/65/60 %) |
-| `/objednavky` | ✓ | ✓ | ✓ | ✓ | vlastní objednávky; ambasador vidí i objednávky svých zákazníků (RLS) |
-| `/zakaznici` | — | ✓ | — | ✓ | CRM zákazníků (§4 zadání; `crm_notes`, `customer_interest_tags`) |
-| `/muj-odkaz` | — | ✓ | — | ✓ | osobní link, QR, produktové linky (`referral_codes`) |
-| `/provize` | — | ✓ | — | ✓ | DVĚ čísla dle R12: dostupný + čekající kredit s datem aktivace (§7.8); zákazník provize nemá — jeho klubový kredit (rovněž obě čísla) je na dashboardu |
-| `/vyplaty` | — | ✓ | — | ✓ | žádost o výplatu provizního kreditu (`payout_requests`); klubový kredit vyplatit nelze |
-| `/reporty` | — | ✓ | — | ✓ | **D31: osobní výkon, zákazníci, objednávky, CSV export** (§7.9) |
-| `/akademie` | ✓ | ✓ | ✓ | ✓ | moduly/lekce; **kvíz Modulu 1** (D34) — vstup do povýšení (D11) |
-| `/ucet` | ✓ | ✓ | ✓ | ✓ | profil, změna hesla, **osobní měsíční cíl** (`profiles.monthly_goal_haleru`, D32) |
+| `/shop`, `/cart`, `/checkout`, `/checkout/result` | ✓ | ✓ | ✓ | ✓ | ceny per role z DB: katalogová / partnerská (70 %) / Trade dle `trade_level_params` (platí 70/65/60 %) |
+| `/orders` | ✓ | ✓ | ✓ | ✓ | vlastní objednávky; ambasador vidí i objednávky svých zákazníků (RLS) |
+| `/customers` | — | ✓ | — | ✓ | CRM zákazníků (§4 zadání; `crm_notes`, `customer_interest_tags`) |
+| `/my-link` | — | ✓ | — | ✓ | osobní link, QR, produktové linky (`referral_codes`) |
+| `/commissions` | — | ✓ | — | ✓ | DVĚ čísla dle R12: dostupný + čekající kredit s datem aktivace (§7.8); zákazník provize nemá — jeho klubový kredit (rovněž obě čísla) je na dashboardu |
+| `/payouts` | — | ✓ | — | ✓ | žádost o výplatu provizního kreditu (`payout_requests`); klubový kredit vyplatit nelze |
+| `/reports` | — | ✓ | — | ✓ | **D31: osobní výkon, zákazníci, objednávky, CSV export** (§7.9) |
+| `/academy` | ✓ | ✓ | ✓ | ✓ | moduly/lekce; **kvíz Modulu 1** (D34) — vstup do povýšení (D11) |
+| `/account` | ✓ | ✓ | ✓ | ✓ | profil, změna hesla, **osobní měsíční cíl** (`profiles.monthly_goal_haleru`, D32) |
 | `/admin/**` | — | — | — | ✓ | viz strom v §1; obsahuje i B2B pipeline a admin CSV exporty (D31) |
 
 ## 5. Datová vrstva
@@ -251,9 +251,9 @@ Po přihlášení vždy redirect na `/dashboard`. Sloupec „ambassador" platí 
   sleva 30 % = 30 000 h; generace 15/6/4 % ze 70 000 h = 10 500 / 4 200 / 2 800 h;
   leadership 2 % = 1 400 h; `company_margin` = 51 100 h.
 
-## 6. Veřejná část: `/r/[kod]` na marketing webu (D29)
+## 6. Veřejná část: `/r/[code]` na marketing webu (D29)
 
-**Jediná úprava stávajícího repa `pentariva`** (D29): statická routa `/r/[kod]`, která
+**Jediná úprava stávajícího repa `pentariva`** (D29): statická routa `/r/[code]`, která
 uloží kód a přesměruje na registraci v office.
 
 1. Statický soubor **`public/r/index.html`** — čisté HTML + inline JS v brand stylu (bez
@@ -265,18 +265,18 @@ uloží kód a přesměruje na registraci v office.
    `referral_events` (`kind='click'`, `visitor_hash` = hash IP+UA bez PII; RLS povoluje
    anonu právě tento INSERT a SELECT aktivních kódů — fire-and-forget, chyba logování
    neblokuje redirect).
-3. **Atribuce:** nastaví cookie `pnt_ref={kod}; Domain=.pentariva.com; Max-Age=2592000;
+3. **Atribuce:** nastaví cookie `pnt_ref={code}; Domain=.pentariva.com; Max-Age=2592000;
    Secure; SameSite=Lax` (30denní okno, **last-touch** — novější kód přepisuje starší)
-   a přesměruje na `https://office.pentariva.com/registrace?kod={kod}`. Registrace čte
+   a přesměruje na `https://office.pentariva.com/register?code={code}`. Registrace čte
    kód primárně z query, fallback z cookie; Edge Function `register` uloží
    `owner_ambassador_id` do profilu **trvale** — od té chvíle patří všechny objednávky
    zákazníka jeho ambasadorovi, cookie už nehraje roli. Už přihlášeného uživatele
-   `/registrace` přesměruje na `/obchod` (atribuce existujícího účtu se linkem nemění).
+   `/register` přesměruje na `/shop` (atribuce existujícího účtu se linkem nemění).
 4. **Produktové linky (D12):** produktový link = samostatný řádek `referral_codes`
    s vyplněným `product_id` (žádný `?p=` parametr). Nese-li kód `product_id`, předá se
-   po registraci/přihlášení do `/obchod?produkt={product_id}` (otevřený detail-dialog).
+   po registraci/přihlášení do `/shop?product={product_id}` (otevřený detail-dialog).
 
-Registrace přes `/r/[kod]` vytváří vždy zákazníka (§3.1). Odměna zákazníka za sdílení
+Registrace přes `/r/[code]` vytváří vždy zákazníka (§3.1). Odměna zákazníka za sdílení
 linku v MVP **není** (D30) — finální provizní model žádnou zákaznickou odměnu
 nedefinuje; připraví se až s Benefit club vrstvou ve Fázi 2.
 
@@ -293,17 +293,17 @@ MVP obrazovky (kompletní výčet, nic dalšího se v MVP nestaví; nic z D30 se
 1. **Přihlášení / Registrace / Reset hesla** — přihlášení e-mail+heslo i magic link
    (D21); registrace dle §3: e-mail+heslo, jméno, telefon, souhlas s podmínkami;
    předvyplněný a uzamčený doporučující kód, je-li v query/cookie; přepínač „Registrace
-   pro firmy (B2B)" = varianta `?typ=b2b`.
+   pro firmy (B2B)" = varianta `?type=b2b`.
 2. **Dashboard ambasadora** (data: `v_ambassador_dashboard`; přesně dle §3 zadání,
    př. „ROMAN: obrat 120 000 Kč, provize 8 500 Kč, 32 zákazníků, 4 noví"):
    karta *Měsíční obrat* (`turnover_month_haleru` — zaplacené objednávky mých zákazníků
    + moje vlastní `community_own`); **karta *Osobní cíl* (D32)** — progress bar
    `turnover_month_haleru / profiles.monthly_goal_haleru` s textem „Splněno X %
-   měsíčního cíle, chybí Y Kč"; není-li cíl nastaven, karta vede na `/ucet`;
+   měsíčního cíle, chybí Y Kč"; není-li cíl nastaven, karta vede na `/account`;
    karta *Provize* — dvě čísla dle R12 (`commission_pending_haleru` +
    `commission_credit_haleru`); karta *Zákazníci* (celkem + noví tento měsíc);
    blok *Nové objednávky* (posledních 5, obnovuje se refetchem — žádný realtime badge);
-   blok *Můj odkaz* (kopírovat + QR + tlačítko na `/muj-odkaz`); *Další krok* — v MVP
+   blok *Můj odkaz* (kopírovat + QR + tlačítko na `/my-link`); *Další krok* — v MVP
    statické doporučení vázané na stav (nemá zákazníka → lekce „První zákazník";
    AI doporučení až Fáze 3).
 3. **Dashboard zákazníka**: klubový kredit **dvěma čísly dle R12** — *dostupný*
@@ -329,17 +329,17 @@ MVP obrazovky (kompletní výčet, nic dalšího se v MVP nestaví; nic z D30 se
    objednávka, celkový obrat, počet objednávek; detail s historií objednávek, poznámkami
    (`crm_notes`) a tagy zájmových okruhů (`interest_tags` ⟷ `customer_interest_tags`:
    spánek, stres, imunita, …).
-7. **Můj odkaz** — osobní link `pentariva.com/r/{kod}` s copy tlačítkem, QR ke stažení,
+7. **Můj odkaz** — osobní link `pentariva.com/r/{code}` s copy tlačítkem, QR ke stažení,
    generátor produktových linků (= nový řádek `referral_codes` s `product_id`, D12),
    čítač konverzí z `referral_events`: kliky, registrace, obrat přivedených zákazníků.
-8. **Provize** (`/provize`) — nahoře **DVĚ čísla dle R12** z `v_credit_overview` (kind
+8. **Provize** (`/commissions`) — nahoře **DVĚ čísla dle R12** z `v_credit_overview` (kind
    `commission`): karta *Dostupný kredit* (`available_haleru`) a karta *Čeká na
    aktivaci* (`pending_haleru` + „aktivace nejblíže {next_activation_at}" = paid_at +
    15 dní); pod tím souhrn výplat (požádáno/vyplaceno z `payout_requests`) a ledger
    tabulka z `commission_entries` (datum, objednávka, typ — osobní 20 % / generace
    15–6–4 % / Trade 10–8–5 % / leadership alokace / storno, částka, stav
    `pending|available|reversed`, důvod storna).
-9. **Reporty** (`/reporty`, **D31**) — osobní výkon ambasadora: měsíční řady obratu
+9. **Reporty** (`/reports`, **D31**) — osobní výkon ambasadora: měsíční řady obratu
    a objednávek (`v_monthly_personal_turnover`), souhrn zákazníků a provizí
    (`v_ambassador_dashboard`, `v_credit_overview`) a tabulka objednávek (`orders`)
    s filtrem období. Každá tabulka má tlačítko **Export CSV** (generuje klient
@@ -379,7 +379,7 @@ MVP obrazovky (kompletní výčet, nic dalšího se v MVP nestaví; nic z D30 se
 # CLAUDE.md — pentariva-office
 
 Online kancelář PENTARIVA. Next.js 16 static export + Supabase. Provozní jazyk UI: čeština.
-Zdroje pravdy: docs/online-kancelar v repu pentariva — 02 (kontrakt D1–D34),
+Zdroje pravdy: docs/online-kancelar v repu pentariva — 02 (kontrakt D1–D35),
 04 (kanonické schéma), 03 (provizní model na halíř).
 
 ## Nepřekročitelná pravidla
@@ -417,11 +417,16 @@ Zdroje pravdy: docs/online-kancelar v repu pentariva — 02 (kontrakt D1–D34),
    (výjimka: admin smí api ostatních). Supabase se volá jen z api.ts. Query klíče jen
    z lib/query/keys.ts. Zod schémata sdílená s Edge Functions žijí
    v supabase/functions/_shared/schemas (@shared/*).
-9. KONVENCE: komponenty PascalCase.tsx, hooky useX.ts, DB anglicky snake_case, routy
-   česky kebab-case. Barvy jen přes tokeny v globals.css (forest/gold/ivory), komponenty
-   shadcn/ui. Sazby a provozní konstanty se čtou z commission_rates, trade_level_params
-   a app_settings — nikdy se nehardcodují. Zůstatky kreditu se čtou jen
-   z v_credit_overview / v_credit_balances, nikdy se nesčítají v klientovi.
+9. KONVENCE: komponenty PascalCase.tsx, hooky useX.ts, DB anglicky snake_case,
+   routy a query parametry ANGLICKY kebab-case (R15 — doména .com; /login, /shop,
+   /checkout/result, ?code=, ?type=b2b). UI texty zatím česky, systém je ale
+   plánovaný jako multilanguage (D35) — texty se budou extrahovat do locale
+   slovníků, proto do URL, kódu ani identifikátorů nikdy nepatří čeština.
+   Barvy jen přes tokeny v globals.css (forest/gold/ivory), komponenty
+   shadcn/ui. Sazby a provozní konstanty se čtou z commission_rates,
+   trade_level_params a app_settings — nikdy se nehardcodují. Zůstatky kreditu
+   se čtou jen z v_credit_overview / v_credit_balances, nikdy se nesčítají
+   v klientovi.
 
 ## Příkazy
 - npm run dev              # lokálně proti `supabase start` (lokální stack)

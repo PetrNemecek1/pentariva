@@ -1,7 +1,7 @@
 # 09 — Provoz: e-maily, zálohy, CI/CD, náklady, runbook
 
 > Finální provozní specifikace. Implementuje kontrakt `02-technicka-rozhodnuti.md`
-> (zejm. D8, D17, D21, D23–D27) a rozhodnutí zadavatele R1–R14. Všechny názvy tabulek,
+> (zejm. D8, D17, D21, D23–D27) a rozhodnutí zadavatele R1–R15. Všechny názvy tabulek,
 > sloupců, ENUMů a stavů přebírá z kanonického schématu `04-datovy-model.md` (D1) —
 > tento dokument žádné DDL nedefinuje. Peníze: `_haleru` BIGINT, sazby `_bp`,
 > zaokrouhlení výhradně `fn_pct_haleru` (HALF-UP, D5). Časy v DB v UTC; cron v UTC.
