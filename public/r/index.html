@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PENTARIVA — doporučení</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --forest: oklch(0.26 0.028 145);
+      --ivory: oklch(0.955 0.018 88);
+      --gold: oklch(0.75 0.11 82);
+      --ink: oklch(0.2 0.02 120);
+    }
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex; align-items: center; justify-content: center;
+      background: var(--ivory); color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    .card { text-align: center; padding: 2rem; }
+    h1 { font-family: "Cormorant Garamond", Georgia, serif; color: var(--forest); font-weight: 600; margin: 0 0 0.5rem; }
+    p { margin: 0; opacity: 0.75; }
+    .gold { width: 3rem; height: 2px; background: var(--gold); margin: 1rem auto 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>PENTARIVA</h1>
+    <p>Přesměrováváme vás do Online kanceláře…</p>
+    <div class="gold"></div>
+  </div>
+  <script>
+    (function () {
+      var SUPABASE_URL = 'https://krcqfvtzhzinqlvcowoj.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_HOUmLT0-YQa1bHDYh9-oUw_WB78O6K_';
+      var OFFICE = "https://office.pentariva.com";
+      var parts = location.pathname.replace(/\/+$/, "").split("/");
+      var code = (parts[1] === "r" ? (parts[2] || "") : "").toLowerCase();
+      if (!/^[a-z0-9]{6,12}$/.test(code)) {
+        location.replace("/");
+        return;
+      }
+
+      function cookie() {
+        var prod = location.hostname === "pentariva.com" || location.hostname.endsWith(".pentariva.com");
+        document.cookie = prod
+          ? "pnt_ref=" + code + "; Domain=.pentariva.com; Max-Age=2592000; Path=/; Secure; SameSite=Lax"
+          : "pnt_ref=" + code + "; Max-Age=2592000; Path=/; SameSite=Lax";
+      }
+
+      function go() {
+        cookie();
+        location.replace(OFFICE + "/register?code=" + encodeURIComponent(code));
+      }
+
+      var headers = {
+        apikey: SUPABASE_KEY,
+        Authorization: "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+      };
+
+      fetch(SUPABASE_URL + "/rest/v1/rpc/fn_resolve_referral", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({ p_code: code })
+      }).then(function (res) { return res.ok ? res.json() : []; })
+        .then(function (rows) {
+          if (!rows || !rows.length) {
+            location.replace("/");
+            return;
+          }
+          fetch(SUPABASE_URL + "/rest/v1/rpc/fn_log_referral_click", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({ p_code: code, p_user_agent: navigator.userAgent || "" }),
+            keepalive: true
+          }).catch(function () {});
+          go();
+        })
+        .catch(function () { go(); });
+    })();
+  </script>
+</body>
+</html>

@@ -5,6 +5,9 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "cleanUrls": true,
     "trailingSlash": false,
+    "rewrites": [
+      { "source": "/r/**", "destination": "/r/index.html" }
+    ],
     "headers": [
       {
         "source": "**/*.@(webp|avif|png|jpg|jpeg|svg|ico|woff|woff2)",
