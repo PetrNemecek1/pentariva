@@ -111,7 +111,7 @@ export default function ValuesPage() {
       <section className="bg-ivory-warm py-16">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-6 px-6 lg:px-12">
           <p className="font-serif-display text-3xl text-forest-deep">
-            Objevte celý příběh sedmi kapitol.
+            Objevte celý příběh šesti kapitol.
           </p>
           <div className="flex flex-wrap items-center gap-7">
             <TextLink href="/svet-pentariva/pribeh">Náš příběh</TextLink>

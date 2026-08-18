@@ -38,7 +38,7 @@ const EDITORIAL_RULES = [
 type DownloadCardProps = {
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
   eyebrow: string;
-  title: string;
+  title?: string;
   description: string;
   meta: string;
   href: string;
@@ -71,7 +71,9 @@ function DownloadCard({
       >
         {eyebrow}
       </p>
-      <h3 className="mt-3 font-serif-display text-3xl leading-tight text-forest-deep">{title}</h3>
+      {title ? (
+        <h3 className="mt-3 font-serif-display text-3xl leading-tight text-forest-deep">{title}</h3>
+      ) : null}
       <p className="mt-4 flex-1 text-sm leading-[1.75] text-ink/65">{description}</p>
       <a
         href={href}
@@ -216,7 +218,7 @@ export default function MediaPage() {
             <DownloadCard
               icon={BookOpen}
               eyebrow="Značka a příběh"
-              title="Brand Book PENTARIVA"
+              title="Kniha značky PENTARIVA"
               description="Emotivní příběh kořenů, hodnot, člověka a vize značky v jednom uceleném dokumentu."
               meta="PDF · 4,9 MB"
               href={brandBookPdfUrl}
@@ -225,7 +227,6 @@ export default function MediaPage() {
             <DownloadCard
               icon={FileText}
               eyebrow="Firemní profil"
-              title="Business Profile"
               description="Přehled identity, ekosystému, principů spolupráce a evropského směru PENTARIVA."
               meta="PDF · 3,0 MB"
               href="/downloads/PENTARIVA-Business-Profile.pdf"

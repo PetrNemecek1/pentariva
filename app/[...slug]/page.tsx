@@ -154,8 +154,8 @@ const PAGES: Record<string, PreparationPage> = {
     eyebrow: "PENTARIVA",
     title: "Partnerství",
     summary: "Partnerskou nabídku spojujeme s produkty, podporou a konkrétními podmínkami.",
-    parentLabel: "Komunita",
-    parentHref: "/komunita",
+    parentLabel: "Hlavní strana",
+    parentHref: "/",
     items: SHARED_ITEMS,
   },
   vyhledavani: {
