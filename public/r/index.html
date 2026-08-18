@@ -39,7 +39,7 @@
       var OFFICE = "https://office.pentariva.com";
       var parts = location.pathname.replace(/\/+$/, "").split("/");
       var code = (parts[1] === "r" ? (parts[2] || "") : "").toLowerCase();
-      if (!/^[a-z0-9]{6,12}$/.test(code)) {
+      if (!/^[a-z0-9]{3,12}$/.test(code)) {
         location.replace("/");
         return;
       }
