@@ -49,7 +49,7 @@ export const PRODUCT_CONCEPTS: readonly ProductConcept[] = [
     format: "Koncept bylinných kapek",
     intention: "Přechod z aktivity do klidnější části dne.",
     description:
-      "Editorializovaný koncept tekuté botanické formy propojené s večerním rituálem, dechem a vědomým zpomalením.",
+      "Redakční koncept tekuté botanické formy propojené s večerním rituálem, dechem a vědomým zpomalením.",
     ritual:
       "Několik klidných minut, teplý nápoj a prostor pro uzavření dne. Produkt doplňuje širší večerní rituál.",
     image: product02.src,

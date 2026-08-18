@@ -351,7 +351,7 @@ function WorldHero() {
               fontWeight: 500,
             }}
           >
-            Sedm kapitol.
+            Šest kapitol.
             <br />
             <span className="text-gold-deep/90">Pět principů.</span>
             <br />
@@ -368,7 +368,7 @@ function WorldHero() {
               každodenního života a lidské blízkosti.
             </p>
             <p>
-              Těchto sedm kapitol odhaluje svět PENTARIVA — svět, jehož přirozeným řádem je číslo
+              Těchto šest kapitol odhaluje svět PENTARIVA — svět, jehož přirozeným řádem je číslo
               pět.
             </p>
           </div>
@@ -1209,7 +1209,7 @@ function BusinessProfileDownload() {
         style={{ letterSpacing: "0.24em" }}
       >
         <Download className="h-4 w-4" />
-        Stáhnout Business Profile
+        Stáhnout firemní profil
       </a>
       <span
         className="text-[0.62rem] uppercase text-gold-deep/70"
@@ -1310,7 +1310,7 @@ function ChapterSeven() {
         className="mt-20 border-t border-gold/25 pt-10 text-center font-serif-display italic text-gold-deep/85"
         style={{ fontSize: "1.35rem", lineHeight: 1.6 }}
       >
-        Sedm kapitol. Pět principů. Jeden živý ekosystém.
+        Šest kapitol. Pět principů. Jeden živý ekosystém.
       </p>
     </ChapterShell>
   );

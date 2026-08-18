@@ -258,7 +258,7 @@ export default function StoryPage() {
                     className="inline-flex items-center gap-3 border border-gold/70 px-5 py-3 text-[0.66rem] uppercase text-gold transition-colors hover:bg-gold hover:text-forest-deep"
                     style={{ letterSpacing: "0.2em" }}
                   >
-                    Stáhnout Brand Book
+                    Stáhnout knihu značky
                     <Download className="h-4 w-4" strokeWidth={1.5} />
                   </a>
                   <TextLink href="/svet-pentariva" dark>

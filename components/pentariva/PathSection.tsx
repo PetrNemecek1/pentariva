@@ -39,7 +39,7 @@ const PATHS = [
   },
   {
     number: "04",
-    title: "PENTARIVA poradna",
+    title: "PENTARIVA Poradna",
     description:
       "Získejte rychlou odpověď, zákaznickou podporu nebo individuální pomoc při výběru vhodného řešení.",
     cta: "Potřebuji poradit",

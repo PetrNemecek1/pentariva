@@ -17,7 +17,7 @@ const SUPPORT_AREAS = [
   {
     icon: PackageSearch,
     title: "Orientace v produktech",
-    body: "Pomoc porozumět zamýšlené roli, formě a způsobu použití produktů.",
+    body: "Pomáhá porozumět zamýšlené roli, formě a způsobu použití produktů.",
     status: "S portfoliem",
   },
   {

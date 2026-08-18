@@ -115,7 +115,7 @@ export default function SleepWebinarPage() {
         <EducationSection
           id="co-si-odnesete"
           eyebrow="Výstupy"
-          title="Co by měl účastník po setkání rozumět."
+          title="Čemu by měl účastník po setkání rozumět."
         >
           <div className="grid gap-4 sm:grid-cols-2">
             {[
