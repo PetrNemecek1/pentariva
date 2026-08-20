@@ -215,3 +215,23 @@ ukazovat data. Cílový stav za 2–3 roky; stavět ve vrstvách:
   WhatsApp notifikace
 - FÁZE 3: AI asistent, automatická doporučení aktivit, chytré reporty, predikce výkonu,
   návrhy produktů zákazníkům
+
+## 23. Manuál k používání a Help (závazné od 2026-08-20)
+
+Manuál **nebyl** v původním DOCX zadání (2026-08-11). Doplňujeme ho sem, aby se
+psal průběžně a na konci z něj vznikl Help.
+
+**Průběžně (teď):** textový manuál — **každá jedna obrazovka**. U každé je:
+co se tam dělá, jak to funguje, jaká je logika na pozadí, co dělá které tlačítko
+nebo pole a s čím to souvisí (např. kredit na účtu × sleva u pokladny × provize
+partnerovi). Píše se česky, srozumitelně, podle skutečného stavu aplikace
+(nevymýšlet funkce). Žije v repo `pentariva-office`, `docs/manual/`.
+
+**Později (Help jako webová část):** stejný obsah v kanceláři (`/help`), doplněný
+o **finální screenshoty**, aby uživatelé věděli, co kde kliknout, a mohli se ptát
+i na souvislosti — jak něco v systému nastavit. UI kanceláře je dvojjazyčné
+(CZ výchozí, EN); Help má skončit stejně CZ+EN. Do té doby stačí český text
+a kostra navigace; screenshoty se nedělají nanečisto.
+
+Implementátor / agent: při přidání nebo změně obrazovky **ve stejné změně**
+aktualizuj kapitolu manuálu (viz `CLAUDE.md` v `pentariva-office`).

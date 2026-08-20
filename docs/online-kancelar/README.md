@@ -12,7 +12,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | Soubor | Obsah |
 |---|---|
 | [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R15, fáze |
-| [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21) |
+| [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21; **§23 manuál / Help**) |
 | [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D35 — závazný pro vše ostatní |
 | [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | **Zdroj pravdy pro peníze** — finální provizní model, závazný worked example |
 | [04-datovy-model.md](04-datovy-model.md) | **Kanonické DDL** — jediný zdroj schématu (tabulky, enumy, funkce, views, RLS-ready) |
@@ -24,6 +24,10 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [10-implementacni-plan.md](10-implementacni-plan.md) | **Začni tady po přečtení 00–04**: epiky, tickety, milníky M1–M3, guardrails |
 | [11-dns-forpsi.md](11-dns-forpsi.md) | Provozní deník DNS změn na Forpsi (pentariva.com, office subdoména, Resend) |
 | [12-zadani-akademie-obsah.md](12-zadani-akademie-obsah.md) | Zadání pro ChatGPT/Gemini — generování obsahu lekcí a kvízu Akademie |
+
+Uživatelský manuál (ne implementační spec) žije v
+[`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
+a v kanceláři na `/help`. Screenshoty do Helpu až na závěr (01 §23).
 
 ## Stav implementace (2026-08-13)
 

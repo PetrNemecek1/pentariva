@@ -54,6 +54,7 @@ pentariva-office/
 │   │   ├── payouts/page.tsx      # žádosti o výplatu na účet (payout_requests)
 │   │   ├── reports/page.tsx      # D31: osobní výkon, CSV export
 │   │   ├── academy/page.tsx     # moduly/lekce přes ?module= a ?lesson=; kvíz Modulu 1 (D34)
+│   │   ├── help/page.tsx        # textový manuál (?topic=); screenshoty později (01 §23)
 │   │   └── account/page.tsx         # profil, osobní cíl (profiles.monthly_goal_haleru)
 │   └── admin/                    # layout.tsx = <RoleGuard role="admin">
 │       ├── layout.tsx
@@ -214,6 +215,7 @@ Po přihlášení vždy redirect na `/dashboard`. Sloupec „ambassador" platí 
 | `/payouts` | — | ✓ | — | ✓ | žádost o výplatu provizního kreditu (`payout_requests`); klubový kredit vyplatit nelze |
 | `/reports` | — | ✓ | — | ✓ | **D31: osobní výkon, zákazníci, objednávky, CSV export** (§7.9) |
 | `/academy` | ✓ | ✓ | ✓ | ✓ | moduly/lekce; **kvíz Modulu 1** (D34) — vstup do povýšení (D11) |
+| `/help` | ✓ | ✓ | ✓ | ✓ | textový manuál (01 §23); `?topic=` kapitola; screenshoty až později; CZ nyní, EN s finálním Helpem |
 | `/account` | ✓ | ✓ | ✓ | ✓ | profil, změna hesla, **osobní měsíční cíl** (`profiles.monthly_goal_haleru`, D32) |
 | `/admin/**` | — | — | — | ✓ | viz strom v §1; obsahuje i B2B pipeline a admin CSV exporty (D31) |
 

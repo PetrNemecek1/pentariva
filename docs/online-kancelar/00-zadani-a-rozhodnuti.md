@@ -54,6 +54,13 @@ Není to klasické MLM — je to vztahový systém s třígenerační odměnou. 
 - **FÁZE 3** — AI asistent, denní akční doporučení, chytré reporty, predikce,
   produktová doporučení.
 
+## Manuál k používání (doplněno 2026-08-20)
+
+V původním DOCX zadání manuál / nápověda **nebyly**. Závazné znění je
+`01-funkcni-zadani.md` §23: průběžně textová kapitola na každou obrazovku;
+později in-app Help se screenshoty (CZ+EN). Živý text:
+repo `pentariva-office`, `docs/manual/`.
+
 ## Pět otázek, na které systém musí vždy umět odpovědět
 
 1. Kdo přivedl zákazníka?
