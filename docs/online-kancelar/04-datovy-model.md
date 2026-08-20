@@ -1,5 +1,14 @@
 # 04 — Kanonický datový model (Postgres / Supabase)
 
+> **Aktualizace 20. 8. 2026 — model v2:** závazné změny schématu a peněžních
+> funkcí jsou v `13-provizni-model-v2.md`. Pro nové objednávky platí
+> `team_gen1/2/3 = 2000/800/400 bp` a `leadership_pool = 200 bp` z netto báze
+> bez DPH; `community_customer` používá stejné `team_gen*` typy a
+> `personal_customer` je deprecated. Benefit má tři měsíční úrovně
+> 3/6/10 %, objednávka nese `welcome_benefit`, produkt `cost_haleru` a
+> konfigurace obsahuje uvítací i ekonomické vstupy dle §13. Dřívější DDL
+> ukázky níže jsou historický základ; při rozporu vítězí §13.
+>
 > **Jediný zdroj DDL celého systému (D1).** Žádný jiný dokument nesmí definovat vlastní
 > `CREATE TABLE` — jen odkazovat sem. Model implementuje kontrakt
 > `02-technicka-rozhodnuti.md` (D1–D35), rozhodnutí zadavatele R1–R15

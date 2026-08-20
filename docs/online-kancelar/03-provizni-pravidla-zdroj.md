@@ -1,5 +1,12 @@
 # PENTARIVA Partner Program — FINÁLNÍ provizní model (zdroj pravdy)
 
+> **Nahrazeno modelem v2 od 20. 8. 2026.** Pro nové objednávky platí výhradně
+> `13-provizni-model-v2.md`: jednotné linie 20/8/4 % a pool 2 % z netto báze
+> bez DPH, Benefit Club 3/6/10 % podle měsíčního katalogového obratu a uvítací
+> výhoda. Níže uvedené sazby 15/6/4, osobní typ `personal_customer` a báze
+> včetně DPH zůstávají jen historickým popisem starého enginu. Trade 30/35/40 %
+> + 10/8/5 % se nemění.
+
 Zdroj: finální infografika „PENTARIVA PARTNER PROGRAM" (2026-08) + dokument „Vlastní
 objednávka Ambasadora D". Při rozporu s čímkoli jiným platí TENTO dokument.
 

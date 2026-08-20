@@ -1,5 +1,13 @@
 # 05 — Provizní engine (finální specifikace)
 
+> **Model v2 od 20. 8. 2026 nahrazuje sazby, báze a worked examples tohoto
+> dokumentu.** Závazný je `13-provizni-model-v2.md`, zejména §1–§5 a zlaté
+> testy §9: Community 20/8/4 % + pool 2 % z netto báze bez DPH, Benefit
+> 3/6/10 % z `goods_paid_haleru` včetně DPH s pravidlem „vyšší bere“,
+> welcome kredit 3 % bez stackingu. Typ `personal_customer` se nově
+> negeneruje. Trade, settlement, append-only storno a RLS zůstávají beze změny.
+> Staré worked examples níže dokumentují pouze engine v1.
+>
 > Závazná specifikace peněžní logiky. Precedence při rozporu (dle `02-technicka-rozhodnuti.md`):
 > `03-provizni-pravidla-zdroj.md` → `00-zadani-a-rozhodnuti.md` (R1–R15) →
 > `02-technicka-rozhodnuti.md` (D1–D35) → `04-datovy-model.md` (kanonické schéma) → tento dokument.
