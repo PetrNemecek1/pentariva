@@ -215,7 +215,7 @@ Po přihlášení vždy redirect na `/dashboard`. Sloupec „ambassador" platí 
 | `/payouts` | — | ✓ | — | ✓ | žádost o výplatu provizního kreditu (`payout_requests`); klubový kredit vyplatit nelze |
 | `/reports` | — | ✓ | — | ✓ | **D31: osobní výkon, zákazníci, objednávky, CSV export** (§7.9) |
 | `/academy` | ✓ | ✓ | ✓ | ✓ | moduly/lekce; **kvíz Modulu 1** (D34) — vstup do povýšení (D11) |
-| `/help` | ✓ | ✓ | ✓ | ✓ | textový manuál (01 §23); `?topic=` kapitola; screenshoty až později; CZ nyní, EN s finálním Helpem |
+| `/help` | ✓ | ✓ | ✓ | ✓ | textový manuál (01 §23); `?topic=` kapitola; screenshoty až později; CZ výchozí, EN přes `pnt_locale` |
 | `/account` | ✓ | ✓ | ✓ | ✓ | profil, změna hesla, **osobní měsíční cíl** (`profiles.monthly_goal_haleru`, D32) |
 | `/admin/**` | — | — | — | ✓ | viz strom v §1; obsahuje i B2B pipeline a admin CSV exporty (D31) |
 
@@ -421,9 +421,9 @@ Zdroje pravdy: docs/online-kancelar v repu pentariva — 02 (kontrakt D1–D35),
    v supabase/functions/_shared/schemas (@shared/*).
 9. KONVENCE: komponenty PascalCase.tsx, hooky useX.ts, DB anglicky snake_case,
    routy a query parametry ANGLICKY kebab-case (R15 — doména .com; /login, /shop,
-   /checkout/result, ?code=, ?type=b2b). UI texty zatím česky, systém je ale
-   plánovaný jako multilanguage (D35) — texty se budou extrahovat do locale
-   slovníků, proto do URL, kódu ani identifikátorů nikdy nepatří čeština.
+   /checkout/result, ?code=, ?type=b2b). UI je dvojjazyčné (CZ výchozí, EN přes
+   `pnt_locale`, D35) — proto do URL, kódu ani identifikátorů nikdy nepatří
+   čeština. Názvy produktů v katalogu se nepřekládají.
    Barvy jen přes tokeny v globals.css (forest/gold/ivory), komponenty
    shadcn/ui. Sazby a provozní konstanty se čtou z commission_rates,
    trade_level_params a app_settings — nikdy se nehardcodují. Zůstatky kreditu

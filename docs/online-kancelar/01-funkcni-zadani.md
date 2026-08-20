@@ -230,8 +230,7 @@ partnerovi). Píše se česky, srozumitelně, podle skutečného stavu aplikace
 **Později (Help jako webová část):** stejný obsah v kanceláři (`/help`), doplněný
 o **finální screenshoty**, aby uživatelé věděli, co kde kliknout, a mohli se ptát
 i na souvislosti — jak něco v systému nastavit. UI kanceláře je dvojjazyčné
-(CZ výchozí, EN); Help má skončit stejně CZ+EN. Do té doby stačí český text
-a kostra navigace; screenshoty se nedělají nanečisto.
+(CZ výchozí, EN); Help je stejně CZ+EN (text; screenshoty až na závěr).
 
 Implementátor / agent: při přidání nebo změně obrazovky **ve stejné změně**
 aktualizuj kapitolu manuálu (viz `CLAUDE.md` v `pentariva-office`).
