@@ -25,6 +25,8 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [11-dns-forpsi.md](11-dns-forpsi.md) | Provozní deník DNS změn na Forpsi (pentariva.com, office subdoména, Resend) |
 | [12-zadani-akademie-obsah.md](12-zadani-akademie-obsah.md) | Zadání pro ChatGPT/Gemini — generování obsahu lekcí a kvízu Akademie |
 | [13-provizni-model-v2.md](13-provizni-model-v2.md) | **UZAMČENÝ model v2** (20/8/4, Benefit 3/6/10, uvítací výhoda) — závazné zadání přestavby, schváleno 20. 8. 2026; má přednost před provizními čísly v 03/05 |
+| [14-provoz-obchodu.md](14-provoz-obchodu.md) | Obchodní provoz: sklad, expedice, odstoupení/reklamace, marketingový souhlas, verzované právní dokumenty, kategorie + EN katalog. Kap. 1–2 až po 13, zbytek souběžně |
+| [15-go-live-finance.md](15-go-live-finance.md) | Go-live a finance: noční selfcheck ledgeru, heartbeaty, rate limity, výplatní agenda + statementy, účetní exporty, Fakturoid, truncate skript, runbook přepnutí |
 
 Uživatelský manuál (ne implementační spec) žije v
 [`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
