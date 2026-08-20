@@ -54,9 +54,9 @@ export default function AdvisoryPage() {
         eyebrow="PENTARIVA Poradna"
         title={
           <>
-            Nejdříve pomáháme.
+            Dáváme vám souvislosti,
             <br />
-            Teprve potom doporučujeme.
+            abyste se mohli správně rozhodnout.
           </>
         }
         status="Služby vznikají postupně"

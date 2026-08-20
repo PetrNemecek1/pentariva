@@ -53,7 +53,7 @@ export function EducationTeaser() {
                 lineHeight: 1.1,
               }}
             >
-              Nejdříve vysvětlujeme. Teprve potom doporučujeme.
+              Dáváme vám souvislosti, abyste se mohli správně rozhodnout.
             </h2>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-ink/70">
               Články, průvodci, videa a webináře pomáhají porozumět tématu a udělat informované
