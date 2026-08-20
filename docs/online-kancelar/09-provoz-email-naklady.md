@@ -96,7 +96,9 @@ tlačítko s `{{ .ConfirmationURL }}`, upozornění „odkaz je jednorázový a 
 vítací e-mail s osobním linkem, notifikace „nová objednávka ve vaší síti",
 potvrzení přijetí žádosti o výplatu, e-mail o vratce a stornu provize (vratka je
 řídká adminní akce — komunikuje ji admin ručně), týdenní digesty. Změna e-mailu
-v profilu není v MVP UI, šablona „Change Email" se tedy nepoužívá.
+je v `/account/` přes GoTrue; šablona Change Email v Dashboard odpovídá
+`pentariva-office/supabase/templates/email_change.html` (stejně jako ostatní
+Auth šablony z gitu).
 
 **Idempotence (povinná):** webhooky se mohou opakovat. `send-email` posílá každý
 e-mail s hlavičkou **`Idempotency-Key: {kod_sablony}:{id_zaznamu}`** (Resend API
