@@ -44,6 +44,7 @@ Není to klasické MLM — je to vztahový systém s třígenerační odměnou. 
 | R13 | „Přiřadit dárek" = **obojí**: (a) položka zdarma k objednávce (fyzický dárek v balíčku), (b) evidence milníkových dárků (komu, za co, kdy). |
 | R14 | Doprava v MVP: paušál **99 Kč, zdarma od 1 500 Kč** — obě hodnoty konfigurovatelné v administraci. Provize se počítají **vždy jen ze zboží**, nikdy z dopravy. |
 | R15 | **Programová vrstva anglicky** (doména je .com): URL routy, query parametry, identifikátory a kód výhradně anglicky (`/login`, `/shop`, `/checkout/result`, `?code=`, `?type=b2b`). UI texty zatím česky; celý systém i web budou **multilanguage** (viz D35 — extrakce textů do locale slovníků, Fáze 2). Do URL, kódu ani identifikátorů nikdy nepatří čeština. |
+| R16 | **Provizní model v2 (20. 8. 2026):** jednotné linie **20/8/4 %** ze všech objednávek (báze bez DPH, po slevách a kreditech), **Benefit Club 3/6/10 %** dle měsíčního obratu s pravidlem „vyšší bere“, **uvítací výhoda** (konfigurovatelně sleva 20 % nebo dárek ~200 Kč, od 500 Kč) + pevný kredit 3 %, doprava zdarma od 2 000 Kč jen pro zákazníky, pool 2 % konfigurovatelně, pozice Ambasador/Komunitní/Regionální partner. Vše editovatelné v administraci — model se bude dál vyvíjet. Závazné zadání: `13-provizni-model-v2.md`. |
 
 ## Fáze
 

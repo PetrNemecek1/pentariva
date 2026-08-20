@@ -24,6 +24,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [10-implementacni-plan.md](10-implementacni-plan.md) | **Začni tady po přečtení 00–04**: epiky, tickety, milníky M1–M3, guardrails |
 | [11-dns-forpsi.md](11-dns-forpsi.md) | Provozní deník DNS změn na Forpsi (pentariva.com, office subdoména, Resend) |
 | [12-zadani-akademie-obsah.md](12-zadani-akademie-obsah.md) | Zadání pro ChatGPT/Gemini — generování obsahu lekcí a kvízu Akademie |
+| [13-provizni-model-v2.md](13-provizni-model-v2.md) | **UZAMČENÝ model v2** (20/8/4, Benefit 3/6/10, uvítací výhoda) — závazné zadání přestavby, schváleno 20. 8. 2026; má přednost před provizními čísly v 03/05 |
 
 Uživatelský manuál (ne implementační spec) žije v
 [`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
