@@ -481,3 +481,22 @@ Pořadí rotace (nejcennější první), vše tentýž den:
    s poslední zálohou. Při možném úniku osobních údajů běží **72hodinová lhůta
    pro ohlášení ÚOOÚ (GDPR čl. 33)** — rozhodnout a zdokumentovat tentýž den.
 8. Incident zapsat; ověřit zapnutý secret scanning + push protection v obou repech.
+
+### 7.4 Go-live finance (příprava — nic se nezapíná)
+
+Pořadí přepnutí až po schválení zadavatele (`15-go-live-finance.md` §8).
+Tento odstavec **nezapíná** live platby, Fakturoid ani výplaty.
+
+1. Právní texty publikovány a odsouhlaseny, IČO doplněno v patičce a
+   `legal_documents`.
+2. Rozhodnutí brány (Stripe live vs Comgate) → live klíče, nový webhook +
+   `whsec`, `PAYMENTS_MODE=live` guard ověřen.
+3. `INVOICING_MODE=fakturoid`, testovací faktura v sandboxu Fakturoidu.
+4. Restore drill: obnova poslední zálohy do lokálního Postgresu dle §4.
+5. `supabase/scripts/pre-golive-truncate.sql` **ručně** (nikdy z CI) → smoke:
+   live platba 10 Kč → webhook → provize → faktura → plný refund → dobropis →
+   clawback.
+6. Supabase Pro upgrade; Sentry alerty; DMARC `_dmarc.pentariva.com`
+   `v=DMARC1; p=quarantine; rua=mailto:admin@pentariva.com`.
+7. `PAYOUTS_ENABLED=true` až po testovacím payoutu se statementem a potvrzení
+   daňového režimu.

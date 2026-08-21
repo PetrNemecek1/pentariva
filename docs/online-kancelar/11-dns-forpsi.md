@@ -54,7 +54,7 @@ přístup z bezpečnostních důvodů prohlížeče. Postup:
    | MX | `send` | `feedback-smtp.eu-west-1.amazonses.com` | 10 |
    | TXT | `send` | `v=spf1 include:amazonses.com ~all` | — |
    | TXT | `resend._domainkey` | `p=<DKIM klíč z Resend>` | — |
-   | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:admin@pentariva.cz` | — |
+   | TXT | `_dmarc` | `v=DMARC1; p=quarantine; rua=mailto:admin@pentariva.com` | — |
 
 5. Zadej na Forpsi do zóny `pentariva.com` (nekoliduje s ničím výše — MX jen
    na subdoméně `send`, kořenový MX pentariva.com zůstává volný).

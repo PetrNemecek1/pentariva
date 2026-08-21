@@ -9,6 +9,15 @@
 > konfigurace obsahuje uvítací i ekonomické vstupy dle §13. Dřívější DDL
 > ukázky níže jsou historický základ; při rozporu vítězí §13.
 >
+> **Aktualizace 21. 8. 2026 — go-live finance (§15):** nové tabulky
+> `signup_attempts`, `rate_limit_events`, `cron_heartbeats`, `selfcheck_runs`,
+> `payout_profiles`, `payout_statements`, `invoice_failures`. Objednávka nese
+> `invoice_number` / `invoice_url`. Accounting views `v_admin_vat_month`,
+> `v_admin_vat_control`, `v_admin_credit_liabilities`, `v_admin_gateway_recon`,
+> `v_payout_year`, `v_admin_selfcheck_latest`. Nic z toho nezapíná live platby,
+> Fakturoid ani `PAYOUTS_ENABLED`. Kanonické DDL je v migraci
+> `20260821083000_go_live_finance_phase15.sql`; při rozporu vítězí §15.
+>
 > **Aktualizace 21. 8. 2026 — provoz obchodu (§14):** `products` nese
 > `stock_qty`, kategorii a EN obsah; append-only `stock_movements` je jediná
 > historie příjmu/rezervace/uvolnění/vratky. Objednávka nese dopravce a
