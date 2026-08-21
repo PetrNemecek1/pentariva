@@ -9,6 +9,15 @@
 > konfigurace obsahuje uvítací i ekonomické vstupy dle §13. Dřívější DDL
 > ukázky níže jsou historický základ; při rozporu vítězí §13.
 >
+> **Aktualizace 21. 8. 2026 — provoz obchodu (§14):** `products` nese
+> `stock_qty`, kategorii a EN obsah; append-only `stock_movements` je jediná
+> historie příjmu/rezervace/uvolnění/vratky. Objednávka nese dopravce a
+> tracking. Nové tabulky: `return_requests`, `legal_documents`,
+> `legal_consents`, `marketing_unsubscribe_tokens`, `product_categories`.
+> Zápisy skladu, žádostí a souhlasů jdou přes SECURITY DEFINER funkce a RLS;
+> citlivý `cost_haleru` zůstává jen v admin read modelu. Benefit měsíc je
+> `Europe/Prague`.
+>
 > **Jediný zdroj DDL celého systému (D1).** Žádný jiný dokument nesmí definovat vlastní
 > `CREATE TABLE` — jen odkazovat sem. Model implementuje kontrakt
 > `02-technicka-rozhodnuti.md` (D1–D35), rozhodnutí zadavatele R1–R15
