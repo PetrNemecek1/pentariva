@@ -317,3 +317,97 @@ tržba** — pro účetní, zákazníka ani reporty.
 4. §3.3–3.5 dělení, doposlání, částečné vratky (po 19 §3 `shipment_items`).
 5. §6 exporty pro účetní (po 19 §6.3 ISDOC).
 6. §3.6 ruční objednávky, §5 uložené pohledy.
+
+## 10. Moje objednávka bez přihlášení a funkce odstoupení (R24, směrnice EU 2023/2673)
+
+Zákon: u smluv uzavřených online musí mít spotřebitel k dispozici **funkci
+odstoupení** — snadno nalezitelnou, trvale dostupnou po celou lhůtu, označenou
+slovy „odstoupit od smlouvy“ (nebo jednoznačným ekvivalentem), s potvrzovací
+obrazovkou a **potvrzením přijetí odstoupení na trvalém nosiči (e-mail) bez
+zbytečného odkladu**. Totéž rozhraní slouží k informaci o stavu objednávky
+(zákazník nepotřebuje účet ani heslo — řada zákazníků nakupuje přes odkaz
+ambasadora a heslo neřeší).
+
+### 10.1 Vstup: odkaz „Moje objednávka“
+
+- Odkaz **Moje objednávka** v hlavičce i patičce e-shopu (všechny trhy, jazyk
+  trhu) → `/my-order/` (R15: anglické routy). Stejný cíl má tlačítko
+  v každém e-mailu k objednávce (#potvrzení, #zaplaceno, #expedice), tam
+  **rovnou s tokenem** — zákazník z e-mailu nic nevyplňuje.
+- Formulář: **číslo objednávky** + **e-mail, na který byla objednávka
+  vytvořena**. Po odeslání vždy stejná odpověď: „Pokud údaje sedí, poslali jsme
+  vám odkaz na e-mail. Platí 48 hodin.“ — systém **nikdy neprozradí**, zda
+  objednávka existuje (žádná enumerace). Rate limit 5 pokusů / 15 min na IP
+  i na e-mail (`fn_assert_rate_limit`), hlášení `ORDER-LOOKUP-BRUTEFORCE`
+  při překročení.
+- Přihlášený zákazník se na stejnou stránku dostane z `/orders/` bez tokenu
+  (RLS), partner z CRM vidí jen to, co dnes.
+
+### 10.2 Token a e-mail
+
+- `order_access_tokens(id, order_id, token_hash, email, expires_at, used_at,
+  created_ip_hash)`; token = 32 B náhodně, v DB jen SHA-256, v odkazu
+  `/my-order/?t=…`. Platnost **48 h**, opakovaně použitelný do vypršení, nový
+  požadavek starý token zneplatní. Odstoupení je možné i po vypršení tokenu —
+  zákazník si požádá o nový (lhůta 14 dní běží nezávisle).
+- E-mail `order_access_link` (šablona per trh a jazyk — Cursor): „Vaše
+  objednávka č. {n}“, tlačítko **Zobrazit objednávku**, pod ním věta, že odkaz
+  platí 48 h a že tudy lze i odstoupit od smlouvy. Odesílá `send-email`.
+- Vydání tokenu dělá `fn_request_order_access(p_order_number, p_email)`
+  (SECURITY DEFINER, volá EF `order-access` pro anon): shoda čísla + e-mailu
+  (case-insensitive, trim) → token + e-mail; neshoda → nic, stejná odpověď.
+
+### 10.3 Detail objednávky s tokenem (`/my-order/?t=…`)
+
+Jedna obrazovka, mobil na prvním místě, **bez** menu účtu:
+
+1. **Hlavička:** číslo, datum, celkem, stav lidsky (provozní stav
+   `customer_label` z 20 §1) jako časová osa: Přijato → Zaplaceno → Balíme →
+   Předáno dopravci → Doručeno; u expedované objednávky **sledování zásilky**
+   (odkaz dopravce) a výdejní místo.
+2. **Položky** s obrázkem, počtem kusů a cenou; dárky označené.
+3. **Doklady:** faktura PDF (a dobropis) přes signed URL — EF `invoice-render`
+   akce `url` přijme i `order_access_token` (Claude).
+4. **Tlačítko „Odstoupit od smlouvy“** — viditelné bez scrollování, aktivní
+   po celou lhůtu (14 dní od převzetí; u nevyzvednuté/nedoručené objednávky od
+   zaplacení — `withdrawal_days` per trh, 21 B.8). Po lhůtě zůstává tlačítko
+   **Reklamovat** (stejný tok, `kind = complaint`, bez časového limitu).
+5. **Formulář odstoupení** (po kliknutí, stejná stránka):
+   - volba **Celá objednávka** / **Jen některé položky** (u položek počet kusů
+     k vrácení, výchozí vše);
+   - důvod jen **nepovinný** (spotřebitel důvod uvádět nemusí — nesmí být
+     povinné pole), volný text; u reklamace je popis vady povinný;
+   - způsob vrácení peněz podle toho, jak platil (karta → na kartu, kredit → do
+     kreditu) jen jako informace, ne volba;
+   - **potvrzovací obrazovka** se shrnutím („Odstupujete od smlouvy u objednávky
+     č. …, položky …, vrátíme … do 14 dnů od vrácení zboží“) a tlačítko
+     **Potvrdit odstoupení**;
+   - po potvrzení: číslo požadavku, **co dál** (jak a kam zboží poslat — adresa
+     skladu / Packeta vratka s heslem, až bude účet; do té doby instrukce
+     z `app_settings.return_instructions_md` per trh) a **e-mail s potvrzením
+     přijetí odstoupení** s datem a časem (zákonné potvrzení na trvalém nosiči);
+     šablona `withdrawal_received` per trh (Cursor).
+6. Stav požadavku je na téže stránce (Přijato → Zboží přijato → Peníze
+   vráceny) — zákazník se vrací stejným odkazem nebo si vyžádá nový.
+
+### 10.4 Backend a pravidla
+
+- `fn_request_return_by_token(p_token, p_kind, p_items jsonb, p_note)` →
+  ověří token (hash, `expires_at`), lhůtu (`withdrawal_days` trhu od
+  `delivered_at`/`shipped_at`/`paid_at` podle toho, co existuje), založí
+  `return_requests` (+ položky a počty, `kind` withdrawal/complaint, `source =
+  'self_service'`), zapíše `order_events` (`return.requested`, viditelné
+  zákazníkovi) a zavolá e-mail. **Peníze se nehýbou** — vratku provádí admin
+  přes existující `fn_admin_decide_return` → `fn_refund_order` (ledger, dobropis
+  automaticky, 19 §6). Duplicitní požadavek na tutéž položku odmítne.
+- `fn_order_status_by_token(p_token)` vrací jen to, co zákazník smí vidět
+  (žádné provize, žádná interní poznámka, žádný e-mail jiné osoby).
+- Admin: fronta vratek (20 §3.5) ukazuje zdroj `self_service`, hlášení
+  `RETURN-SELF-SERVICE` `info` pro CRM (ambasador dostane informaci, že jeho
+  zákazník odstupuje — bez důvodu, jen fakt).
+- Vše per trh: texty, lhůty, adresa pro vrácení, měna; SK slovensky.
+- Akceptace (pgTAP 075+): neshoda čísla/e-mailu nic nevydá a odpověď je stejná;
+  rate limit; token po 48 h neplatí; odstoupení celé i částečné založí
+  `return_requests` s položkami; po lhůtě jen reklamace; e-mail potvrzení
+  odeslán; token nevidí cizí objednávku ani interní data; přihlášený zákazník
+  totéž bez tokenu.

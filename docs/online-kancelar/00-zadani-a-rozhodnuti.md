@@ -52,6 +52,7 @@ Není to klasické MLM — je to vztahový systém s třígenerační odměnou. 
 | R21 | **Neaktivní partner (schváleno zadavatelem 22. 8. 2026):** deaktivovaný partner nedostává nové provize, jeho podíl z linie zůstává firmě, downline se nepřesouvá (bez komprese), jeho zákazníci zůstávají přiřazeni; zůstatek si může vyplatit do 12 měsíců po ukončení (`payout_after_exit_months`, konfigurovatelně). Zadání: `21` C.5. |
 | R22 | **Pořadí multishopu (schváleno 22. 8. 2026):** fáze A z `21` B.10 (trhy, měna, produkt per trh, překlady, izolace) se implementuje **před go-live CZ** — CZ funkčně nic nemění, ale migrace jádra proběhne bez živého ledgeru. |
 | R23 | **CZ + SK od startu (22. 8. 2026 večer):** multishop není odložený — fáze B z `21` B.10 (trhy, akce, e-maily a právo per trh, peníze per měna, admin „Trhy“, storefront SK) jde **před go-live**, společně s doklady (`19` §6, `20` §6) a správou objednávek (`20`). Práce běží ve třech paralelních proudech podle `23`. Nahrazuje část R22 „po go-live CZ“; fáze C (`21`) zůstává na 2.–3. trh. |
+| R24 | **Moje objednávka bez přihlášení + funkce odstoupení (23. 8. 2026):** zákazník musí umět objednávku vrátit stejně snadno, jako ji koupil (směrnice EU 2023/2673, „withdrawal function“, účinnost 19. 6. 2026). Na e-shopu je odkaz **Moje objednávka**: číslo objednávky + e-mail → odkaz na e-mail → detail objednávky se stavem, sledováním, doklady a tlačítkem **Odstoupit od smlouvy** (celá objednávka nebo vybrané položky) s potvrzením na e-mail. Specifikace `20` §10. |
 
 ## Fáze
 

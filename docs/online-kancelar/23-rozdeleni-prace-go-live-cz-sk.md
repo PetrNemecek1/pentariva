@@ -143,6 +143,7 @@ rozhraní z §4 platí, nové sdílené sloupce se hlásí tam.
 | 7 | **Inventura**: obrazovka počítané vs. zadané stavy, `product_cost_history` (verzování nákupní ceny) | 21 C.6 🟡 | |
 | 8 | Kontrola kódů hlášení z `21` D v `issue_catalog` (cs/en/sk) — doplnit chybějící | 21 D | |
 | 9 | Zebra: po koupi tiskárny ověřit Browser Print (zkušební štítek, auto-tisk při Zabaleno) | 19 §0.2 | hardware |
+| **10** | **Moje objednávka bez přihlášení + funkce odstoupení** (R24): `/my-order/`, tokenový odkaz na e-mail, detail se stavem/sledováním/doklady, tlačítko **Odstoupit od smlouvy** (celá / položky), potvrzení e-mailem, `fn_request_return_by_token`, `fn_order_status_by_token`, rate limit, pgTAP 075 | **20 §10** | **priorita 1 — zákon od 19. 6. 2026**; šablony e-mailů per trh dodá Cursor, signed URL dokladu s tokenem Claude |
 
 ### 6.2 Cursor — proud „Multishop fáze B", kolo 2
 
@@ -157,10 +158,12 @@ rozhraní z §4 platí, nové sdílené sloupce se hlásí tam.
 | 7 | **OSS hlídač**: obrat do jiných států EU za kalendářní rok vs. práh 10 000 € → hlášení `low`/`medium` pro účetní (per trh, v měně trhu, informativně v CZK přes `fx_rates`) | 21 B.8, C.6 | `fx_rates` (ČNB denní kurz, cron) jen informativně |
 | 8 | **VIES kontrola DIČ** (EF `vies-check`) pro B2B zákazníky v SK/EU, reverse charge poznámka na dokladu (Claude doplní do snapshotu, když dostane `buyer.vat_validated`) | 21 C.7 | |
 | 9 | D38 izolace: doplnit scénáře (akce, doprava, e-maily, `paused` trh) do pgTAP 060–069 | 21 B.9 | |
+| 10 | Šablony `order_access_link` a `withdrawal_received` per trh a jazyk + odkaz **Moje objednávka** v hlavičce/patičce storefrontu všech trhů (texty cs/sk/en) | 20 §10, R24 | pro Codexův bod 10 |
 
 ### 6.3 Claude — proud „Doklady" + integrace, kolo 2
 
 - Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
+- EF `invoice-render` akce `url` přijme i `order_access_token` (20 §10 b.3).
 - Rozhraní pro e-mail #5: helper `fn_invoice_signed_url`/EF akce `url` pro `send-email` (s Cursorem, 6.2 b.3); `buyer.vat_validated` + reverse charge věta v dokladu (6.2 b.8).
 - Účetní: odpovědi A10/A11 → `.isdocx` přepínač, kód formy úhrady; předání prvních vzorových balíků.
 - Go-live checklist `10` §5: truncate testovacích dat (D39 `is_test` + doklady řady TEST zůstávají mimo), zálohy + zkušební obnova, live smoke 10 Kč po IČO/Stripe live.
