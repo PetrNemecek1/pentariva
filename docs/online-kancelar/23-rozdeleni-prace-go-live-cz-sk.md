@@ -119,3 +119,48 @@ Pravidla:
 Fáze C z `21` (sklady per trh, šarže, FX reporty, lokální entity, domény per trh),
 bankovní převod s VS (čeká na rozhodnutí zadavatele, `10` §6), zálohové doklady,
 Zebra na hardwaru (po koupi), VIES kontrola DIČ (první B2B zákazník v SK).
+
+---
+
+## 6. Druhé kolo (zadáno 23. 8. 2026 — po merge prvních větví)
+
+Předpoklad: `feat/multishop-b` a `feat/order-ops` opravené podle společného běhu
+(view `v_credit_balances`, šablony per trh v testech, `customer_benefit_tiers` PK,
+`fn_generate_commissions` nad verzí ze spec 16, drobnosti ve fixturách), zelený
+společný `supabase test db`, merge po jednom PR. Pak každý pokračuje ve svém proudu;
+rozhraní z §4 platí, nové sdílené sloupce se hlásí tam.
+
+### 6.1 Codex — proud „Správa objednávek a expedice", kolo 2
+
+| # | Co | Zdroj | Poznámka |
+|---|---|---|---|
+| 1 | **Packeta adaptér reálně** (CZ i SK): `createPacket`, `packetsLabelsPdf`, `cancelPacket`, `packetStatus`, `packetTracking` za `PACKETA_READY`; mapa 25 stavů → `shipping_status_map`; worker `shipping-worker` je volá; konfigurace dopravce per trh (`shipping_methods.market_code`) | 19 §2, §5.2 | mock/Deno testy hned, živě až po účtu (API klíč CZ + SK) |
+| 2 | **Vratky přes Packetu** (`createPacketClaimWithPassword`, heslo v e-mailu i detailu, `returned` → příjem na sklad) | 19 §7 | mock do účtu |
+| 3 | **Widget výdejních míst** s ověřením `isValid` na serveru (místo `mockPickupPoints`), per trh | 19 §4 | mock do klíče; `shipping_mock_pickup_points` z kola 1 jako fallback |
+| 4 | Hromadné akce dotáhnout: **tisk balicích lístků výběru** (jeden PDF/HTML), **CSV/XLSX výběru** objednávek | 20 §5 | hromadná změna stavu je z kola 1 |
+| 5 | **Hromadné storno objednávek produktu při chybné ceně** (§ 583 OZ) + blok uložení ceny pod nákupní (`product_cost`) | 21 C.2 | dotazuje se na vratky přes existující `fn_refund_order` |
+| 6 | `profiles.payouts_blocked` + důvod, `payout_requests.returned` (vrácená výplata bankou) — pokud nebylo v kole 1 | 21 C.5 | |
+| 7 | **Inventura**: obrazovka počítané vs. zadané stavy, `product_cost_history` (verzování nákupní ceny) | 21 C.6 🟡 | |
+| 8 | Kontrola kódů hlášení z `21` D v `issue_catalog` (cs/en/sk) — doplnit chybějící | 21 D | |
+| 9 | Zebra: po koupi tiskárny ověřit Browser Print (zkušební štítek, auto-tisk při Zabaleno) | 19 §0.2 | hardware |
+
+### 6.2 Cursor — proud „Multishop fáze B", kolo 2
+
+| # | Co | Zdroj | Poznámka |
+|---|---|---|---|
+| 1 | **Peníze per měna dotáhnout**: `fn_request_payout(currency)`, `payout_profiles.iban` povinné pro EUR, výplatní výpisy (`payout_statements`) per měna, `/commissions` a `/payouts` per měna; pgTAP, že se nic nepřepočítává kurzem | 21 B.7 | |
+| 2 | **Admin Trhy → produkty**: aktivace per trh s kontrolou úplnosti (překlad, cena, DPH), pomocník „navrhnout z CZ kurzem × koeficient, zaokrouhlit na ,90", hromadná aktivace | 21 B.4, 22 §10 | |
+| 3 | **E-maily per trh a jazyk ve všech tocích**: jazyk = `profiles.preferred_locale`, odesílatel/patička per entita, fallback `cz/cs`; **příloha faktury** k e-mailu #5 přes `invoices.pdf_path` + signed URL (rozhraní §4 — poskytne Claude funkcí v EF `invoice-render`, akce `url`) | 21 B.3, 19 §6.2 | Claude dodá helper, Cursor zapojí do `send-email` |
+| 4 | **Právní dokumenty per trh** (`legal_documents(kind, market_code, locale, version)`) + re-souhlas v trhu uživatele; spotřebitelské lhůty per trh (`withdrawal_days`) | 21 B.8 | texty SK dodá zadavatel |
+| 5 | **Promoakce a kupóny per trh** ověřit end-to-end (`fn_quote_cart` jen akce trhu, unikátnost kódu per trh) + UI průvodce s výběrem trhu | 21 B.5 | |
+| 6 | **SK checkout end-to-end v Stripe TEST (EUR)**: objednávka SK → webhook → faktura `FSK…` (23 %, slovensky) → dobropis; pgTAP + ruční průchod | 21 B.7, 19 §6 | společně s Claudem |
+| 7 | **OSS hlídač**: obrat do jiných států EU za kalendářní rok vs. práh 10 000 € → hlášení `low`/`medium` pro účetní (per trh, v měně trhu, informativně v CZK přes `fx_rates`) | 21 B.8, C.6 | `fx_rates` (ČNB denní kurz, cron) jen informativně |
+| 8 | **VIES kontrola DIČ** (EF `vies-check`) pro B2B zákazníky v SK/EU, reverse charge poznámka na dokladu (Claude doplní do snapshotu, když dostane `buyer.vat_validated`) | 21 C.7 | |
+| 9 | D38 izolace: doplnit scénáře (akce, doprava, e-maily, `paused` trh) do pgTAP 060–069 | 21 B.9 | |
+
+### 6.3 Claude — proud „Doklady" + integrace, kolo 2
+
+- Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
+- Rozhraní pro e-mail #5: helper `fn_invoice_signed_url`/EF akce `url` pro `send-email` (s Cursorem, 6.2 b.3); `buyer.vat_validated` + reverse charge věta v dokladu (6.2 b.8).
+- Účetní: odpovědi A10/A11 → `.isdocx` přepínač, kód formy úhrady; předání prvních vzorových balíků.
+- Go-live checklist `10` §5: truncate testovacích dat (D39 `is_test` + doklady řady TEST zůstávají mimo), zálohy + zkušební obnova, live smoke 10 Kč po IČO/Stripe live.
