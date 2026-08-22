@@ -31,6 +31,10 @@ Rozsah: `19` §6.1–6.4, `20` §6, `21` B.8 (část doklady). Od začátku
 | 9 | `fn_admin_reissue_invoice` (doklad na firmu dodatečně = dobropis + nová faktura) | 21 C.1 |
 | 10 | Hlášení: `INVOICE-COMPANY-MISSING`, `INVOICE-RENDER-FAILED`, `EXPORT-FAILED` v `issue_catalog` (cs/en/sk) | 16 |
 
+**Stav 23. 8. 2026:** body 1–10 hotové a v produkci (pentariva-office PR #31–#33 + doplňkové
+exporty); ISDOC prochází validací proti oficiálnímu XSD 6.0.2. Otevřené jen odpovědi účetní
+(A10 `.isdocx`, A11 kód formy úhrady — výchozí 42) a příloha PDF k e-mailu #5 (rozhraní pro proud 2).
+
 Vlastní DB objekty: `invoices*`, `invoice_series`, `fn_next_document_number`,
 `fn_build_invoice_snapshot`, `fn_issue_internal_invoice`, `fn_admin_reissue_invoice`,
 `fn_admin_document_*`, bucket `invoices`, EF `invoice-render`, `documents-export`.
