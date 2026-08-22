@@ -78,12 +78,18 @@
      rozdíly vypsané per objednávka.
 - Vše jen čtení z existujících tabulek/views; žádné nové agregační tabulky.
 
-## 6. Fakturoid (aktivace až v live módu)
+## 6. Fakturoid (volitelný adaptér; výchozí jsou interní doklady dle 19 §6)
+
+> **Upřesnění 22. 8. 2026 (R18):** Fakturoid není podmínkou go-live — tarif
+> Zdarma je omezen na 5 odběratelů, placené tarify stojí 151–476 Kč měsíčně.
+> Výchozí režim je `INVOICING_MODE=internal` (doklady vystavuje office sám,
+> viz `19-interni-expedice-low-cost.md` §6). Tento odstavec platí pro
+> případné pozdější přepnutí na Fakturoid.
 
 - Adaptér `supabase/functions/_shared/invoicing/fakturoid.ts` (API v3, OAuth
   client credentials; secrets `FAKTUROID_SLUG/CLIENT_ID/CLIENT_SECRET`).
-  Konfig `INVOICING_MODE=off|fakturoid` (default `off` — dnešní chování,
-  e-mailová rekapitulace).
+  Konfig `INVOICING_MODE=off|internal|fakturoid` (default `internal`;
+  `off` = e-mailová rekapitulace bez dokladu, jen pro vývoj).
 - Při `orders → paid` (po commitu, stejné místo jako e-mail): vystavit fakturu
   (řada dle Fakturoid, položky vč. DPH sazeb, kredit jako sleva), uložit
   `orders.invoice_number`, `invoice_url`; PDF odkaz do e-mailu #5 a detailu
@@ -108,7 +114,9 @@
    v patičce a `legal_documents`.
 2. Rozhodnutí brány (Stripe live vs Comgate, `08` Příloha A) → live klíče,
    nový webhook + `whsec`, `PAYMENTS_MODE=live` guard ověřen.
-3. `INVOICING_MODE=fakturoid`, testovací faktura v sandboxu Fakturoidu.
+3. `INVOICING_MODE=internal`, testovací interní faktura a dobropis
+   odsouhlasené účetní (19 §6); Fakturoid jen pokud se pro něj zadavatel
+   rozhodne.
 4. Restore drill: obnova poslední zálohy do lokálního Postgresu dle `09` §4
    + zápis výsledku do runbooku (povinné před přepnutím).
 5. `pre-golive-truncate.sql` → smoke: live platba 10 Kč → webhook → provize

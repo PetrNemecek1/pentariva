@@ -44,9 +44,11 @@
   vyplněného dopravce (tracking volitelný).
 - E-mail #6 `order_shipped` rozšířit o dopravce + tracking odkaz.
 - Zákazník: detail objednávky ukazuje dopravce a tracking odkaz.
-- **API integrace dopravců (výdejní místa, štítky) NENÍ v tomto rozsahu** —
-  zaznamenat jako Fázi 3; výběr výdejního místa zatím textové pole
-  `shipping_address.note`.
+- ~~API integrace dopravců NENÍ v tomto rozsahu~~ — **nahrazeno dokumentem
+  `19-interni-expedice-low-cost.md`** (22. 8. 2026): Zásilkovna přímo přes
+  REST/XML API, widget výdejních míst v checkoutu, štítky, synchronizace
+  stavů, vratky; ruční režim z této kapitoly zůstává jako
+  `SHIPPING_PROVIDER=manual`.
 
 ## 3. Odstoupení od smlouvy a reklamace (zákonná povinnost e-shopu)
 
