@@ -28,6 +28,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [14-provoz-obchodu.md](14-provoz-obchodu.md) | Obchodní provoz: sklad, expedice, odstoupení/reklamace, marketingový souhlas, verzované právní dokumenty, kategorie + EN katalog. Kap. 1–2 až po 13, zbytek souběžně |
 | [15-go-live-finance.md](15-go-live-finance.md) | Go-live a finance: noční selfcheck ledgeru, heartbeaty, rate limity, výplatní agenda + statementy, účetní exporty, Fakturoid, truncate skript, runbook přepnutí |
 | [16-lidska-komunikace-systemu.md](16-lidska-komunikace-systemu.md) | Hlášení systému pro lidi: katalog kódů, závažnost, dopad, akce, proklik + sbalený technický report pro programátora; přejmenování „Jistota/Toky"; oprava falešných P-INV1 na historických objednávkách |
+| [17-authentica-fulfillment.md](17-authentica-fulfillment.md) | Napojení na Authentica WMS (zaměnitelný adaptér za `FULFILLMENT_MODE`): produkty přes SKU, sklad jako zdroj pravdy, automatická expedice po zaplacení, dopravci + výdejní místa v checkoutu, tracking/doručení webhooky, vratky přes Return Authorization, naskladnění; použít po podpisu smlouvy |
 
 Uživatelský manuál (ne implementační spec) žije v
 [`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
