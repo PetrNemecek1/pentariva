@@ -119,6 +119,30 @@
   se čeština nikdy nesmí dostat do URL, kódu ani identifikátorů, jinak by
   vícejazyčnost znamenala breaking change URL struktury.
 
+## Trhy, měny, překlady (doplněno 22. 8. 2026, viz `21-revize-multishop-vyjimky.md` B)
+
+- **D1 upřesnění**: zdrojem pravdy schématu jsou `supabase/migrations` +
+  generované typy; `04-datovy-model.md` je historický návrh.
+- **D36 Trh (`market`)**: každá storefront entita (objednávka, akce, doprava,
+  právní dokument, e-mailová šablona, cena produktu) nese `market_code`;
+  žádný dotaz storefrontu bez trhu. Trhy jsou navzájem izolované (pgTAP
+  sada „market isolation").
+- **D37 Měna**: `_haleru` = nejmenší jednotka měny řádku (haléře/centy),
+  sloupce se nepřejmenovávají; nové sloupce `_minor`. Každá peněžní tabulka
+  má `currency`; měna dceřiných řádků = měna objednávky. V ledgeru se nikdy
+  nepřepočítává kurzem; kreditní zůstatky a výplaty per měna. `fx_rates` jen
+  pro informativní reporty.
+- **D38 Překlady**: dlouhý obsah (produkty, právní dokumenty, akademie)
+  = tabulky `*_translations(…, locale)` se stavem `draft|ready`; krátké
+  popisky (kategorie, příznaky, štítky akcí) = `jsonb labels {locale: text}`.
+  Fallback jen na výchozí jazyk **téhož trhu**, nikdy na jiný trh. UI
+  slovník `lib/i18n/messages.ts` zůstává.
+- **D39 Testovací data**: `is_test` propagované z platby (`NOT livemode`
+  nebo ruční test) do objednávky, dokladů a ledgeru; testovací data nikdy
+  v ostrých součtech, exportech ani výplatách (20 §3.1b).
+- **D40 Migrace jádra (fáze A)** v jedné transakci s reverzním skriptem;
+  všech existujících asercí a zlatých testů 13 beze změny výsledků.
+
 ## Co v MVP záměrně NENÍ (D30)
 
 Mentor/leader dashboardy, kampaně, Event Manager, dokumentové centrum, AI asistent,

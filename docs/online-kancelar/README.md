@@ -11,11 +11,11 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 
 | Soubor | Obsah |
 |---|---|
-| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R19, fáze |
+| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R21, fáze |
 | [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21; **§23 manuál / Help**) |
-| [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D35 — závazný pro vše ostatní |
-| [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | **Zdroj pravdy pro peníze** — finální provizní model, závazný worked example |
-| [04-datovy-model.md](04-datovy-model.md) | **Kanonické DDL** — jediný zdroj schématu (tabulky, enumy, funkce, views, RLS-ready) |
+| [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D40 — závazný pro vše ostatní |
+| [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | Původní provizní model v1 — **nahrazen 13 (v2)**; worked examples jen historicky |
+| [04-datovy-model.md](04-datovy-model.md) | Původní návrh DDL — **historický**; zdrojem pravdy schématu jsou `pentariva-office/supabase/migrations` (D1 upřesnění v 02) |
 | [05-provizni-engine.md](05-provizni-engine.md) | Pravidla výpočtu provizí, 6 worked examples (a)–(f), 24 testovacích invariantů |
 | [06-bezpecnost-rls.md](06-bezpecnost-rls.md) | Auth, role, RLS politiky, GDPR, audit |
 | [07-aplikace.md](07-aplikace.md) | Next.js aplikace: struktura repa, routing, obrazovky MVP, CLAUDE.md pro nový repo |
@@ -32,24 +32,27 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [18-eshop-prezentace-a-promoakce.md](18-eshop-prezentace-a-promoakce.md) | Prezentace produktu (galerie, složení, použití, FAQ, příznaky, detail, sdílení) + promoakce dle modelu Shoptet/Vendure: akční cena od–do s 30denní referenční cenou, šablony kupónů s „Platí pro" a příznaky must/must_not, dárky, doprava zdarma, buy X get Y, kódy s limity; R17: akce jen pro komunitu, B2C za master přepínačem; semafor marže. §1 hned, §2–5 po 13 a 14 §1 |
 | [19-interni-expedice-low-cost.md](19-interni-expedice-low-cost.md) | **Interní expedice bez fixních nákladů (R18):** Zásilkovna přímo přes REST/XML API za adaptérem `SHIPPING_PROVIDER=manual/packeta` (widget výdejních míst + serverová validace, štítky PDF, synchronizace stavů, vratky heslem), vlastní doklady `INVOICING_MODE=internal` (číselné řady, snapshot, PDF dle šablony Shoptet/Fakturoid §6.2, **ISDOC 6.0.2 export** + měsíční ZIP pro účetní §6.3, dobropisy); Balíkobot a Fakturoid jen jako volitelné adaptéry; **balicí stanice** s tiskem ZPL na Zebra ZD421d přes Browser Print, režim podání odnos → svoz, fyzické vs. digitální produkty (poukazy) s hmotnostmi a váhovými pásmy, firemní údaje jako placeholdery v administraci s guardem (IČO zatím není); checklist pro zadavatele + co ověřit v cizích účtech. Nahrazuje 14 §2 poslední bod a upřesňuje 15 §6. §13: co stavět hned vs. po získání IČO/účtu |
 | [20-sprava-objednavek.md](20-sprava-objednavek.md) | **Správa objednávek (vzor Shoptet):** systémové stavy pevné + provozní stavy konfigurovatelné v adminu; detail objednávky se záložkami (položky, kompletace, historie, doklady, zásilky, platby + provize); ruční zásahy výhradně přes peněžní funkce (označit zaplaceno = `fn_apply_payment_event`, storno, rozdělení zásilky, doposlání 0 Kč, částečná vratka na kartu/do kreditu, ruční objednávka); `order_events` historie kdo-co-kdy; exporty dokladů pro účetní (období × typ → ZIP PDF + ISDOC + přehled CSV/XLSX) |
+| [21-revize-multishop-vyjimky.md](21-revize-multishop-vyjimky.md) | **Revize všech zadání proti repu (22. 8. 2026)** — co je hotové (13–18 ano, 19–20 ne), co se koriguje (DDL 04 historický, `_en` sloupce → překlady, CHECK měny CZK, globální nastavení → per trh); **multishop R20**: trh = země (měna, ceny, DPH, akce, doprava, entita), produkt master + aktivace per trh s kontrolou úplnosti a překlady, peníze per měna (D36–D40), fáze A před go-live CZ; **katalog nestandardních situací** (duplicitní účty, chargebacky, nedoplatky, ztracené balíky, nevyzvednuté zásilky, odchod partnera R21, šarže, VIES…) s řešením a stavem |
 
 Uživatelský manuál (ne implementační spec) žije v
 [`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
 a v kanceláři na `/help`. Screenshoty do Helpu až na závěr (01 §23).
 
-## Stav implementace (2026-08-13)
+## Stav implementace (2026-08-22, detail v `21` A.1)
 
-- **Epik 0 hotový**: repo [`pentariva-office`](https://github.com/PetrNemecek1/pentariva-office)
-  založeno a nasazeno na `https://pentariva-office.web.app` (custom doména
-  `office.pentariva.com` čeká na DNS, viz `11-dns-forpsi.md`). CI/CD, Supabase
-  projekt lokálně inicializovaný, brand parity s marketing webem.
-- **Epik 1 (schéma + provizní engine + zlaté testy)** — další krok, zatím
-  neimplementováno (`supabase/migrations` prázdné).
-- Doména `pentariva.com` přidána ve Firebase, čeká na DNS na Forpsi.
+- Repo [`pentariva-office`](https://github.com/PetrNemecek1/pentariva-office)
+  běží na `office.pentariva.com`; 74 migrací, 68 tabulek, 167 funkcí,
+  691 pgTAP asercí, 17 Edge Functions.
+- **Hotovo:** Epiky 0–11, Fáze 2/3, model v2 (13), provoz (14), go-live
+  finance (15), hlášení (16), šev fulfillmentu (17), prezentace + promoakce (18).
+- **Nezačato:** 19 (expedice, doklady, ISDOC), 20 (správa objednávek),
+  21 (multishop fáze A — dělat **před go-live CZ**).
+- Mimo kód čeká: IČO firmy, účet Zásilkovny, tiskárna Zebra, účetní
+  (ISDOC/SW), právní texty.
 
 ## Precedence při rozporu
 
-`03` (peníze) → `00` (R1–R19) → `02` (D1–D35) → `04` (schéma) → `05` (engine) → ostatní.
+`13` (peníze, model v2) → `00` (R1–R21) → `02` (D1–D40) → `supabase/migrations` v office (schéma) → `21` (revize, multishop) → `14`–`20` → ostatní (`03`/`04`/`05` jen historicky).
 
 ## Neporušitelná pravidla pro implementaci
 
