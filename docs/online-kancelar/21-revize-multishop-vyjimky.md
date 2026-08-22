@@ -251,7 +251,7 @@ globální** s možností per-trh verze v `commission_rule_versions.market_code`
 
 | Fáze | Kdy | Obsah |
 |---|---|---|
-| **A** | **před go-live CZ** (levné teď) | B.2 `markets` + `market_code` + `legal_entities`; B.4 `product_markets` / `product_translations` / `product_market_prices` s migrací; B.7 `currency` sloupce + zrušení CHECK; B.3 `MarketProvider` + `/cz/` prefix; D38 testy. Funkčně pro CZ **nic nemění** |
+| **A** | **před go-live CZ** (schváleno zadavatelem 22. 8. 2026, R22) | B.2 `markets` + `market_code` + `legal_entities`; B.4 `product_markets` / `product_translations` / `product_market_prices` s migrací; B.7 `currency` sloupce + zrušení CHECK; B.3 `MarketProvider` + `/cz/` prefix; D38 testy. Funkčně pro CZ **nic nemění** |
 | **B** | po go-live CZ | B.6 `market_settings`, B.5 akce per trh, B.3 e-maily per trh/jazyk, B.8 DPH režimy a doklady per entitu, B.7 kredity/výplaty per měna, admin „Trhy" + aktivace produktů; **pilot SK** (Packeta SK, EUR, Stripe EUR) |
 | **C** | při 2.–3. trhu | sklady per trh (`warehouses`), šarže (C.6), FX reporty, domény per trh, lokální entity |
 
@@ -309,7 +309,7 @@ Legenda stavu: ✅ existuje · 🟡 částečně / v zadání 19–20 · 🔴 no
 
 | Situace | Řešení | Stav |
 |---|---|---|
-| Partner končí / deaktivován (`fn_admin_set_active=false`) | **R21 (výchozí, ke schválení):** neaktivní partner **nedostává nové provize**; jeho podíl z linie zůstává firmě (`company_margin`), downline **se nepřesouvá** (žádná komprese), jeho zákazníci zůstávají přiřazeni (provize z nich firmě). Reaktivace obnoví. Výplata zůstatku po ukončení možná do 12 měsíců (`payout_after_exit_months`) | 🔴 + R21 |
+| Partner končí / deaktivován (`fn_admin_set_active=false`) | **R21 (schváleno 22. 8. 2026):** neaktivní partner **nedostává nové provize**; jeho podíl z linie zůstává firmě (`company_margin`), downline **se nepřesouvá** (žádná komprese), jeho zákazníci zůstávají přiřazeni (provize z nich firmě). Reaktivace obnoví. Výplata zůstatku po ukončení možná do 12 měsíců (`payout_after_exit_months`) | 🔴 + R21 |
 | Partner zemřel / převod pozice | ruční převod pozice na jiný účet (`fn_admin_transfer_position(from,to)`) s dokumentací; provize pokračují novému | 🔴 fáze C |
 | Podezření na self-referral / fiktivní zákazníky | anti-abuse report ✅ (stejná adresa, IP, platební karta `payments.payload.fingerprint`); akce: pozastavit výplaty partnera (`profiles.payouts_blocked` + důvod) | 🟡 sloupec |
 | Změna bankovního účtu před výplatou / výplata se vrátila | `payout_requests` stav `returned` + hlášení; nový profil účtu; opětovné odeslání | 🔴 stav |

@@ -11,7 +11,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 
 | Soubor | Obsah |
 |---|---|
-| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R21, fáze |
+| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R22, fáze |
 | [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21; **§23 manuál / Help**) |
 | [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D40 — závazný pro vše ostatní |
 | [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | Původní provizní model v1 — **nahrazen 13 (v2)**; worked examples jen historicky |
@@ -52,7 +52,7 @@ a v kanceláři na `/help`. Screenshoty do Helpu až na závěr (01 §23).
 
 ## Precedence při rozporu
 
-`13` (peníze, model v2) → `00` (R1–R21) → `02` (D1–D40) → `supabase/migrations` v office (schéma) → `21` (revize, multishop) → `14`–`20` → ostatní (`03`/`04`/`05` jen historicky).
+`13` (peníze, model v2) → `00` (R1–R22) → `02` (D1–D40) → `supabase/migrations` v office (schéma) → `21` (revize, multishop) → `14`–`20` → ostatní (`03`/`04`/`05` jen historicky).
 
 ## Neporušitelná pravidla pro implementaci
 
