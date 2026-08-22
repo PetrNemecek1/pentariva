@@ -412,6 +412,134 @@ ovládání klávesnicí, funguje na tabletu):
 - Náhled faktury s placeholdery je dostupný kdykoliv (admin → „Náhled
   dokladu"), aby šlo šablonu ladit bez IČO.
 
+### 6.2 Šablona dokladu — závazná struktura (podle vzorů Shoptet CZ a Fakturoid, 22. 8. 2026)
+
+Zadavatel dodal dvě reálné faktury jiné firmy (česká ze Shoptetu, německá
+z Fakturoidu). Naše šablona přebírá **českou Shoptet strukturu** (účetní ji
+zná) s čistší typografií Fakturoidu. Vzory nejsou v repu (obsahují osobní
+údaje zákazníků); implementátor staví podle tohoto popisu:
+
+**Hlavička:** název firmy vlevo, uprostřed „Faktura – Daňový doklad č.
+{number}" (u neplátce „Faktura č. {number}", u dobropisu „Opravný daňový
+doklad č. {number} k faktuře č. {original}"), vpravo **čárový kód čísla
+dokladu** (Code 128 — účetní skenuje při zaúčtování).
+
+**Blok Dodavatel** (rámeček vlevo): logo, název, ulice, PSČ město, země, IČ,
+DIČ (u neplátce místo DIČ věta „Neplátce DPH"), telefon, e-mail, web; pod
+tím: Číslo účtu, IBAN, BIC (SWIFT), Forma úhrady („Kartou online" /
+„Kreditem" / „Kartou + kreditem"), Datum vystavení (s časem), Datum
+splatnosti (= datum vystavení, uhrazeno), Datum zdanitelného plnění
+(= `paid_at`).
+
+**Blok vpravo:** Variabilní symbol (= `order_number`), Konstantní symbol
+(`0308` u platby kartou — konfig `invoice_constant_symbol`), Specifický
+symbol (prázdné / ID platby z brány `payments.provider_payment_id` —
+Fakturoid vzor ukazuje ID platby a účetní to oceňuje pro párování s výpisem
+Stripe), Objednávka č. + Ze dne; rámeček **Příjemce** (jméno / firma, ulice,
+PSČ město, země, e-mail, telefon; IČ/DIČ u B2B Trade — povinné); **Doručovací
+adresa** (liší-li se; u výdejního místa název a adresa místa).
+
+**Tabulka položek** — sloupce: Název (+ druhý řádek „Kód: {sku}"), Množství
++ jednotka, Cena za m. j. bez DPH, Cena bez DPH, DPH %, DPH, Celková cena
+vč. DPH. Řádky v pořadí: položky objednávky (katalogová cena), **slevové
+řádky** per sazba DPH („Sleva – uplatněný kredit 21 %", „Sleva – kupón
+{code} 21 %" záporně; viz pravidlo níže), dárky (0,00 Kč, název s „– dárek"),
+doprava (název metody + výdejní místo ve druhém řádku, i když 0,00 Kč),
+platba („Online platba kartou", 0,00 Kč). **Shrnutí:** Cena bez DPH, DPH,
+Celkem vč. DPH; řádek **K ZAPLACENÍ 0,00 Kč** + **UHRAZENO {částka}**
+(a vodoznak „UHRAZENO" přes tělo — Shoptet používá „NEPLAŤTE!", Fakturoid
+„Bezahlt"; my „UHRAZENO"). **Součet DPH per sazba** (sazba, základ, DPH,
+celkem) — povinná rekapitulace. Patička: „Vystavil: {admin / systém}",
+„Společnost je zapsána v obchodním rejstříku vedeném … oddíl …, vložka …"
+(`company_registry`), volitelně otisk razítka/podpisu (`company_stamp_path`),
+„Vystaveno systémem PENTARIVA Online kancelář".
+
+**Pravidla výpočtu (závazná, shodná se vzorem Shoptet):**
+1. Katalogové ceny jsou **vč. DPH** → DPH se počítá **„shora"** (ISDOC
+   `VATCalculationMethod=1`): per sazba `DPH = Σ_gross × sazba / (100 +
+   sazba)` zaokrouhleno HALF-UP na haléře (`fn_pct_haleru` logika), základ
+   = Σ_gross − DPH. **Rekapitulace per sazba je zdrojem pravdy**; řádkové
+   hodnoty bez DPH/DPH jsou informativní a smějí se od Σ řádků lišit
+   o haléře (vzor: 624,11 + 74,89 = 699,00).
+2. Σ „Celková cena vč. DPH" všech řádků = `orders.paid_money_haleru +
+   credit_used_haleru` (před slevovými řádky) a po slevových řádcích =
+   `paid_money_haleru`; **invariant testován pgTAP**.
+3. Kredit a kupóny = **slevové řádky** per sazba, ne úprava cen položek:
+   `discount_r = Σ list_gross_r − Σ paid_gross_r` (z `order_items`), řádek
+   jen když > 0. Položky tak zůstávají v katalogových cenách (účetní i
+   zákazník vidí, za co sleva byla).
+4. Dárky (`is_gift`) 0,00 Kč. **Daňové upozornění:** dárek s pořizovací cenou
+   > 500 Kč bez DPH není „dárek malé hodnoty" (§ 13 odst. 9 ZDPH) a firma
+   z něj odvádí DPH — systém při nastavení dárku v promoakci (18) nad
+   `gift_small_value_limit_haleru` (default 50 000 h) ukáže varování a
+   založí `low` hlášení; účetní rozhodne.
+5. Měna **CZK**; doklad v cizí měně (vzor Fakturoid: EUR + přepočet na CZK
+   kurzem ČNB, DPH v CZK) = **Fáze 3** spolu s EUR katalogem (D35) — datový
+   model má `currency` a `exchange_rate` už teď (default `CZK`, 1).
+   Prodej spotřebitelům do jiných států EU podléhá režimu OSS nad 10 000 €
+   ročně — mimo rozsah, poznámka pro účetní.
+6. Dobropis: stejná šablona, záporné řádky vrácených položek + poměrná
+   část slevy a dopravy (je-li vracena), odkaz na původní doklad, důvod
+   (`return_requests.kind`), „Vráceno na kartu dne …" / „Vráceno do kreditu".
+7. Jazyk šablony podle jazyka objednávky (cs/en; D35), formát čísel
+   `1 737,00 Kč`, datum `22. 8. 2026`.
+
+### 6.3 ISDOC export pro účetní (požadavek účetní 22. 8. 2026)
+
+Účetní importuje doklady ve formátu **ISDOC** (český standard ICT Unie,
+XML, verze **6.0.2**, namespace `http://isdoc.cz/namespace/2013`) + PDF.
+
+- Každý doklad má vedle PDF i `{number}.isdoc` (Storage `invoices/{year}/`),
+  generovaný ve stejné EF `invoice-render` ze **stejného snapshotu** (nikdy
+  z živých tabulek) — PDF a ISDOC se nemohou rozejít.
+- Mapování snapshot → ISDOC (povinné prvky):
+  - `Invoice@version="6.0.2"`, `DocumentType` (**1** faktura, **2** dobropis
+    /opravný daňový doklad), `ID` = číslo dokladu, `UUID` = `invoices.id`,
+    `IssuingSystem` = „PENTARIVA Online kancelář", `IssueDate`,
+    `TaxPointDate` = DUZP, `VATApplicable` = `company_vat_payer`,
+    `ElectronicPossibilityAgreementReference` (prázdný element povinný),
+    `LocalCurrencyCode=CZK`, `CurrRate=1`, `RefCurrRate=1`;
+  - `AccountingSupplierParty/Party`: `PartyIdentification/ID` = IČO,
+    `PartyName/Name`, `PostalAddress` (StreetName, BuildingNumber, CityName,
+    PostalZone, Country/IdentificationCode=CZ + Name), `PartyTaxScheme`
+    (`CompanyID` = DIČ, `TaxScheme=VAT`), `Contact` (Telephone,
+    ElectronicMail); `AccountingCustomerParty/Party` stejně (IČO/DIČ jen
+    u B2B; u spotřebitele bez `PartyIdentification`);
+  - `OrderReferences/OrderReference` (`SalesOrderID` = order_number,
+    `IssueDate` = datum objednávky); u dobropisu
+    `OriginalDocumentReferences/OriginalDocumentReference` (`ID`, `UUID`,
+    `IssueDate` faktury);
+  - `InvoiceLines/InvoiceLine` per řádek: `ID`, `InvoicedQuantity@unitCode`
+    (ks), `LineExtensionAmount` (bez DPH), `LineExtensionAmountTaxInclusive`,
+    `LineExtensionTaxAmount`, `UnitPrice`, `UnitPriceTaxInclusive`,
+    `ClassifiedTaxCategory/Percent` + `VATCalculationMethod=1`,
+    `Item/Description` (+ `CatalogueItemIdentification/ID` = SKU); slevy
+    jako záporné řádky; dárky 0; doprava a platba jako řádky;
+  - `TaxTotal/TaxSubTotal` per sazba (`TaxableAmount`, `TaxAmount`,
+    `TaxInclusiveAmount`, `AlreadyClaimed*=0`, `Difference*` = totéž,
+    `TaxCategory/Percent`) + `TaxTotal/TaxAmount`; `LegalMonetaryTotal`
+    (`TaxExclusiveAmount`, `TaxInclusiveAmount`, `AlreadyClaimed*=0`,
+    `Difference*`, `PayableRoundingAmount=0`, `PaidDepositsAmount=0`,
+    `PayableAmount=0` — uhrazeno);
+  - `PaymentMeans/Payment` (`PaidAmount`, `PaymentMeansCode=42` převod na
+    účet — karetní platba brány se v ISDOC běžně vykazuje jako 42; konfig
+    `isdoc_payment_means_code`), `Details` (`PaymentDueDate`, `ID` = číslo
+    účtu, `BankCode`, `IBAN`, `BIC`, `VariableSymbol`, `ConstantSymbol`);
+  - `SupplementsList/Supplement` s názvem PDF (`{number}.pdf`) a SHA-256
+    digestem — připravuje půdu pro `.isdocx`.
+- **Validace:** XSD 6.0.2 z isdoc.cz uložené v repu
+  (`supabase/functions/_shared/invoicing/isdoc/isdoc-6.0.2.xsd`), Deno test
+  validuje každý vzorový doklad (faktura plátce, faktura neplátce, dobropis
+  částečný, doklad se slevou a dárkem, smíšené sazby 12/21 %). Kontrolní
+  součty: `TaxInclusiveAmount` = Σ řádků = `paid_money`.
+- **Předání účetní** (`/admin/reports` → „Doklady"): filtr období → ZIP
+  `doklady-YYYY-MM.zip` s `{number}.isdoc` + `{number}.pdf` pro každý doklad
+  + `prehled.csv` (15 §5). Volitelně přepínač **`.isdocx`** (ZIP dle
+  specifikace: `manifest.xml` + `.isdoc` + přílohy) — zapnout, pokud ho
+  účetní SW umí importovat i s PDF v jednom souboru (předpoklad A10).
+- Stažení jednotlivého `.isdoc` i z detailu objednávky v adminu; zákazník
+  ISDOC nevidí (jen PDF).
+
 - **Právní minimum dokladu** (§ 29 ZDPH / § 435 OZ): označení dodavatele
   (název, sídlo, IČO, DIČ, zápis v OR), odběratel, číslo dokladu, datum
   vystavení, DUZP, rozsah a předmět plnění, základ a sazba DPH, výše DPH,
@@ -528,6 +656,12 @@ Cíl: potvrdit předpoklady, ne kopírovat. Zapsat odpovědi do §12.
     náhled s vodoznakem NÁVRH funguje; po doplnění IČO „Dovystavit" projde.
 13. `handover_mode=pickup`: uzávěrka vytvoří `createShipment` (mock) a
     dodací list; `drop_off`: seznam k odnosu a označení `handed_over`.
+14. Doklad podle §6.2: pgTAP invariant Σ řádků vč. DPH = `paid_money`
+    (s kreditem, kupónem, dárkem, dopravou zdarma, sazby 12 + 21 %);
+    rekapitulace per sazba počítaná „shora"; neplátce bez DPH sloupců.
+15. ISDOC: každý vzorový doklad projde XSD 6.0.2; měsíční ZIP obsahuje pro
+    každý doklad `.isdoc` + `.pdf` + `prehled.csv`; dobropis odkazuje
+    `OriginalDocumentReference` na fakturu; `TaxInclusiveAmount` sedí s PDF.
 
 ## 12. Předpoklady k ověření (doplní zadavatel po průchodu §10)
 
@@ -542,6 +676,8 @@ Cíl: potvrdit předpoklady, ne kopírovat. Zapsat odpovědi do §12.
 | A7 | Svoz vs. odnos: od kolika balíků denně | ⬜ (start `drop_off`, přepnutí konfigurací) |
 | A8 | Objednání/pravidelný svoz se sjednává v client section (bez API); dodací list `createShipment` stačí pro předání | ⬜ |
 | A9 | Zebra Browser Print povolí origin `https://office.pentariva.com` a tiskne ZPL z `packetLabelZpl` 203 dpi bez úprav | ⬜ (ověřit s první tiskárnou) |
+| A10 | Účetní SW (Pohoda / Money S3 / ABRA / jiný?) importuje ISDOC 6.0.2; chce `.isdoc` + `.pdf` zvlášť v ZIPu, nebo `.isdocx`; jak chce značit dobropisy a platby kartou (`PaymentMeansCode`) | ⬜ **zeptat se účetní** |
+| A11 | Účetní odsouhlasí šablonu §6.2 (zejména slevy jako záporné řádky per sazba, kredit, dárky 0 Kč, doprava/platba jako řádky) na prvním náhledu | ⬜ |
 
 ## 13. Pořadí implementace
 
