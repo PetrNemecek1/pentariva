@@ -21,10 +21,13 @@
 > v jejich administraci).
 >
 > **Stav v kanceláři (22. 8. 2026):** šev je v `pentariva-office` jako
-> `app_settings.fulfillment_provider=internal` (odpovídá `FULFILLMENT_MODE=off`).
-> Živá Authentica (OAuth, webhooky, štítky, outbox) je odložená — admin
-> `authentica` zatím nesmí zapnout. Interní expedice z dokumentu 14 zůstává
-> jediná aktivní cesta.
+> `app_settings.fulfillment_provider` mapovaný na `FULFILLMENT_MODE`
+> (`internal`=`off`, `shadow`=`shadow`, `authentica`=`authentica`). Aktivní
+> je jen `internal`. Admin `shadow` ani `authentica` nesmí zapnout. Placeholdery
+> `wms_*` (vč. `wms_return_address`, `wms_dispatch_days`, `wms_pilot_max_orders`,
+> `wms_allowed_countries`) a `products.wms_product_id` (párování přes SKU) jsou
+> v DB, nevolají API. Živá Authentica (OAuth, webhooky, štítky, outbox) je
+> odložená. Interní expedice z dokumentu 14 zůstává jediná aktivní cesta.
 
 ## 0. Co Authentica přebírá a co zůstává v kanceláři
 
