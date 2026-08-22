@@ -1,195 +1,261 @@
 # 18 — E-shop: prezentace produktu a promoakce
 
-> **Závazné zadání (22. 8. 2026).** Samonosné pro AI implementaci v repu
-> `pentariva-office`. Platí guardraily `10` §1 — **každá sleva, dárek i doprava
-> zdarma se počítá výhradně v `fn_checkout` / `fn_validate_order_pricing`**
-> (CLAUDE.md pravidlo 1); klient nikdy neposílá částky. Navazuje na 13
-> (provizní model v2, uvítací výhoda), 14 (sklad, kategorie, EN), 15 §5/13 §7
-> (ekonomika), 16 (hlášení).
+> **Závazné zadání (22. 8. 2026, revize téhož dne po zpětné vazbě zadavatele).**
+> Samonosné pro AI implementaci v repu `pentariva-office`. Platí guardraily
+> `10` §1 — **každá sleva, dárek i doprava zdarma se počítá výhradně
+> v `fn_checkout` / `fn_validate_order_pricing`** (CLAUDE.md pravidlo 1);
+> klient nikdy neposílá částky. Navazuje na 13 (provizní model v2, uvítací
+> výhoda), 14 (sklad, kategorie, EN), 13 §7 / 15 §5 (ekonomika), 16 (hlášení).
+> Mechanika akcí přebírá osvědčený model Shoptet (šablony kupónů, „Platí pro",
+> příznaky produktů s třemi stavy, akční cena od–do) a Vendure (podmínky ×
+> akce, priorita, limity na zákazníka) — nevymýšlíme kolo.
 >
 > **Pořadí a kolize:** §1 (prezentace) je nezávislá a lze ji dělat hned.
-> §2–§4 (promoakce) sahají na `fn_checkout`/`fn_validate_order_pricing`
-> a sklad → **až po dokončení 13 a 14 §1**.
+> §2–§5 (akce) sahají na `fn_checkout`/`fn_validate_order_pricing` a sklad
+> → **až po dokončení 13 a 14 §1**.
 
-## 0. Cíl
+## 0. Strategický rámec (rozhodnutí zadavatele, R17)
 
-Prémiový obchod, ne katalog: zákazník (i partner, který produkt doporučuje)
-najde u každého produktu všechno, co potřebuje k rozhodnutí — a firma má
-standardní nástroje pro práci s poptávkou: časované akce, slevy, dárky,
-dopravu zdarma, kódy. Vše konfigurovatelné v adminu, nic v kódu.
+Obchodní model PENTARIVA je **komunitní/ambasadorský a B2B prodej**. Zákazníky
+na e-shop přivádí komunita prodejců, ne slevy. **Přímé B2C slevy na e-shopu by
+kanibalizovaly model** — zákazník by neměl důvod jít přes partnera. Proto:
+
+1. Promo nástroje jsou primárně **nástroje komunity**: partner je sdílí svým
+   zákazníkům (kód, produktový odkaz, kampaň) a atribuce zákazníka k partnerovi
+   zůstává zachována — provize se počítají z ponížené báze, ale partner
+   neztrácí zákazníka.
+2. **Výchozí stav: akce se neaplikují na organické zákazníky** (bez
+   ambasadora). Master přepínač `b2c_promotions_enabled` (`app_settings`,
+   default `false`); jeho zapnutí v adminu zobrazí červené varování
+   „Zapínáte B2C slevy — riziko kanibalizace komunitního modelu" a zapíše
+   audit. Teprve potom lze u konkrétní akce povolit `organic`.
+3. Akce nikdy nezlepšuje zákazníkovi cenu pod partnerskou 30% slevu ani
+   pod Trade ceny (kontrola při ukládání, §3.3).
+4. Reporting hlídá kanibalizaci: podíl promo objednávek bez atribuce
+   a průměrná sleva per flow (§5).
 
 ## 1. Prezentace produktu
 
-### 1.1 Obsahový model (`products` + nové tabulky)
+### 1.1 Obsahový model
 
-- Nové sloupce `products`: `subtitle` (jedna věta „proč" — benefit),
-  `description_md` (bohatý popis, Markdown), `ingredients_md` (složení),
-  `usage_md` (použití / dávkování), `warnings_md` (upozornění, alergeny),
-  `specs jsonb` (objem/hmotnost/balení/trvanlivost — klíč→hodnota zobrazené
-  jako tabulka), `story_md` (původ, levandule chodouňská — volitelné),
-  `faq jsonb` (`[{q,a}]`), `seo_slug` (pro sdílitelný odkaz), `is_featured`,
-  `sort_order`, `related_product_ids uuid[]`. Vše + `*_en` varianty dle D35
-  (fallback čeština).
+- Nové sloupce `products`: `subtitle` (jedna věta „proč"), `description_md`,
+  `ingredients_md` (složení), `usage_md` (použití/dávkování), `warnings_md`
+  (upozornění, alergeny), `specs jsonb` (objem/hmotnost/balení/trvanlivost),
+  `story_md` (původ), `faq jsonb` (`[{q,a}]`), `seo_slug`, `is_featured`,
+  `sort_order`, `related_product_ids uuid[]`, `published_at` (pro automatický
+  příznak Novinka). Vše + `*_en` dle D35 (fallback čeština).
 - `product_media(id, product_id, kind ENUM('image','video'), storage_path,
-  alt_cs, alt_en, sort_order, is_primary)` — Storage bucket `product-media`
-  (public read, admin write; upload v adminu s automatickým zmenšením
-  na ≤ 1600 px a WebP). `products.image_path` zůstává jako fallback,
-  primární médium má přednost.
-- `product_badges(code PK, label_cs, label_en, color)` + `product_badge_links`
-  (bio, vegan, bez lepku, bez cukru, ručně vyráběno…) — admin číselník.
+  alt_cs, alt_en, sort_order, is_primary)` — bucket `product-media` (public
+  read, admin write; upload zmenšuje na ≤ 1600 px, WebP). `image_path`
+  zůstává fallback.
+- **Příznaky produktu `product_flags`** (Shoptet „příznaky/štítky"):
+  `(code PK, label_cs, label_en, color, kind ENUM('manual','auto'))`.
+  Manuální: `bio`, `vegan`, `gluten_free`, `handmade`, `tip`, **`gift`
+  (produkt slouží jako dárek)**, `no_discount` (nikdy neslevňovat — např.
+  dárkové sady, limitované edice). Automatické (počítané, nelze ručně
+  nastavit): `sale` (má platnou akční cenu §2.1), `new` (`published_at`
+  < `new_flag_days`, default 30), `free_shipping` (platí promo §2.3),
+  `last_pieces` (sklad ≤ `last_pieces_threshold`). Vazba
+  `product_flag_links(product_id, flag_code)` pro manuální.
 
 ### 1.2 Obrazovky
 
-- **Detail produktu `/shop/product/?id=`** (static export → query param, ne
-  dialog): galerie, název + subtitle, **cena v roli uživatele** (partner vidí
-  partnerskou, zákazník svou; škrtnutá katalogová jen když je reálná sleva),
-  štítky, dostupnost („skladem" / „posledních X ks" / „vyprodáno" z 14 §1),
-  doručení („expedujeme do N dnů" z konfigurace), promo box (§3.4),
-  záložky Popis / Složení / Použití / Časté otázky, tabulka parametrů,
-  související produkty, tlačítko „Sdílet" (partner: vygeneruje produktový
-  referral odkaz dle D12 přímo odsud).
-- **Katalog `/shop/`**: karty s primárním obrázkem, štítky, promo badge,
-  cena, dostupnost; filtr kategorie/štítek, řazení (doporučené =
-  `is_featured, sort_order`; cena; novinky), hledání (14 §6).
-- Prázdné/chybějící obsahové pole se **neukazuje** (žádné „—" a prázdné
-  záložky). Admin vidí u produktu „kompletnost obsahu" (x/8 polí, chybí
-  fotografie…) — checklist, ne blokace.
-- Recenze zákazníků: **Fáze 3** (vyžaduje moderaci a právní text).
-  Varianty (velikost/příchuť): **ne** — každá varianta je samostatné SKU.
+- **Detail `/shop/product/?id=`** (query param, ne dialog): galerie, název +
+  subtitle, cena v roli uživatele (škrtnutá referenční cena jen podle §2.1
+  pravidla 30 dní), příznaky, dostupnost („skladem / posledních X ks /
+  vyprodáno", 14 §1), „expedujeme do N dnů", promo box (§4), záložky
+  Popis / Složení / Použití / Časté otázky, tabulka parametrů, související
+  produkty, „Sdílet" (partner: produktový referral odkaz D12).
+- **Katalog `/shop/`**: karty s primárním obrázkem, příznaky, cena,
+  dostupnost; filtr kategorie/příznak, řazení (doporučené = `is_featured,
+  sort_order`; cena; novinky), hledání (14 §6).
+- Prázdné pole se nezobrazuje. Admin vidí „kompletnost obsahu" (x/8 polí,
+  chybí foto) — checklist, ne blokace. Recenze = Fáze 3. Varianty = ne
+  (každá varianta = samostatné SKU).
 
-## 2. Promoakce — datový model
+## 2. Promoakce — datový model (podmínky × akce)
+
+### 2.1 Akční cena produktu (nejjednodušší akce, Shoptet „Akce od/do")
+
+- `product_prices` (existuje, časovaný ceník) + nové sloupce
+  `sale_price_haleru bigint NULL`, `sale_from timestamptz NULL`,
+  `sale_to timestamptz NULL`. Akční cena platí, když `now()` je v okně;
+  automaticky nastavuje příznak `sale`. Do `v_current_prices` přibude
+  `effective_price_haleru` a `reference_price_haleru`.
+- **Právní pravidlo (směrnice EU 98/6/ES čl. 6a, v ČR § 12a zákona o
+  ochraně spotřebitele):** přeškrtnutá referenční cena = **nejnižší cena,
+  za kterou se produkt prodával v posledních 30 dnech před slevou**, ne
+  katalog. Počítá se z historie `product_prices` (`valid_from`) — funkce
+  `fn_reference_price_haleru(product_id, at)`; UI škrtá jen tuto hodnotu.
+  Platí pro zákaznické zobrazení; partnerská/Trade cena se neškrtá (není
+  sleva z ceny spotřebitele).
+- Akční cena se pro partnery a Trade **neuplatňuje** (platí jejich vlastní
+  sleva z katalogu), pokud admin u konkrétní akční ceny nezvolí
+  `applies_to_partners=true` (pak dostanou lepší z obou, ne obě).
+
+### 2.2 Šablony akcí (kupóny i automatické akce)
 
 ```
 promotions(
   id, name, internal_note,
-  kind ENUM('percent_off','amount_off','free_shipping','gift_with_product',
-            'gift_with_order'),
-  scope ENUM('product','category','shop'), product_ids uuid[], category_id,
-  value_bp int NULL,            -- percent_off
-  value_haleru bigint NULL,     -- amount_off (z položky)
+  -- AKCE (co se stane)
+  action ENUM('percent_off','amount_off','free_shipping',
+              'gift_with_product','gift_with_order','buy_x_get_y'),
+  value_bp int NULL, value_haleru bigint NULL,
   gift_product_id uuid NULL, gift_qty int DEFAULT 1,
-  min_order_goods_haleru bigint NULL,   -- gift_with_order / free_shipping na objednávku
-  code citext NULL UNIQUE,      -- NULL = automatická akce; jinak slevový kód
-  valid_from timestamptz NOT NULL, valid_to timestamptz NULL,
-  is_active boolean, priority int DEFAULT 100,
-  applies_to ENUM('customers','partners','all') DEFAULT 'customers',
+  buy_qty int NULL, get_qty int NULL,            -- buy_x_get_y (nejlevnější zdarma)
+  -- PLATÍ PRO (Shoptet „Platí pro" / Vendure conditions)
+  scope ENUM('shop','categories','products','by_parameters'),
+  product_ids uuid[], category_ids uuid[],
+  flag_rules jsonb,        -- [{flag:'gift', rule:'must_not'}, {flag:'sale', rule:'must_not'}, ...]
+                           -- rule ∈ 'any' | 'must' | 'must_not' (Shoptet tři stavy; všechny 'must' současně)
+  exclude_sale_priced boolean DEFAULT true,      -- „neaplikovat na zlevněné zboží" (akční cena §2.1)
+  exclude_flag_no_discount boolean DEFAULT true, -- respektovat příznak no_discount
+  min_order_goods_haleru bigint NULL,            -- „Od částky" (zboží po slevách, před kreditem)
+  -- KDO
+  applies_to_flows business_flow[] DEFAULT '{community_customer}',
+  requires_attribution boolean DEFAULT true,     -- jen zákazníci s ambasadorem (R17)
+  partner_scope ENUM('all','listed') DEFAULT 'all', partner_ids uuid[],  -- kód jen pro zákazníky vybraných partnerů
+  -- KÓD A LIMITY
+  code citext NULL UNIQUE,                        -- NULL = automatická akce
   max_uses_total int NULL, max_uses_per_customer int NULL,
+  first_order_only boolean DEFAULT false,
+  -- ČAS A SKLÁDÁNÍ
+  valid_from timestamptz NOT NULL, valid_to timestamptz NULL,
+  is_active boolean DEFAULT true, priority int DEFAULT 100,
+  combinable_with_sale_price boolean DEFAULT false,
+  -- PREZENTACE
   badge_label_cs, badge_label_en, landing_text_md,
   created_by, created_at, updated_at)
-order_promotions(order_id, promotion_id, kind, amount_haleru, gift_product_id)
+order_promotions(order_id, promotion_id, action, amount_haleru, gift_product_id)
 ```
 
-- **Zapnutí/vypnutí je čistě časové:** akce platí, když `is_active AND now()
-  BETWEEN valid_from AND COALESCE(valid_to, 'infinity')` — vyhodnocuje se při
-  každém dotazu, **žádný cron**. Časy zadává admin v Europe/Prague.
-- RLS: SELECT platných akcí anon/authenticated (bez `internal_note`,
-  `max_uses_*`); zápis admin přes RPC s auditem (`promotion.created/changed/
-  ended`). `order_promotions` čte kupující svých objednávek + admin.
+- Platnost je čistě časová (`is_active AND now() BETWEEN valid_from AND
+  COALESCE(valid_to,'infinity')`), vyhodnocuje se při každém dotazu — **žádný
+  cron**; admin zadává Europe/Prague.
+- `flag_rules` je jádro požadavku zadavatele: u šablony kupónu lze říct
+  „platí jen pro produkty s příznakem `sale`" nebo „nikdy pro produkty
+  s příznakem `gift`/`no_discount`". Sémantika přesně dle Shoptetu: produkt
+  musí splnit všechna `must` současně a žádné `must_not`.
+- RLS: SELECT platných akcí authenticated (bez `internal_note`, limitů,
+  `partner_ids`); zápis jen admin RPC s auditem
+  (`promotion.created/changed/ended`).
 
-## 3. Pravidla uplatnění (závazná, vynucená v DB)
+### 2.3 Co jednotlivé akce dělají
 
-### 3.1 Kdo na akci dosáhne
-- `applies_to='customers'` (výchozí): flow `community_customer` a `organic`.
-  **Partnerské (`community_own`, 30 %) a Trade objednávky zákaznické akce
-  nedostávají** — stacking se slevou 30 % by prolomil kontrolu „zůstatek
-  ≥ 45 % katalogu" (13 §7). `partners`/`all` povolí admin výslovně.
-- Slevový kód: zákazník ho zadá v košíku; **max. jeden kód na objednávku**;
-  limity použití se kontrolují v `fn_checkout` pod zámkem (počítáno
-  z `order_promotions` zaplacených i čekajících objednávek); kódy podléhají
-  rate limitu (15 §3).
+| Akce | Efekt v `fn_checkout` |
+|---|---|
+| `percent_off` | `fn_pct_haleru(line_catalog, value_bp)` per způsobilá položka |
+| `amount_off` | `LEAST(value_haleru × qty, line_catalog)` per způsobilá položka |
+| `free_shipping` | `shipping_haleru = 0` (jen způsobilé flow; zlepšuje práh 13 §5, nikdy nezhoršuje) |
+| `gift_with_product` | ke způsobilé položce přidá `gift_product_id` jako `is_gift` řádek (cena 0, sklad −qty) |
+| `gift_with_order` | totéž nad `min_order_goods_haleru`; `first_order_only` = uvítací dárek z 13 §4 (po implementaci se uvítací dárek **migruje sem**) |
+| `buy_x_get_y` | z každých `buy_qty` kusů způsobilých položek je `get_qty` nejlevnějších zdarma (sleva 100 % na řádek) |
 
-### 3.2 Jak se slevy skládají (priorita, ne sčítání)
-- **Na položku platí právě jedna sleva**: nejvýhodnější z {automatické
-  akce na produkt/kategorii/obchod, zadaný kód, uvítací sleva 13 §4}.
-  Při shodě rozhoduje `priority` (nižší = dřív). Výsledek se zapíše do
-  `order_items.discount_source ENUM('partner','trade','welcome','promotion')`
-  + `order_items.promotion_id` — generalizuje flag `welcome_benefit` z 13 §4
-  (`chk_flow_shape` povolí slevu na zákaznických flow, jen když má každá
-  slevněná položka `discount_source IS NOT NULL`).
-- Výpočet vždy `fn_pct_haleru(line_catalog, value_bp)` per položka, resp.
-  `LEAST(value_haleru × qty, line_catalog)` u pevné částky (D5).
-- **Dárky se skládají se slevami** (sleva na položku + dárek k produktu +
-  dárek k objednávce mohou platit zároveň). Dárek = položka `is_gift=true`
-  s cenou 0 (D18a), odečítá sklad (14 §1); není-li dárek skladem, objednávka
-  projde bez něj + hlášení `info` (16).
-- **Doprava zdarma**: promo `free_shipping` (na produkt v košíku nebo na
-  objednávku nad `min_order_goods_haleru`) nastaví `shipping_haleru=0`
-  u zákaznických flow; u partnerů jen při `applies_to ∈ {partners, all}`.
-  Prahové pravidlo z 13 §5 zůstává jako základ, promo ho může jen zlepšit.
-- `gift_with_order`: práh se porovnává se **zbožím po slevách, před
-  kreditem** (stejná veličina jako doprava zdarma, 13 §5).
-- Uvítací režim `gift` (13 §4) je technicky `gift_with_order` s
-  `min_order = welcome_min_catalog` a podmínkou „první objednávka" — po
-  implementaci tohoto dokumentu se uvítací dárek **migruje na promoakci**
-  s příznakem `first_order_only boolean` (nový sloupec), ať existuje jeden
-  mechanismus. Uvítací sleva (`discount` režim) zůstává v 13 (vstupuje do
-  volby „nejvýhodnější slevy" výše).
+## 3. Pravidla uplatnění (vynucená v DB)
 
-### 3.3 Dopad na peníze (nic nového — jen potvrzení)
-- Sleva z promoakce snižuje `goods_paid` → provizní linie i Benefit kredit
-  se počítají z ponížené báze automaticky (13). Dárek má cenu 0 → žádná
-  provize, jen sklad a náklad.
-- `fn_validate_order_pricing` při `draft → awaiting_payment` **přepočítá
-  nárok znovu** (platnost akce v čase, scope, limity, flow) — nesouhlas =
-  výjimka; tím je vyloučeno uplatnění akce po jejím konci přes zastaralý
-  košík.
-- `order_promotions` = trvalý otisk pro reporting a účetnictví (15 §5:
-  sloupec „poskytnuté slevy" a „hodnota dárků" v DPH podkladu).
+### 3.1 Kdo
+- Způsobilé flow dle `applies_to_flows`; `requires_attribution=true` vylučuje
+  `organic` (R17). `organic` lze přidat jen při `b2c_promotions_enabled`.
+- `partner_scope='listed'`: akce platí jen zákazníkům, jejichž
+  `owner_ambassador_id ∈ partner_ids` — partnerský kód „jen pro moje lidi".
+- `community_own`/`trade`: jen pokud jsou výslovně v `applies_to_flows`;
+  pak dostanou **lepší** z {jejich sleva, akce}, nikdy obě (13 §7 zůstatek
+  ≥ 45 %).
 
-### 3.4 Storefront
-- Karta i detail: badge (`−20 %`, `Dárek`, `Doprava zdarma`, `Akce do
-  31. 8.`), u časované akce odpočet („končí za 2 dny"), promo box s
-  `landing_text_md`.
-- Košík: seznam uplatněných akcí, pole pro kód, **nudge lišta**: „Přidejte
-  ještě 350 Kč a máte dopravu zdarma / dárek X" (z aktivních `free_shipping`
-  a `gift_with_order` prahů) — nejsilnější konverzní prvek, povinné.
-- Pokladna: souhrn ukazuje řádek „Slevy a akce −X Kč" a dárky s cenou 0;
-  přesné částky po odeslání potvrdí server (stejně jako dnes).
+### 3.2 Způsobilost položky
+Položka je způsobilá, když: je ve `scope`; splňuje `flag_rules`; není
+akčně zlevněná při `exclude_sale_priced` (ledaže `combinable_with_sale_price`);
+nemá `no_discount` při `exclude_flag_no_discount`; není `is_gift`.
 
-## 4. Administrace a partneři
+### 3.3 Skládání (priorita, ne sčítání)
+- **Na položku právě jedna sleva**: nejvýhodnější z {akční cena §2.1,
+  automatické akce, zadaný kód (max. 1 na objednávku), uvítací sleva 13 §4};
+  remíza → nižší `priority`. Zapisuje se `order_items.discount_source
+  ENUM('partner','trade','sale_price','welcome','promotion')` +
+  `promotion_id`; `chk_flow_shape` povolí slevu na zákaznických flow jen
+  s vyplněným `discount_source` (generalizace `welcome_benefit` z 13 §4).
+- **Dárky se skládají** se slevou i mezi sebou (`gift_with_product` +
+  `gift_with_order`). Dárek bez skladu → objednávka projde bez něj +
+  hlášení `info`.
+- **Ochrana modelu při ukládání akce** (admin RPC): pokud by výsledná cena
+  pro zákazníka klesla pod partnerskou cenu (katalog −30 %) nebo pod
+  nejnižší Trade cenu, uložení se **odmítne** s vysvětlením — jediný tvrdý
+  blok v tomto dokumentu (R17).
+- Limity kódů: kontrola v `fn_checkout` pod zámkem (`order_promotions`
+  zaplacených i čekajících objednávek); per zákazník se počítá vůči účtu
+  **i telefonu E.164** (obchází trik s novým e-mailem, 13 §8).
+- `fn_validate_order_pricing` při `draft → awaiting_payment` nárok přepočítá
+  znovu (čas, scope, příznaky, limity, flow); nesouhlas = výjimka.
 
-- `/admin/promotions`: seznam (aktivní / naplánované / skončené), CRUD,
-  klon, kalendář. **Ekonomický odhad před uložením** (z 13 §7 / 15): u
-  `percent_off`/`amount_off` na průměrné objednávce ukáže odhad hrubé marže
-  a varování, klesne-li pod `min_gross_margin_bp` (30 %); u dárků náklad
-  dárku (`cost_haleru`). Nikdy neblokuje — admin rozhoduje.
-- Reporting (`/admin/reports`): per akce objednávky, obrat, poskytnutá
-  sleva, počet dárků, nové zákaznice/-íci, použití kódů.
-- Partneři: aktivní zákaznické akce se zobrazí v `/my-link` a v kampaních
-  (existující modul) s hotovým sdílitelným textem + produktovým odkazem;
-  partnerům samotným se akce neaplikuje (§3.1), což UI jasně říká.
+### 3.4 Dopad na peníze
+Sleva snižuje `goods_paid` → linie i Benefit kredit z ponížené báze (13).
+Dárek = cena 0, bez provize, sklad a náklad. `order_promotions` je trvalý
+otisk (15 §5: „poskytnuté slevy", „hodnota dárků" v podkladu DPH).
 
-## 5. Hlášení (16) a anti-abuse
+## 4. Storefront
 
-`PROMO-GIFT-OUT-OF-STOCK` (info), `PROMO-MARGIN-BELOW-TARGET` (low — akce
-uložena pod cílovou marží), `PROMO-CODE-BRUTEFORCE` (medium — rate limit
-zásah), `PROMO-USAGE-LIMIT-HIT` (info). Kódy per zákazník se kontrolují
-vůči účtu i telefonu (E.164) — obchází se tím trik s novým e-mailem
-(návaznost na 13 §8).
+- Karta i detail: badge z příznaků a akcí (`−20 %`, `Dárek`, `Doprava
+  zdarma`, `Akce do 31. 8.`), odpočet u časované akce, promo box
+  s `landing_text_md`, referenční cena dle §2.1.
+- Košík: uplatněné akce, pole pro kód, **nudge lišta** („přidejte ještě
+  350 Kč a máte dopravu zdarma / dárek X") z aktivních prahů — povinné.
+- Pokladna: řádek „Slevy a akce −X Kč", dárky s cenou 0; server po odeslání
+  potvrdí přesné částky (jako dnes).
+- Organický zákazník při `b2c_promotions_enabled=false` akce **nevidí vůbec**
+  (ani badge) — vidí místo toho blok „Nakupujte přes svého ambasadora" s
+  odkazem na registraci kódem (R17).
 
-## 6. Zlaté testy (pgTAP, min. 16 asercí)
+## 5. Administrace, ekonomika, partneři
 
-1. Akce mimo časové okno se neuplatní; uvnitř ano; konec akce mezi košíkem
-   a odesláním → `fn_validate_order_pricing` odmítne.
-2. Zákazník 1 500 Kč katalog, akce −20 %: paid 120 000 h, netto 99 174,
-   linie 19 835 / 7 934 / 3 967 (= G-N1 z 13 §9) — promo a uvítací sleva se
-   **nesčítají**, platí lepší.
-3. Partner (`community_own`) s aktivní zákaznickou akcí: sleva zůstává
-   30 %, promo se neuplatní; s `applies_to='all'` se uplatní lepší z obou.
-4. `gift_with_order` nad 2 000 Kč: dárek přidán, cena 0, sklad −1; bez
-   skladu → bez dárku + hlášení.
-5. `free_shipping` na produkt v košíku → doprava 0 i pod prahem.
-6. Kód s `max_uses_per_customer=1`: druhé použití odmítne; souběh pod zámkem
-   nezdvojí.
-7. `order_promotions` otisk sedí se slevou v `order_items`; P-INV1 (15 §1)
-   prochází i s promoakcemi (báze po slevě).
+- `/admin/promotions`: seznam (aktivní / naplánované / skončené), CRUD
+  šablony přesně v pořadí §2.2 (Akce → Platí pro → Kdo → Kód a limity → Čas
+  → Prezentace), klon, kalendář, audit.
+- **Ekonomický odhad před uložením** (z 13 §7 / 15 vstupů, průměrná
+  objednávka): semafor **červeně** při hrubé marži < `min_gross_margin_bp`
+  (30 %) s textem „Akce sráží marži pod cíl — PENTARIVA by na průměrné
+  objednávce vydělala jen X %", **oranžově** 30–35 %, **zeleně** ≥ 35 %;
+  u dárků náklad dárku (`cost_haleru`). Neblokuje (kromě §3.3 ochrany
+  modelu) — rozhoduje admin; uložení pod cíl založí hlášení `low` (16).
+- Kanibalizační ukazatel v `/admin/reports`: podíl promo objednávek bez
+  atribuce, průměrná sleva per flow, obrat partnerů před/po akci.
+- Partneři: aktivní akce pro jejich zákazníky v `/my-link` a kampaních s
+  hotovým textem + odkazem; „jen pro moje zákazníky" kódy si partner vidí
+  u sebe; partnerům samotným se akce neaplikuje (UI to říká).
 
-## 7. Akceptace
+## 6. Hlášení (16)
 
-- Admin založí akci s `valid_from` v budoucnu → v obchodě se objeví sama
-  v daný čas a sama zmizí; bez zásahu a bez cronu.
-- Detail produktu zobrazuje galerii, záložky a parametry; prázdná pole
-  nejsou vidět; partner z detailu vygeneruje produktový odkaz.
-- Košík ukazuje nudge na dopravu zdarma/dárek a správně ho „splní".
-- Všech 7 testovacích skupin zelených; marže v `/admin/economics` (13 §7)
-  zohledňuje poskytnuté slevy a náklad dárků.
+`PROMO-GIFT-OUT-OF-STOCK` (info), `PROMO-MARGIN-BELOW-TARGET` (low),
+`PROMO-CODE-BRUTEFORCE` (medium, rate limit 15 §3), `PROMO-USAGE-LIMIT-HIT`
+(info), `PROMO-B2C-ENABLED` (medium — master přepínač zapnut, kým, kdy),
+`PRICE-REFERENCE-30D-MISSING` (low — akční cena bez 30denní historie:
+UI škrtnutou cenu neukáže).
+
+## 7. Zlaté testy (pgTAP, min. 20 asercí)
+
+1. Časové okno: před/uvnitř/po; konec akce mezi košíkem a odesláním →
+   validace odmítne.
+2. Zákazník s ambasadorem, 1 500 Kč katalog, akce −20 %: paid 120 000 h,
+   netto 99 174, linie 19 835 / 7 934 / 3 967 (= G-N1 z 13 §9); promo ×
+   uvítací sleva se nesčítají.
+3. Organický zákazník: akce se neuplatní při `b2c_promotions_enabled=false`;
+   po zapnutí + `organic` ve flows ano.
+4. `flag_rules`: kupón `must_not gift` přeskočí dárkový produkt; `must sale`
+   platí jen na akčně zlevněné; `exclude_sale_priced` vs
+   `combinable_with_sale_price`.
+5. Partner `community_own`: akce se neuplatní; s flow povoleným dostane
+   lepší z obou; uložení akce pod partnerskou cenu se odmítne.
+6. `gift_with_order` nad 2 000 Kč (+ bez skladu → bez dárku + hlášení);
+   `gift_with_product`; oba zároveň.
+7. `free_shipping` na produkt v košíku → doprava 0 pod prahem.
+8. `buy_x_get_y` 3+1: nejlevnější kus zdarma.
+9. Kód `max_uses_per_customer=1` vůči účtu i telefonu; souběh pod zámkem.
+10. Referenční cena = min za 30 dní z historie; bez historie NULL.
+11. `order_promotions` otisk = sleva v položkách; P-INV1 (15 §1) prochází.
+
+## 8. Akceptace
+
+Akce s `valid_from` v budoucnu se sama objeví a sama zmizí; organický
+zákazník bez master přepínače ji nevidí; partner z detailu vygeneruje
+produktový odkaz; košík „splní" nudge; semafor marže svítí správnou barvou;
+uložení akce pod partnerskou cenu je nemožné; všech 11 skupin testů zelených.
