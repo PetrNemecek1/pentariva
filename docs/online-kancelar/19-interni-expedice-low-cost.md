@@ -23,9 +23,45 @@
 | Testování dopravce | Packeta **nemá sandbox**; testuje se na ostrém účtu s **testovacím odesílatelem** (`eshop`), zásilka se účtuje až fyzickým vstupem do sítě | 0 Kč | — |
 
 **Součet fixních nákladů expedice a fakturace: 0 Kč/měsíc.** Variabilní: obaly,
-výplň, poštovné, čas člověka.
+výplň, poštovné, čas člověka. Jednorázově: tiskárna štítků (§0.2).
+
+### 0.1 Stav vstupů a fázování (doplněno 22. 8. 2026 večer)
+
+| Vstup | Stav | Důsledek pro implementaci |
+|---|---|---|
+| IČO firmy | **zatím není** | `INVOICING_MODE=internal` se smí zapnout až s platným `company_ico`; do té doby `off` (viz §6 — guard, ne blokace vývoje) |
+| Účet Zásilkovny + API přístupy | **zatím není** (závisí na IČO) | `SHIPPING_PROVIDER=packeta` čeká; **vše ostatní se staví hned** (datový model, `manual`, balicí stanice, tiskárna, doklady) a adaptér `packeta` se vyvíjí proti mockům — živé ověření (§11 bod 2) až po získání účtu |
+| Tiskárna štítků | **kupujeme Zebra** (§0.2) | tisk ZPL přímo z expedice, bez tiskového dialogu |
+| Firemní údaje pro doklady | logo existuje (web), ostatní chybí | **placeholdery v administraci**, každé pole editovatelné (§6.1) |
+| Hmotnosti produktů | budou evidovány per produkt, typicky zásilky do 2 kg | systém s váhou počítá všude (metody, cena, Packeta, limity); produkty fyzické vs. digitální (§3.1) |
+
+### 0.2 Tiskárna štítků — doporučení a zapojení
+
+- **Zebra ZD421d, 203 dpi, přímý termotisk (bez pásky), šíře 104 mm, varianta
+  s Ethernetem nebo Wi-Fi/Bluetooth** (orientačně 9–11 tis. Kč bez DPH).
+  Levnější alternativa se stejným chováním: **Zebra ZD230d 203 dpi**
+  (5–6 tis. Kč; USB, případně Ethernet varianta). Obě mluví ZPL, obě berou
+  stejné etikety. 203 dpi je správná volba — některé dopravce přes Packetu
+  podporují jen 203 dpi a Packeta ZPL vrací 203/300.
+- **Etikety 100 × 150 mm, termo, role** (~0,5–1 Kč/ks). Packeta A6 štítek
+  (105 × 148) je na ně navržen; formát `A6` u `packetLabelZpl`.
+- **Volitelně USB skener čárových kódů** (500–1 000 Kč, emuluje klávesnici)
+  — načtení balicího lístku místo klikání (§5.1).
+- **Zapojení do systému: Zebra Browser Print** (zdarma, lokální služba
+  Zebry na balicím PC/Macu; web stránka posílá ZPL přímo do tiskárny přes
+  JS SDK `BrowserPrint`, bez tiskového dialogu). Síťová varianta tiskárny
+  = tisk z kteréhokoliv počítače v síti. Fallback bez Browser Printu:
+  PDF `A6 on A6` do tiskového dialogu (ovladač Zebra) — vždy dostupné.
+- V `/admin/settings` → „Expedice → Tiskárna": režim `browser_print | pdf_dialog`,
+  výběr tiskárny ze seznamu Browser Printu, DPI 203/300, tlačítko
+  **„Zkušební štítek"** (ZPL s logem a textem), přepínač „tisknout
+  automaticky při Zabaleno".
 
 ## 1. Co musí zajistit zadavatel (mimo kód, před zapnutím `packeta`)
+
+> Stav 22. 8. 2026: body 1–2 čekají na IČO; bod 3 rozhodnut (odnos → svoz
+> podle objemu, §5.3); bod 4 rozhodnut (Zebra, §0.2); bod 5 = placeholdery
+> v administraci (§6.1); bod 6 = per produkt, viz §3.1.
 
 1. **Účet e-shopu v Zásilkovně** (`client.packeta.com`): registrace firmy
    (IČO, DIČ), smlouva/ceník, **odesílatel** (Client section → Senders;
@@ -84,15 +120,48 @@ výplň, poštovné, čas člověka.
 
 ## 3. Datový model (doplnit do `04` kanonického DDL)
 
-- `products.weight_g integer NOT NULL DEFAULT 0`, `products.size_mm jsonb NULL`
-  (`{length,width,height}`); admin katalog editace; varování při 0 g.
-  `app_settings.packaging_weight_g` (default 100), `packeta_max_weight_kg`
+### 3.1 Produkty: fyzické vs. digitální, hmotnost
+
+- `products.fulfillment_kind ENUM('physical','digital','service') NOT NULL
+  DEFAULT 'physical'`:
+  - `physical` — expeduje se, má hmotnost, odečítá sklad;
+  - `digital` — **neexpeduje se fyzicky**: poukaz, e-kniha, přístup do
+    Akademie; doručení e-mailem/v kanceláři po zaplacení (viz níže);
+    sklad se neodečítá (nebo `stock_qty` = počet kódů, konfig per produkt);
+  - `service` — služba/konzultace, doručení = ruční potvrzení adminem.
+- `products.weight_g integer NOT NULL DEFAULT 0` (u `physical` povinně > 0,
+  jinak admin varování a produkt nejde publikovat), `products.size_mm jsonb
+  NULL` (`{length,width,height}`). Typické zásilky budou **do 2 kg**, ale
+  systém počítá s váhou všude: výběr metody (limit), cena dopravy (váhové
+  pásma), `weight` u Packety, kontrola limitu Z-BOXu, budoucí cizí dopravci.
+- `app_settings.packaging_weight_g` (default 100), `packeta_max_weight_kg`
   (default 5 — limit Packeta Home CZ; výdejní místa 10 kg dle ceníku — **ověřit**).
+- **Objednávka jen z digitálních položek**: checkout přeskočí krok Doprava,
+  `shipping_haleru = 0`, žádná zásilka; po zaplacení `fn_apply_payment_event`
+  zavolá `fn_deliver_digital(order_id)` → `digital_deliveries(id,
+  order_item_id, kind ENUM('voucher_code','download','access','manual'),
+  payload jsonb — kód / cesta v Storage / ID modulu, delivered_at,
+  email_sent_at)`; e-mail #5b „Váš digitální produkt" s kódem/odkazem;
+  objednávka rovnou `completed`. **Smíšená objednávka**: doprava a zásilka
+  jen z fyzických položek (hmotnost Σ fyzických), digitální část doručena
+  ihned po zaplacení, fyzická expedicí. Balicí lístek digitální položky
+  nevypisuje (nebo s poznámkou „doručeno elektronicky").
+- **Dárkový poukaz** = `digital` produkt, jehož doručení vygeneruje
+  jednorázový slevový kód pevné hodnoty přes mechaniku kupónů z dokumentu 18
+  (`promotions` typ `fixed_amount`, `max_uses=1`, platnost konfigurovatelná,
+  `applies_to_flows` všechny) — žádná nová peněžní logika; provize z nákupu
+  poukazu se počítají jako z běžné položky (13), z uplatnění kódu se kód
+  chová jako sleva (18 §0).
+- Vratky: digitální položky jsou z odstoupení vyloučeny po doručení
+  (§ 1837 písm. l OZ — zákazník souhlasí v checkoutu zaškrtnutím, uložit do
+  `orders.digital_consent_at`).
 - `shipping_methods(id, code text UNIQUE, name_cs, name_en, provider text
   ('manual','packeta'), kind ENUM('pudo','box','home','pickup_in_person'),
   packeta_vendor jsonb NULL — `{country:'cz'}` / `{country:'cz',group:'zbox'}`
   / `{carrierId:'106'}`, packeta_address_id integer NULL (pro `home`: 106 = CZ
-  Packeta Home), price_haleru, free_from_haleru NULL (NULL = řídí globální
+  Packeta Home), price_haleru, **price_tiers jsonb NULL** — váhová pásma
+  `[{"up_to_g":2000,"price_haleru":7900},{"up_to_g":5000,"price_haleru":9900}]`
+  (NULL = jednotná `price_haleru`), free_from_haleru NULL (NULL = řídí globální
   pravidlo 13: zdarma od 2 000 Kč jen zákazníci), max_weight_g, countries
   text[], requires_phone boolean, enabled boolean, sort_order)`. Seed: Výdejní
   místo Zásilkovna, Z-BOX, Doručení na adresu (Packeta Home), Osobní odběr.
@@ -179,8 +248,41 @@ výplň, poštovné, čas člověka.
 
 ## 5. Expediční tok v adminu (`/admin/orders` → „Expedice")
 
-Fronta = objednávky `paid` se `fulfillment_provider='internal'`; hromadné
-akce nad zaškrtnutými řádky; každá akce = `shipping_jobs` + audit.
+Fronta = objednávky `paid` se `fulfillment_provider='internal'` a alespoň
+jednou fyzickou položkou; hromadné akce nad zaškrtnutými řádky; každá akce
+= `shipping_jobs` + audit.
+
+### 5.1 Balicí stanice (ergonomie jednoho balíku)
+
+Samostatný režim `/admin/orders/packing` (celá obrazovka, velké prvky,
+ovládání klávesnicí, funguje na tabletu):
+
+1. **Fronta k balení** seřazená podle zaplacení; horní řádek „Další
+   objednávka" + pole pro skener: načtení čárového kódu `order_number`
+   (Code 128 na balicím lístku, viz 14 §2) nebo `Z…` barcode otevře
+   objednávku.
+2. **Karta objednávky**: položky s množstvím a **checkboxem „vloženo"**
+   (klik nebo naskenování EAN produktu — `products.ean` doplnit), dárky
+   zvýrazněné, hmotnost Σ + obal, výdejní místo / adresa, poznámka zákazníka.
+   Dokud nejsou všechny položky odškrtnuté, tlačítko Zabaleno je neaktivní
+   (ochrana proti chybějící položce).
+3. **„Zabaleno" (Enter)** → systém v jednom kroku: založí zásilku, není-li
+   (`create`), stáhne ZPL štítek (`packetLabelZpl` / `packetCourierLabelZpl`,
+   unescape!) a **pošle ho do Zebry přes Browser Print** bez dialogu, označí
+   `label_printed`, uloží `packed_at`, `packed_by`, a přejde na další
+   objednávku. Štítek vyjede, nalepí se, balík jde na hromadu „k podání".
+   Při `pdf_dialog` režimu místo toho otevře PDF `A6 on A6`.
+4. **„Tisknout znovu"** (poškozený štítek) a **„Zrušit zásilku"** (jen před
+   podáním) přímo na kartě; chyba Packety se zobrazí lidsky (§8) a balík
+   zůstane ve frontě označený červeně.
+5. Stavy objednávky v expedici: `paid` → `packing` (otevřeno na stanici,
+   zámek 15 min proti dvojímu balení) → `packed` (štítek vytištěn) →
+   `shipped` (podáno). Sloupec `orders.packed_at`.
+6. V režimu `manual` (bez Packety) Zabaleno vytiskne **interní adresní
+   štítek** (vlastní ZPL šablona: adresa, order_number, čárový kód) — stejná
+   ergonomie i bez dopravce v API.
+
+### 5.2 Hromadné akce ve frontě
 
 1. **Vytvořit zásilku** (EF `shipping-create`, admin JWT): sestavit
    `PacketAttributes`: `number` = `order_number`, `name`/`surname` (rozdělit
@@ -210,9 +312,31 @@ akce nad zaškrtnutými řádky; každá akce = `shipping_jobs` + audit.
    `label_printed_at`, stav `label_printed`.
 3. **Předáno dopravci** (hromadně): `handed_over_at`, stav `handed_over`,
    a volání existující `fn_admin_ship_order(order, 'Zásilkovna', barcode)`
-   → objednávka `shipped`, e-mail #6 s tracking odkazem (14 §2). Volitelně
-   (Fáze 2 této kapitoly): `createShipment(packetIds)` → dodací list
-   `D-…` + `barcodePng` k tisku — kurýr/výdejní místo skenuje jeden kód.
+   → objednávka `shipped`, e-mail #6 s tracking odkazem (14 §2). Způsob
+   podání viz §5.3.
+
+### 5.3 Podání: odnos na sběrné místo → svoz (přepínatelné)
+
+`app_settings.handover_mode = drop_off | pickup`:
+
+- **`drop_off` (start, málo objednávek):** zabalené balíky odneseme na
+  výdejní místo / Z-BOX (podání je zdarma, balík musí mít štítek). Akce
+  **„Uzávěrka podání"** vytiskne **seznam k odnosu** (order_number, barcode,
+  výdejní místo, hmotnost; tisk na A4 nebo ZPL souhrn) a po potvrzení
+  označí vybrané balíky `handed_over`. Volitelně jeden dodací list
+  `createShipment(packetIds)` → kód `D-…` (`barcodePng` na Zebru) — obsluha
+  výdejního místa naskenuje jeden kód místo každého balíku.
+- **`pickup` (více objednávek, svoz):** pravidelný svoz se sjednává
+  v client section / se smlouvou (není veřejné API na objednání svozu —
+  předpoklad A8 k ověření). Denní **„Uzávěrka svozu"** (do konfigurovatelného
+  času `pickup_cutoff_time`, default 14:00): `createShipment` pro všechny
+  `packed` balíky → dodací list `D-…` vytištěný na Zebře + souhrn pro
+  kurýra; `shipments.shipment_code`; po předání potvrzení → `handed_over`.
+  Balíky zabalené po uzávěrce jdou do svozu dalšího dne.
+- Přepnutí `drop_off → pickup` je jen změna nastavení; datový model
+  (`shipment_code`) je společný. Dashboard ukazuje „Balíků k podání dnes"
+  a doporučení „při > N balíků/den zvažte svoz" (`pickup_recommend_from`,
+  default 10).
 4. **Storno zásilky**: `cancelPacket` povoleno jen ve stavech
    `created`/`label_printed` (Packeta: jen fyzicky nepodané). Po podání
    storno nelze — řešit jako vratku (14 §3). Storno objednávky / plná vratka
@@ -263,6 +387,31 @@ akce nad zaškrtnutými řádky; každá akce = `shipping_jobs` + audit.
 - `fakturoid` adaptér (15 §6) zůstává volitelný — při přepnutí vystavuje
   Fakturoid a `invoices.provider='fakturoid'`; číselné řady se nesmí míchat
   (přepnutí jen na přelomu roku / s novou řadou — validace v nastavení).
+### 6.1 Firemní údaje: placeholdery, konfigurace v administraci, guard
+
+- `/admin/settings` → sekce **„Firma a doklady"**: `company_name`,
+  `company_legal_form`, `company_address` (ulice, město, PSČ, země),
+  `company_ico`, `company_dic`, `company_vat_payer`, `company_registry`
+  (spisová značka), `company_bank_account`, `company_iban`, `company_bic`,
+  `company_email`, `company_phone`, `company_logo_path` (upload do Storage;
+  **výchozí = logo z webu**), `invoice_footer_text`, `invoice_due_days`
+  (default 0 = uhrazeno kartou), `invoice_series`. Každé pole editovatelné
+  bez nasazení; audit změn.
+- **Placeholdery**: migrace naplní hodnoty `„[DOPLNIT: název firmy]"` apod.
+  a flag `company_profile_complete=false`. Admin dashboard ukazuje žlutý
+  proužek „Firemní údaje nejsou kompletní (chybí: IČO, …)". Totéž na
+  náhledu faktury (vodoznak **NÁVRH**).
+- **Guard:** `fn_issue_internal_invoice` odmítne vystavit doklad, dokud
+  `company_ico` neodpovídá `^[0-9]{8}$` a `company_name`/`company_address`
+  nejsou placeholder → režim se chová jako `off` a založí se jediné
+  hlášení `INVOICE-COMPANY-MISSING` (`medium`, 16). Po doplnění údajů admin
+  spustí „Dovystavit doklady" (retry job pro zaplacené objednávky bez
+  dokladu — **až po go-live truncate**, testovací objednávky doklady nedostanou).
+  Stejný guard už existuje pro `payouts_enabled` — použít stejné místo
+  (`fn_admin_set_setting`).
+- Náhled faktury s placeholdery je dostupný kdykoliv (admin → „Náhled
+  dokladu"), aby šlo šablonu ladit bez IČO.
+
 - **Právní minimum dokladu** (§ 29 ZDPH / § 435 OZ): označení dodavatele
   (název, sídlo, IČO, DIČ, zápis v OR), odběratel, číslo dokladu, datum
   vystavení, DUZP, rozsah a předmět plnění, základ a sazba DPH, výše DPH,
@@ -309,7 +458,9 @@ akce nad zaškrtnutými řádky; každá akce = `shipping_jobs` + audit.
 | `PACKETA_SENDER` | EF secret / `app_settings.packeta_sender` | label odesílatele (`pentariva` / `pentariva-test`) |
 | `NEXT_PUBLIC_PACKETA_API_KEY` | frontend env | 16 znaků, pro widget (veřejný) |
 | `INVOICING_MODE` | EF secret + `app_settings` | `off` / `internal` / `fakturoid` |
-| `label_format`, `packaging_weight_g`, `packeta_max_insured_value_kc`, `invoice_series`, `company_*` | `app_settings` | editovatelné v `/admin/settings` → sekce „Expedice" a „Doklady" |
+| `label_format`, `packaging_weight_g`, `packeta_max_insured_value_kc`, `invoice_series`, `company_*` | `app_settings` | editovatelné v `/admin/settings` → sekce „Expedice" a „Firma a doklady" |
+| `printer_mode` (`browser_print`/`pdf_dialog`), `printer_name`, `printer_dpi` (203/300), `auto_print_on_packed` | `app_settings` (per prohlížeč lze přepsat v localStorage — tiskárna je lokální) | §0.2, §5.1 |
+| `handover_mode` (`drop_off`/`pickup`), `pickup_cutoff_time`, `pickup_recommend_from` | `app_settings` | §5.3 |
 
 ## 10. Co si zadavatel ověří v účtech jiné firmy (Zásilkovna, Fakturoid)
 
@@ -363,6 +514,20 @@ Cíl: potvrdit předpoklady, ne kopírovat. Zapsat odpovědi do §12.
 7. Vratka: `createPacketClaimWithPassword` vrátí heslo, zákazník ho vidí
    v e-mailu i detailu; `returned` stav spustí příjem na sklad.
 8. `INVOICE-RENDER-FAILED` po 3 pokusech eskaluje; retry z adminu doplní PDF.
+9. Balicí stanice: objednávku lze označit Zabaleno až po odškrtnutí všech
+   fyzických položek; Zabaleno vytiskne štítek na Zebru přes Browser Print
+   (manuální test s tiskárnou) a v `pdf_dialog` režimu otevře PDF; druhá
+   stanice nemůže otevřít objednávku zamčenou první (pgTAP na zámek).
+10. Digitální objednávka: po zaplacení bez kroku Doprava, `shipping=0`,
+    `digital_deliveries` + e-mail s kódem, objednávka `completed`; smíšená
+    objednávka expeduje jen fyzické položky a hmotnost počítá jen z nich
+    (pgTAP na `fn_checkout` + `fn_deliver_digital`).
+11. Váhová pásma: stejná metoda vrátí jinou cenu pro 1,5 kg a 3 kg; produkt
+    `physical` s `weight_g=0` nelze publikovat.
+12. Placeholder firemních údajů: doklad se nevystaví (`INVOICE-COMPANY-MISSING`),
+    náhled s vodoznakem NÁVRH funguje; po doplnění IČO „Dovystavit" projde.
+13. `handover_mode=pickup`: uzávěrka vytvoří `createShipment` (mock) a
+    dodací list; `drop_off`: seznam k odnosu a označení `handed_over`.
 
 ## 12. Předpoklady k ověření (doplní zadavatel po průchodu §10)
 
@@ -374,15 +539,27 @@ Cíl: potvrdit předpoklady, ne kopírovat. Zapsat odpovědi do §12.
 | A4 | Testovací odesílatel nezakládá náklady, dokud balík fyzicky nevstoupí do sítě (dokumentace to tvrdí) | ✅ dokumentace |
 | A5 | Faktura od Zásilkovny obsahuje náš `number` (order_number) pro párování | ⬜ |
 | A6 | Účetní akceptuje interní doklady + CSV/PDF export (bez Fakturoidu) | ⬜ |
-| A7 | Svoz vs. odnos: od kolika balíků denně | ⬜ |
+| A7 | Svoz vs. odnos: od kolika balíků denně | ⬜ (start `drop_off`, přepnutí konfigurací) |
+| A8 | Objednání/pravidelný svoz se sjednává v client section (bez API); dodací list `createShipment` stačí pro předání | ⬜ |
+| A9 | Zebra Browser Print povolí origin `https://office.pentariva.com` a tiskne ZPL z `packetLabelZpl` 203 dpi bez úprav | ⬜ (ověřit s první tiskárnou) |
 
 ## 13. Pořadí implementace
 
-1. §3 datový model + `manual` adaptér + migrace `shipping_methods` (beze
-   změny chování) → §6 interní doklady (nezávislé na dopravci, potřebné
-   pro go-live nejdřív).
-2. §4 checkout s widgetem + serverová validace.
-3. §5 `packeta` adaptér: create → labels → handed over → sync.
-4. §7 vratky, §8 hlášení, exporty.
+**Teď (bez účtu Zásilkovny a bez IČO):**
+1. §3 datový model vč. §3.1 (fyzické/digitální, hmotnosti, váhová pásma)
+   + `manual` adaptér + migrace `shipping_methods` (beze změny chování).
+2. §6 interní doklady + §6.1 firemní údaje s placeholdery a guardem
+   (šablonu lze ladit hned přes náhled).
+3. §5.1 balicí stanice + §0.2 tisk přes Browser Print (v `manual` režimu
+   tiskne interní štítek) + §5.3 režimy podání.
+4. §4 checkout s widgetem a serverovou validací (widget běží i bez
+   smlouvy jen s API key? — **ne**, API key je až z účtu; do té doby UI
+   s mock bodem za `NEXT_PUBLIC_PACKETA_API_KEY` prázdným).
+5. §5.2 `packeta` adaptér proti mockům REST/XML (Deno testy).
+
+**Po získání IČO a účtu Zásilkovny:**
+6. Doplnit `company_*`, `INVOICING_MODE=internal`, „Dovystavit doklady".
+7. Secrets Packety, `SHIPPING_PROVIDER=packeta`, živé ověření §11 bod 2
+   s testovacím odesílatelem; §7 vratky, §8 hlášení, exporty.
 5. Dokument 17 (Authentica) zůstává odložený; až bude, `fulfillment_provider`
    přepne tok z §5 na WMS, checkout (§4) a doklady (§6) zůstávají.
