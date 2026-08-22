@@ -11,7 +11,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 
 | Soubor | Obsah |
 |---|---|
-| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R18, fáze |
+| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R19, fáze |
 | [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21; **§23 manuál / Help**) |
 | [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D35 — závazný pro vše ostatní |
 | [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | **Zdroj pravdy pro peníze** — finální provizní model, závazný worked example |
@@ -31,6 +31,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [17-authentica-fulfillment.md](17-authentica-fulfillment.md) | Napojení na Authentica WMS (zaměnitelný adaptér za `FULFILLMENT_MODE` off/shadow/authentica): produkty přes SKU, sklad jako zdroj pravdy, automatická expedice po zaplacení, dopravci + výdejní místa v checkoutu, tracking/doručení webhooky, vratky přes Return Authorization, naskladnění; **šev v office (`fulfillment_provider=internal`), `shadow`/`authentica` zamčené, živá integrace odložená** |
 | [18-eshop-prezentace-a-promoakce.md](18-eshop-prezentace-a-promoakce.md) | Prezentace produktu (galerie, složení, použití, FAQ, příznaky, detail, sdílení) + promoakce dle modelu Shoptet/Vendure: akční cena od–do s 30denní referenční cenou, šablony kupónů s „Platí pro" a příznaky must/must_not, dárky, doprava zdarma, buy X get Y, kódy s limity; R17: akce jen pro komunitu, B2C za master přepínačem; semafor marže. §1 hned, §2–5 po 13 a 14 §1 |
 | [19-interni-expedice-low-cost.md](19-interni-expedice-low-cost.md) | **Interní expedice bez fixních nákladů (R18):** Zásilkovna přímo přes REST/XML API za adaptérem `SHIPPING_PROVIDER=manual/packeta` (widget výdejních míst + serverová validace, štítky PDF, synchronizace stavů, vratky heslem), vlastní doklady `INVOICING_MODE=internal` (číselné řady, snapshot, PDF dle šablony Shoptet/Fakturoid §6.2, **ISDOC 6.0.2 export** + měsíční ZIP pro účetní §6.3, dobropisy); Balíkobot a Fakturoid jen jako volitelné adaptéry; **balicí stanice** s tiskem ZPL na Zebra ZD421d přes Browser Print, režim podání odnos → svoz, fyzické vs. digitální produkty (poukazy) s hmotnostmi a váhovými pásmy, firemní údaje jako placeholdery v administraci s guardem (IČO zatím není); checklist pro zadavatele + co ověřit v cizích účtech. Nahrazuje 14 §2 poslední bod a upřesňuje 15 §6. §13: co stavět hned vs. po získání IČO/účtu |
+| [20-sprava-objednavek.md](20-sprava-objednavek.md) | **Správa objednávek (vzor Shoptet):** systémové stavy pevné + provozní stavy konfigurovatelné v adminu; detail objednávky se záložkami (položky, kompletace, historie, doklady, zásilky, platby + provize); ruční zásahy výhradně přes peněžní funkce (označit zaplaceno = `fn_apply_payment_event`, storno, rozdělení zásilky, doposlání 0 Kč, částečná vratka na kartu/do kreditu, ruční objednávka); `order_events` historie kdo-co-kdy; exporty dokladů pro účetní (období × typ → ZIP PDF + ISDOC + přehled CSV/XLSX) |
 
 Uživatelský manuál (ne implementační spec) žije v
 [`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
@@ -48,7 +49,7 @@ a v kanceláři na `/help`. Screenshoty do Helpu až na závěr (01 §23).
 
 ## Precedence při rozporu
 
-`03` (peníze) → `00` (R1–R18) → `02` (D1–D35) → `04` (schéma) → `05` (engine) → ostatní.
+`03` (peníze) → `00` (R1–R19) → `02` (D1–D35) → `04` (schéma) → `05` (engine) → ostatní.
 
 ## Neporušitelná pravidla pro implementaci
 

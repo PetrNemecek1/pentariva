@@ -539,6 +539,10 @@ XML, verze **6.0.2**, namespace `http://isdoc.cz/namespace/2013`) + PDF.
   účetní SW umí importovat i s PDF v jednom souboru (předpoklad A10).
 - Stažení jednotlivého `.isdoc` i z detailu objednávky v adminu; zákazník
   ISDOC nevidí (jen PDF).
+- Obrazovka exportu (období × typ dokladu × ZIP/CSV/XLSX) je specifikována
+  v `20-sprava-objednavek.md` §6; více zásilek na objednávku (dělení,
+  doposlání) upravuje 20 §3.3–3.4 — UNIQUE na `shipments.order_id` z §3
+  nahrazuje `shipment_items`.
 
 - **Právní minimum dokladu** (§ 29 ZDPH / § 435 OZ): označení dodavatele
   (název, sídlo, IČO, DIČ, zápis v OR), odběratel, číslo dokladu, datum
