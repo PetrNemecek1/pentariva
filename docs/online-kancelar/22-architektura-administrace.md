@@ -290,3 +290,43 @@ Vše vysvětleno v tooltipu u příslušného pole.
 3. Nastavení rozdělit a typovat (§6).
 4. Promoakce průvodce; Objednávky/Uživatelé záložky a tooltipy.
 5. Seznamy: hledání/filtry/stránkování všude; nápověda rozdělená na kapitoly.
+
+## 10. Souběh s dokumentem 21 (fáze A běží současně) — pravidla, aby se týmy nepřekrývaly
+
+Překryv je jen v **produktech, nastavení, kategoriích a i18n souboru**.
+Zbytek je nezávislý.
+
+| Oblast 22 | Souběžně s 21 A? | Proč / podmínka |
+|---|---|---|
+| shadcn komponenty, `Field`/`HelpHint`/`ActionButton`, `lib/nav.ts` skupiny, breadcrumbs, `AppShell`, ⌘K | **ano, hned** | 21 A se těchto souborů nedotýká |
+| Uživatelé, Provize, Výplaty, Reporty, Hlášení, Deník, Akademie, Kampaně, Události, Knihovna, E-maily, Oznámení, Přehled | **ano, hned** | 21 A tyto obrazovky nemění (měna v reportech až 21 B) |
+| Promoakce průvodce | **ano** | `market_code` u akcí je až 21 **B**; průvodce ať má připravené místo pro výběr trhu |
+| Objednávky detail (záložky, `ActionButton`) | **ano** | 21 A přidává jen `market_code`/`currency` na objednávku — zobrazení měny v detailu řešit přes jednu util `formatMoney(amount, currency)` už teď |
+| Nápověda: rozdělení `17-admin.md`, `help.*` klíče | **ano** | — |
+| **Produkty detail (záložky Obsah/Ceny/Trhy)** | **až po merge 21 A** | 21 A přepisuje `product_prices` → `product_market_prices`, překlady → `product_translations`, `AdminProducts.tsx` a `features/admin/api.ts` (upsert). Dvojí zásah = jistý konflikt. Do té doby: jen **popisky a tooltipy** do stávajícího formuláře (bezpečná, malá změna) |
+| **Kategorie strom** (`parent_id`, `product_category_links`, `labels jsonb`) | **schéma předat týmu 21** (jedna migrace s jejich `labels jsonb`), **UI stromu až po ní** | jinak dvě migrace nad toutéž tabulkou ve stejném týdnu |
+| **Nastavení rozdělit na podsekce** | **po 21 A** | 21 A přidává sekci Trhy; rozdělit najednou. Mezitím jen typované `Field` uvnitř stávajících karet |
+| Seznamy: hledání/filtry/stránkování | **ano** (kromě Produktů) | — |
+
+**Provozní pravidla:**
+1. Každý dokument = vlastní větev (`feat/21-markets-a`, `feat/22-admin-ia`),
+   malé PR, **rebase na `main` denně**; 21 A merguje první (je
+   strukturální a kratší).
+2. **Vlastnictví souborů po dobu souběhu:** tým 21 vlastní
+   `supabase/migrations/*`, `features/admin/api.ts` (produktové funkce),
+   `features/admin/AdminProducts.tsx`, `features/shop/api.ts`; tým 22
+   vlastní `components/ui/*`, `components/layout/*`, `lib/nav.ts`,
+   `features/help/*` a nové soubory. Kdo potřebuje sáhnout do cizího,
+   pošle PR druhému týmu, nemerguje sám.
+3. **i18n bez konfliktů:** nové klíče **ne** do `lib/i18n/messages.ts`
+   (3 959 řádků, jistý konflikt), ale do nových modulů `lib/i18n/messages.help.ts`,
+   `messages.nav.ts`, `messages.enum.ts`, `messages.markets.ts`, které se
+   v `messages.ts` jen spojí (`{...MESSAGES, help, nav, enum}`) — jedna
+   řádka, kterou přidá první merge.
+4. Nové admin obrazovky 22 = **nové soubory** (`features/admin/products/*`,
+   `features/admin/settings/*`); staré monolity se mažou až po přepnutí
+   routy, ne editují.
+5. Peněžní formátování všude přes `formatMoney(haleru, currency='CZK')`
+   z `lib/money.ts` už teď — až 21 A přidá měnu, nic v 22 se nemění.
+6. Před každým mergem: `npm run typecheck`, vitest, pgTAP lokálně; CI je
+   do 1. 9. throttlovaná (commit `3d46892`), takže lokální běh je povinný.
