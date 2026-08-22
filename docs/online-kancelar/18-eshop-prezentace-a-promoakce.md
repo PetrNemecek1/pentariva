@@ -14,25 +14,46 @@
 > §2–§5 (akce) sahají na `fn_checkout`/`fn_validate_order_pricing` a sklad
 > → **až po dokončení 13 a 14 §1**.
 
-## 0. Strategický rámec (rozhodnutí zadavatele, R17)
+## 0. Strategický rámec (rozhodnutí zadavatele, R17 — upřesněno 22. 8. 2026)
 
 Obchodní model PENTARIVA je **komunitní/ambasadorský a B2B prodej**. Zákazníky
-na e-shop přivádí komunita prodejců, ne slevy. **Přímé B2C slevy na e-shopu by
-kanibalizovaly model** — zákazník by neměl důvod jít přes partnera. Proto:
+na e-shop přivádí primárně komunita prodejců; slevy jsou doplňkový nástroj,
+který nesmí komunitě konkurovat. Proto:
 
 1. Promo nástroje jsou primárně **nástroje komunity**: partner je sdílí svým
-   zákazníkům (kód, produktový odkaz, kampaň) a atribuce zákazníka k partnerovi
-   zůstává zachována — provize se počítají z ponížené báze, ale partner
-   neztrácí zákazníka.
-2. **Výchozí stav: akce se neaplikují na organické zákazníky** (bez
-   ambasadora). Master přepínač `b2c_promotions_enabled` (`app_settings`,
-   default `false`); jeho zapnutí v adminu zobrazí červené varování
-   „Zapínáte B2C slevy — riziko kanibalizace komunitního modelu" a zapíše
-   audit. Teprve potom lze u konkrétní akce povolit `organic`.
-3. Akce nikdy nezlepšuje zákazníkovi cenu pod partnerskou 30% slevu ani
-   pod Trade ceny (kontrola při ukládání, §3.3).
-4. Reporting hlídá kanibalizaci: podíl promo objednávek bez atribuce
-   a průměrná sleva per flow (§5).
+   zákazníkům (kód, produktový odkaz, kampaň); atribuce zůstává zachována.
+2. **Organičtí zákazníci slevy dostat mohou** — jsou cílová skupina pro
+   získání (z pravidelných zákazníků vznikají další ambasadoři). U každé akce
+   je `organic` běžná volba v `applies_to_flows`, výchozí **vypnuto**.
+   Ekonomicky je organická sleva nejlevnější (u organické objednávky nejde
+   nikomu provize, 32 % + 2 % zůstává firmě) — prostor pro ni je největší.
+3. **Invariant: organická cena nikdy nesmí být lepší než cena zákazníka
+   s ambasadorem** za stejných podmínek, jinak se zákazníci ambasadorům
+   vyhýbají. Kontrola při ukládání akce (§3.3): je-li akce pro `organic`,
+   musí platit i pro `community_customer` se stejnou nebo lepší hodnotou.
+4. Akce nikdy nezlepší zákazníkovi cenu pod partnerskou 30% slevu ani pod
+   Trade ceny (§3.3).
+5. **Slevy určuje výhradně firma, stejné pro všechny partnery.** Partner
+   nemá slevový rozpočet a **nesmí nabízet rabat z vlastní provize**
+   (cenová válka mezi ambasadory, rozklad vztahového modelu, nižší vlastní
+   výdělek) — zakotvit v podmínkách partnerského programu (14 §5
+   `terms_partner`). Partner má k dispozici: uvítací výhodu pro lidi, které
+   přivede, Benefit Club, firemní partnerské kódy (`partner_scope`), dárky,
+   motivační programy.
+6. **Adopce organického zákazníka (nová mechanika, doplňuje D9/D12):**
+   nepřiřazený zákazník si může **jednou, sám a dobrovolně** zadat kód
+   ambasadora (`/account` → „Připojit se k ambasadorovi“, nebo výzva v košíku
+   / na detailu akce „Získejte {výhoda} — vyberte si svého ambasadora“).
+   RPC `fn_adopt_ambassador(code)`: povoleno jen když `owner_ambassador_id IS
+   NULL` a kód je aktivní; nastaví `owner_ambassador_id`,
+   `registration_source='adopted'`, zapíše `referral_events(kind='adoption')`
+   + audit. **Jen jedním směrem** — přiřazeného zákazníka nelze přetáhnout
+   (14denní admin oprava z D9 zůstává jediná výjimka). Už zaplacené
+   objednávky se zpětně nepřepočítávají; nové jdou partnerovi. Nejlepší
+   využití organické slevy je právě tahle vstupenka do komunity: akce může
+   mít `requires_adoption=true` = zákazník ji získá až po adopci.
+7. Reporting hlídá kanibalizaci: podíl promo objednávek bez atribuce,
+   průměrná sleva per flow, počet adopcí z akcí (§5).
 
 ## 1. Prezentace produktu
 
@@ -115,6 +136,7 @@ promotions(
   -- KDO
   applies_to_flows business_flow[] DEFAULT '{community_customer}',
   requires_attribution boolean DEFAULT true,     -- jen zákazníci s ambasadorem (R17)
+  requires_adoption boolean DEFAULT false,       -- organický zákazník ji získá až po adopci (R17 bod 6)
   partner_scope ENUM('all','listed') DEFAULT 'all', partner_ids uuid[],  -- kód jen pro zákazníky vybraných partnerů
   -- KÓD A LIMITY
   code citext NULL UNIQUE,                        -- NULL = automatická akce
@@ -155,8 +177,9 @@ order_promotions(order_id, promotion_id, action, amount_haleru, gift_product_id)
 ## 3. Pravidla uplatnění (vynucená v DB)
 
 ### 3.1 Kdo
-- Způsobilé flow dle `applies_to_flows`; `requires_attribution=true` vylučuje
-  `organic` (R17). `organic` lze přidat jen při `b2c_promotions_enabled`.
+- Způsobilé flow dle `applies_to_flows`; `organic` je běžná volba (výchozí
+  vypnuto). `requires_adoption=true`: organickému zákazníkovi se akce ukáže
+  s výzvou „vyberte si ambasadora“; uplatní se až po adopci (R17 bod 6).
 - `partner_scope='listed'`: akce platí jen zákazníkům, jejichž
   `owner_ambassador_id ∈ partner_ids` — partnerský kód „jen pro moje lidi".
 - `community_own`/`trade`: jen pokud jsou výslovně v `applies_to_flows`;
@@ -202,9 +225,10 @@ otisk (15 §5: „poskytnuté slevy", „hodnota dárků" v podkladu DPH).
   350 Kč a máte dopravu zdarma / dárek X") z aktivních prahů — povinné.
 - Pokladna: řádek „Slevy a akce −X Kč", dárky s cenou 0; server po odeslání
   potvrdí přesné částky (jako dnes).
-- Organický zákazník při `b2c_promotions_enabled=false` akce **nevidí vůbec**
-  (ani badge) — vidí místo toho blok „Nakupujte přes svého ambasadora" s
-  odkazem na registraci kódem (R17).
+- Organický zákazník vidí jen akce, které mají `organic` povolené; u akcí
+  s `requires_adoption` vidí výzvu „Získejte {výhoda} — vyberte si svého
+  ambasadora“ s polem pro kód (adopce, R17 bod 6). Bez povolených akcí vidí
+  blok „Nakupujte přes svého ambasadora“.
 
 ## 5. Administrace, ekonomika, partneři
 
@@ -227,7 +251,7 @@ otisk (15 §5: „poskytnuté slevy", „hodnota dárků" v podkladu DPH).
 
 `PROMO-GIFT-OUT-OF-STOCK` (info), `PROMO-MARGIN-BELOW-TARGET` (low),
 `PROMO-CODE-BRUTEFORCE` (medium, rate limit 15 §3), `PROMO-USAGE-LIMIT-HIT`
-(info), `PROMO-B2C-ENABLED` (medium — master přepínač zapnut, kým, kdy),
+(info), `PROMO-ORGANIC-BETTER-THAN-ATTRIBUTED` (blok při ukládání, §3.3),
 `PRICE-REFERENCE-30D-MISSING` (low — akční cena bez 30denní historie:
 UI škrtnutou cenu neukáže).
 
@@ -238,8 +262,11 @@ UI škrtnutou cenu neukáže).
 2. Zákazník s ambasadorem, 1 500 Kč katalog, akce −20 %: paid 120 000 h,
    netto 99 174, linie 19 835 / 7 934 / 3 967 (= G-N1 z 13 §9); promo ×
    uvítací sleva se nesčítají.
-3. Organický zákazník: akce se neuplatní při `b2c_promotions_enabled=false`;
-   po zapnutí + `organic` ve flows ano.
+3. Organický zákazník: akce bez `organic` ve flows se neuplatní; s ním ano;
+   s `requires_adoption` až po `fn_adopt_ambassador` (pak jako zákazník
+   ambasadora, s liniemi 20/8/4). Adopce podruhé / u přiřazeného = výjimka.
+   Uložení akce pro `organic` s lepší hodnotou než pro `community_customer`
+   se odmítne.
 4. `flag_rules`: kupón `must_not gift` přeskočí dárkový produkt; `must sale`
    platí jen na akčně zlevněné; `exclude_sale_priced` vs
    `combinable_with_sale_price`.
@@ -256,6 +283,6 @@ UI škrtnutou cenu neukáže).
 ## 8. Akceptace
 
 Akce s `valid_from` v budoucnu se sama objeví a sama zmizí; organický
-zákazník bez master přepínače ji nevidí; partner z detailu vygeneruje
+zákazník vidí jen akce pro něj povolené a adopcí se stane zákazníkem partnera; partner z detailu vygeneruje
 produktový odkaz; košík „splní" nudge; semafor marže svítí správnou barvou;
 uložení akce pod partnerskou cenu je nemožné; všech 11 skupin testů zelených.
