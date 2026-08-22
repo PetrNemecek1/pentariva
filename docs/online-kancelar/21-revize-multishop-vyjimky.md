@@ -252,7 +252,7 @@ globální** s možností per-trh verze v `commission_rule_versions.market_code`
 | Fáze | Kdy | Obsah |
 |---|---|---|
 | **A** | **před go-live CZ** (schváleno zadavatelem 22. 8. 2026, R22) | B.2 `markets` + `market_code` + `legal_entities`; B.4 `product_markets` / `product_translations` / `product_market_prices` s migrací; B.7 `currency` sloupce + zrušení CHECK; B.3 `MarketProvider` + `/cz/` prefix; D38 testy. Funkčně pro CZ **nic nemění** |
-| **B** | po go-live CZ | B.6 `market_settings`, B.5 akce per trh, B.3 e-maily per trh/jazyk, B.8 DPH režimy a doklady per entitu, B.7 kredity/výplaty per měna, admin „Trhy" + aktivace produktů; **pilot SK** (Packeta SK, EUR, Stripe EUR) |
+| **B** | **před go-live CZ + SK** (R23, 22. 8. 2026 — původně „po go-live CZ“; rozdělení práce v `23`) | B.6 `market_settings`, B.5 akce per trh, B.3 e-maily per trh/jazyk, B.8 DPH režimy a doklady per entitu, B.7 kredity/výplaty per měna, admin „Trhy" + aktivace produktů; **pilot SK** (Packeta SK, EUR, Stripe EUR) |
 | **C** | při 2.–3. trhu | sklady per trh (`warehouses`), šarže (C.6), FX reporty, domény per trh, lokální entity |
 
 ---
