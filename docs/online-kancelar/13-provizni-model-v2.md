@@ -19,8 +19,10 @@
    Každé číslo z tohoto dokumentu žije v `commission_rates`, `app_settings`,
    `benefit_tiers` nebo `career_level_params` — **nikdy v kódu**. Admin UI
    (`/admin/settings`) musí umět editovat vše s auditem (`settings.changed`,
-   `rates.changed`). Výjimka: DPH sazby jsou snapshot na `order_items.vat_rate_bp`
-   (už existuje).
+   `rates.changed`). Změna sazby **vloží novou verzi** (`commission_rule_versions`,
+   `valid_from = now()`); zaplacené objednávky drží otisk sazeb z doby
+   `fn_generate_commissions` a **nepřepočítávají se**. Výjimka: DPH sazby jsou
+   snapshot na `order_items.vat_rate_bp` (už existuje).
 2. **Jeden obrat = jedna logika** zůstává; mění se obsah logiky.
 3. **Ledger append-only, storno reversalem** — mechanika D2/D4 beze změny.
 4. **Trade kanál (30/35/40 % sleva + 10/8/5 % získavateli) se NEMĚNÍ** —

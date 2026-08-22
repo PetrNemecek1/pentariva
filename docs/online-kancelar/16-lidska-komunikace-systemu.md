@@ -99,6 +99,9 @@ danou závažnost (člověk i programátor vidí zdůvodnění).
   jako chybu. Volitelně: `orders.commission_model smallint` (1/2) nastavený
   při generování provizí — robustnější než časová hranice; preferovat.
 - Existující otevřené nálezy se po nasazení přehodnotí (rerun selfchecku).
+- Implementace v office: `orders.commission_model` + otisk
+  `commission_rule_versions` / `orders.commission_rates_snapshot`. Změna sazby
+  v adminu zakládá novou verzi (`valid_from = now()`), nestírá minulost.
 
 ## 6. Texty — závazné příklady (do `issue_catalog`, česky i anglicky)
 

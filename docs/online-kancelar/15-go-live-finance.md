@@ -14,7 +14,9 @@
 
 - `fn_ledger_selfcheck()` (SECURITY DEFINER, volá denní pg_cron po settlementu):
   1. P-INV1 pro objednávky posledních 35 dní: Σ kalkulačních entries = báze
-     (dle modelu v2 netto) — per objednávka;
+     **verze té objednávky** (16 §5: `orders.commission_model` 1 = goods_paid
+     vč. DPH, 2 = netto v2; Trade = goods_paid) — per objednávka. Historie se
+     na aktuální sazby nesrovnává;
   2. P-INV2: plně stornované objednávky mají Σ (originály+reversaly) = 0;
   3. každý `accrual` má existující `available` entry; žádný duplicitní accrual;
   4. kreditní zůstatky: záporný zůstatek jen s existujícím clawbackem;
