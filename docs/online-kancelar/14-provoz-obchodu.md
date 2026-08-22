@@ -36,6 +36,8 @@
   `carriers = ["Zásilkovna","PPL","Česká pošta","Osobní odběr"]`, editovatelný),
   `tracking_number text NULL`, `tracking_url text NULL` (šablony URL per
   dopravce v konfigu, dosadí se číslo).
+- Pozdější WMS (Authentica, dokument 17) je výměna téhož toku paid→shipped,
+  ne druhý sklad; teď se odesílá interně.
 - Admin `/admin/orders`: **expediční fronta** (filtr `paid`), hromadný tisk
   **podacího/balicího lístku** (HTML print view: adresa, položky, počty, dárky,
   order_number + čárový kód není nutný), přechod `paid → shipped` vyžaduje

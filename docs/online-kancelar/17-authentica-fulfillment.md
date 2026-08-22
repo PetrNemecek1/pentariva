@@ -11,6 +11,20 @@
 > `PaymentProvider`, D23). Dokud `FULFILLMENT_MODE=off`, platí ruční provoz
 > z dokumentu 14. Přepnutí na `authentica` je konfigurační krok, ne nasazení
 > jiného kódu.
+>
+> **Výchozí postoj (rozhodnutí zadavatele 22. 8. 2026):** Authentica je velký
+> provozovatel s mnoha klienty a pro nás **nic nepřizpůsobí** — žádný sandbox,
+> žádné úpravy API ani procesů na míru. Používáme výhradně to, co je
+> zdokumentované, a na všechno nezdokumentované se připravujeme obranně na
+> vlastní straně (§12). Nic v tomto zadání nesmí předpokládat součinnost
+> Authentica nad rámec standardního onboardingu (credentials + webhook URL
+> v jejich administraci).
+>
+> **Stav v kanceláři (22. 8. 2026):** šev je v `pentariva-office` jako
+> `app_settings.fulfillment_provider=internal` (odpovídá `FULFILLMENT_MODE=off`).
+> Živá Authentica (OAuth, webhooky, štítky, outbox) je odložená — admin
+> `authentica` zatím nesmí zapnout. Interní expedice z dokumentu 14 zůstává
+> jediná aktivní cesta.
 
 ## 0. Co Authentica přebírá a co zůstává v kanceláři
 
@@ -37,8 +51,10 @@
   zbývá-li < 5 min. Všechna volání s `Authorization: Bearer`.
 - Secrets: `AUTHENTICA_CLIENT_ID`, `AUTHENTICA_CLIENT_SECRET`,
   `AUTHENTICA_SHOP_ID`, `AUTHENTICA_WEBHOOK_SECRET`. `app_settings`:
-  `FULFILLMENT_MODE` (`off`|`authentica`), `wms_attach_invoice` (bool),
-  `wms_default_carrier_id`, `wms_order_tags` (`["pentariva"]`).
+  `FULFILLMENT_MODE` (`off`|`shadow`|`authentica`, viz §11), `wms_attach_invoice`
+  (bool), `wms_default_carrier_id`, `wms_order_tags` (`["pentariva"]`),
+  `wms_return_address` (text), `wms_dispatch_days` (default 2),
+  `wms_pilot_max_orders` (default 5), `wms_allowed_countries` (`["CZ"]`).
 - Chyby API (`422` validace, `409`, `410` „už nelze") se mapují na hlášení
   dle 16 §4 (viz §8), nikdy neblokují platbu ani provize.
 
@@ -156,6 +172,10 @@ to už hlídá; zpětný webhook ignorovat, ne chybovat).
   (objednávku nelze vrátit přes WMS; řešit ručně).
 - `GET /return-authorization/{id}/file` → jsou-li soubory (štítek pro
   zákazníka), nabídnout ke stažení v detailu objednávky + e-mail.
+  **Nepředpokládat, že existují:** výchozí proces je, že zákazník posílá
+  zboží sám na adresu skladu z `app_settings.wms_return_address` (text +
+  instrukce „uveďte číslo objednávky"), což e-mail i detail objednávky vždy
+  zobrazí; soubor ze skladu je jen bonus navíc.
 - `returnAuthorization.status.update` → `wms_status`;
   `returnAuthorization.done` → položky s `damaged`:
   - vše `damaged=false` a `partial=false` → automaticky spustit schválenou
@@ -182,7 +202,13 @@ EF `authentica-webhook` (`verify_jwt=false` v `config.toml`): syrové tělo,
 HMAC-SHA256 s `AUTHENTICA_WEBHOOK_SECRET`, porovnání s hlavičkou
 `Authentica-Signature` v konstantním čase; nesouhlas → 401 + hlášení
 `medium`. Platný → dedup hash → `rpc fn_apply_wms_event(event, data)` →
-200. Výjimka → 500 (Authentica opakuje; potvrdit retry politiku ve smlouvě).
+200. Výjimka → 500. **Opakování webhooků není zdokumentované → nespoléhat
+na něj.** Záchranná síť je cron `wms-order-reconcile` (každých 15 min):
+pro objednávky s `wms_order_id` a nefinálním `wms_status` zavolá
+`GET /order/{id}` a aplikuje stav/`packages` stejnou funkcí
+`fn_apply_wms_event` jako webhook (stejná idempotence). Webhook je tedy jen
+zrychlení, poll je pravda. Totéž pro vratky (`GET /return-authorization/
+paginate?filter[lastUpdateAfter]=…`) a příjemky.
 
 ## 10. Hlášení (dle 16) a heartbeaty (dle 15 §2)
 
@@ -196,7 +222,8 @@ HMAC-SHA256 s `AUTHENTICA_WEBHOOK_SECRET`, porovnání s hlavičkou
 | `WMS-STOCK-DRIFT` | low | rozdíl zrcadla vs. WMS |
 | `WMS-WEBHOOK-SIGNATURE` | medium | možný útok / špatný secret |
 | `WMS-AUTH-FAILED` | high | expedice stojí |
-Heartbeaty: `fulfillment-dispatch`, `wms-stock-reconcile`, `wms-carriers-sync`.
+Heartbeaty: `fulfillment-dispatch`, `wms-order-reconcile`,
+`wms-stock-reconcile`, `wms-carriers-sync`.
 
 ## 11. Testy a akceptace
 
@@ -206,18 +233,45 @@ Heartbeaty: `fulfillment-dispatch`, `wms-stock-reconcile`, `wms-carriers-sync`.
   `completed`; duplicitní hash = no-op; `returned_carrier` → return_request;
   `returnAuthorization.done` bez poškození → refund, s poškozením → hlášení;
   dostupnost = orderable − neodeslané rezervace (min. 12 asercí).
-- E2E (režim `off` → `authentica` na testovacím shopu Authentica): zaplacená
-  objednávka se do 2 min objeví v Authentica se správnou adresou, dopravcem
-  a výdejním místem; tracking dorazí do detailu objednávky a e-mailu.
+- **Bez sandboxu.** Ověřování probíhá ve třech krocích, žádný z nich
+  nevyžaduje součinnost Authentica:
+  1. Deno testy proti našemu mock serveru (výše).
+  2. **Režim `shadow`** (`FULFILLMENT_MODE=shadow`): s ostrými credentials se
+     volají pouze čtecí endpointy (`/status`, `/shop`, `/carrier`,
+     `/product/get-by/sku`, `/stock/breakdown`) a pro každou zaplacenou
+     objednávku se sestaví a **uloží, ale neodešle** payload Create Order
+     (`fulfillment_jobs.status='shadow'`, payload v `last_error` → přejmenovat
+     na `payload_preview`). Admin vidí v `/admin/orders` náhled „takto by
+     odešlo do skladu" a kontroluje adresy, dopravce, SKU.
+  3. **Řízený start:** první ostré objednávky (`wms_pilot_max_orders`,
+     default 5) se odesílají jen po ručním potvrzení adminem v expediční
+     frontě; teprve potom automaticky.
+- E2E na ostrém účtu: zaplacená objednávka se do 2 min objeví v Authentica
+  se správnou adresou, dopravcem a výdejním místem; tracking dorazí do
+  detailu objednávky a e-mailu.
 
-## 12. Otázky k vyjasnění ve smlouvě (implementaci neblokují)
+## 12. Koncept Authentica a naše přizpůsobení (závazné předpoklady)
 
-1. Testovací (sandbox) shop a credentials pro vývoj před ostrým provozem.
-2. Je `externalId` objednávky unikátní/idempotentní při opakovaném `POST`?
-3. Retry politika webhooků a garance pořadí; časové limity odpovědi.
-4. Vracejí se soubory (štítek pro zákazníka) u Return Authorization standardně?
-5. Uzávěrka příjmu objednávek pro expedici týž den (`processingDate`).
-6. Seznam dopravců (Balikobot) a ceník; Zásilkovna výdejní místa.
-7. Zacházení s šaržemi/expirací u potravin (FEFO, `minimumExpiration`).
-8. Kdo tiskne a platí štítky; formát `OrderShippingLabel` (vlastní vs. WMS).
-9. Budoucí zásilky do EU (`termsOfTrade`/Incoterms endpoint).
+Authentica nic neupravuje. Každý bod níže je **předpoklad o jejich chování
+odvozený z dokumentace** + **opatření, které děláme my**. Pokud se předpoklad
+v provozu ukáže jinak, mění se jen naše strana.
+
+| Jak Authentica funguje (předpoklad) | Co děláme my |
+|---|---|
+| Sandbox neexistuje; jeden ostrý shop. | `shadow` režim + pilotní limit (§11). Credentials a webhook URL zadáme sami v jejich administraci API. |
+| `externalId` není zaručeně idempotentní; opakovaný `POST` může založit duplicitu. | Před každým (re)odesláním `GET /order/paginate?filter[externalId]=` ; outbox drží `wms_order_id` ihned po úspěchu; duplicita v WMS = hlášení `high` + `DELETE` duplikátu, je-li ještě `received`. |
+| Webhooky se nemusí opakovat ani chodit v pořadí. | Poll `wms-order-reconcile` každých 15 min je zdroj pravdy; webhook jen zrychluje. Přechody stavů pouze vpřed. Odpovídáme 200 do 2 s (zpracování v DB funkci, bez externích volání). |
+| Return Authorization soubory (štítky) nemusí být k dispozici. | Vratky standardně na vlastní náklady zákazníka na adresu skladu (`wms_return_address`); štítek jen pokud přijde. |
+| Uzávěrka expedice téhož dne není v API; `processingDate` je jen přání. | Neposíláme `processingDate`; zákazníkovi ukazujeme konfigurovatelný text „expedujeme do {wms_dispatch_days} pracovních dnů" (default 2). Nic neslibujeme nad to. |
+| Dopravci a jejich ceny jsou dané jejich Balikobot nastavením; ceník pro nás nevidíme přes API. | `wms-carriers-sync` jen načítá seznam; ceny pro zákazníka určujeme sami (13 §5 + override per dopravce). Náklad dopravy do ekonomiky (15 §5) zadává admin ručně dle faktury Authentica. |
+| Štítky tisknou oni; `OrderShippingLabel` endpoint nepoužíváme. | Nikdy neposíláme vlastní štítky. |
+| Šarže/expirace: WMS vydává dle svého nastavení (předpoklad FEFO); `miminumExpiration` u položky je jen přání. | U potravin/doplňků nastavíme `hasLotExpiration=true` při založení (nelze měnit). `minimumExpiration` neposíláme v MVP; expiraci zákazníkovi negarantujeme. |
+| Storno jen do tisku štítku (410 poté). | Po `label_printed` skrýt storno v UI; řešit jako vratku (§7). |
+| Faktura do balíku jen dokud je objednávka editovatelná. | Fakturu přikládáme ve stejném jobu jako Create Order (ne později); při 410 jen `info`. |
+| Produkt má neměnné příznaky a revize ID. | Validace před prvním odesláním; mapování revizí (§2). |
+| Inventurní korekce a karanténa se dějí bez našeho souhlasu. | Jen zrcadlíme a hlásíme (§3); nikdy nepřepisujeme jejich stav z naší strany. |
+| Zásilky do EU vyžadují `termsOfTrade`; nyní jen CZ. | Adresy mimo CZ checkout odmítá, dokud není `wms_allowed_countries` rozšířeno (default `["CZ"]`). |
+
+Čtecí endpointy (`/status`, `/shop`, `/carrier`, stock) voláme ihned po
+obdržení credentials — ověří, že účet i scope `default api` fungují, dřív
+než se cokoli odešle.
