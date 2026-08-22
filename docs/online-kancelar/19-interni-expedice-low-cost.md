@@ -544,6 +544,33 @@ XML, verze **6.0.2**, namespace `http://isdoc.cz/namespace/2013`) + PDF.
   doposlání) upravuje 20 §3.3–3.4 — UNIQUE na `shipments.order_id` z §3
   nahrazuje `shipment_items`.
 
+### 6.4 Testovací doklady (objednávky s `is_test`, viz 20 §3.1b)
+
+Chceme testovat i podobu dokladů, ale účetní ani nikdo jiný nesmí
+testovací doklad zaměnit za skutečný:
+
+- **Číslo z testovací řady** `TEST-{rok}-{NNNN}` (`invoice_series.test`),
+  ostrá řada se nedotkne. Hlavička: „Faktura – **TESTOVACÍ DOKLAD** č.
+  TEST-2026-0001", čárový kód se **netiskne** (místo něj text „TEST").
+- **Vodoznak** přes celou stranu: „TESTOVACÍ — NEBYLA UHRAZENA" (šikmo,
+  velké, šedočervené); červený pruh pod hlavičkou s textem „Tento doklad
+  vznikl při testování systému. Nejedná se o daňový doklad, plnění
+  neproběhlo a částka nebyla uhrazena."
+- **Záměrný nesoulad v součtech** (požadavek zadavatele): tabulka položek
+  a rekapitulace DPH se vykreslí se skutečnými čísly (aby šla podoba
+  kontrolovat), ale řádky **K ZAPLACENÍ: 0,00 Kč** a **UHRAZENO: 0,00 Kč**
+  a pod nimi „Celkem dle položek: 1 737,00 Kč — testovací, nehrazeno".
+  Forma úhrady: „TEST (neuhrazeno)", datum úhrady prázdné, VS prázdný.
+- Bez ISDOC, bez QR platby, bez razítka. V PDF metadatech `Subject:
+  TEST`. Název souboru `TEST-2026-0001.pdf`.
+- V adminu záložka Doklady zobrazuje testovací doklad se žlutým štítkem
+  TEST; v exportech pro účetní (20 §6) se neobjeví; dostupný jen přes
+  „Testovací doklady (PDF)".
+- Ostrý doklad k testovací objednávce **nelze vystavit** (guard
+  v `fn_issue_internal_invoice`: `is_test` ⇒ vždy testovací řada), a naopak
+  testovací řada nejde použít pro ostrou objednávku.
+- Totéž pro dobropis: `TESTD-{rok}-{NNNN}`, stejný vodoznak.
+
 - **Právní minimum dokladu** (§ 29 ZDPH / § 435 OZ): označení dodavatele
   (název, sídlo, IČO, DIČ, zápis v OR), odběratel, číslo dokladu, datum
   vystavení, DUZP, rozsah a předmět plnění, základ a sazba DPH, výše DPH,
@@ -666,6 +693,10 @@ Cíl: potvrdit předpoklady, ne kopírovat. Zapsat odpovědi do §12.
 15. ISDOC: každý vzorový doklad projde XSD 6.0.2; měsíční ZIP obsahuje pro
     každý doklad `.isdoc` + `.pdf` + `prehled.csv`; dobropis odkazuje
     `OriginalDocumentReference` na fakturu; `TaxInclusiveAmount` sedí s PDF.
+16. Testovací doklad: objednávka `is_test` dostane číslo `TEST-…`, PDF má
+    vodoznak a K ZAPLACENÍ/UHRAZENO 0,00 Kč při plných položkách, ISDOC
+    neexistuje, v měsíčním ZIPu pro účetní chybí; ostrá řada po 10
+    testovacích objednávkách nemá mezeru (pgTAP).
 
 ## 12. Předpoklady k ověření (doplní zadavatel po průchodu §10)
 

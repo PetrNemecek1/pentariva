@@ -118,6 +118,50 @@ později) · Poznámka zákazníka.
   a zásilky. UI „Stav" pro testování nabízí tlačítko „Označit jako
   zaplaceno (test)" = `fn_admin_mark_paid` s `method='manual'`.
 
+### 3.1b Testovací objednávky — oddělené od ostrých dat (upřesnění zadavatele 22. 8. 2026)
+
+Když se platba obejde (ruční „zaplaceno" pro test) nebo proběhne přes
+Stripe v testovacím režimu, **nic z toho nesmí vypadat jako skutečná
+tržba** — pro účetní, zákazníka ani reporty.
+
+- `orders.is_test boolean NOT NULL DEFAULT false`, totéž `payments.is_test`,
+  `invoices.is_test`, `commission_entries.is_test`, `credit_transactions.is_test`
+  (propaguje se z objednávky; u ledgeru přes `fn_generate_commissions`).
+  Zdroj pravdy: `payments.is_test = true` když (a) `PAYMENTS_MODE=test`
+  (Stripe testovací klíče; z události brány `livemode=false`), nebo
+  (b) `fn_admin_mark_paid(..., p_test => true)`. **V `PAYMENTS_MODE=test`
+  je každá objednávka testovací automaticky** — nejde založit ostrou.
+- `fn_admin_mark_paid` v `PAYMENTS_MODE=live`: `p_test=false` = skutečná
+  platba mimo bránu (převod na účet — vyžaduje `reference` = číslo
+  výpisu/transakce); `p_test=true` jen pro účty s `profiles.is_test_account
+  = true` (admin zakládá testovací zákazníky/partnery) — jinak chyba
+  „Testovací platbu lze označit jen testovacímu účtu".
+- **Doklady k testovací objednávce**: samostatná řada `TEST-{rok}-{NNNN}`
+  (nikdy ostrá řada — ta musí zůstat bez mezer), `invoices.is_test=true`,
+  podoba viz 19 §6.4 (vodoznak, součet uhrazeno 0). ISDOC se pro
+  testovací doklady **negeneruje**; do exportů pro účetní (§6) testovací
+  doklady **nevstupují** (samostatné tlačítko „Testovací doklady (PDF)" pro
+  kontrolu podoby).
+- **E-maily** k testovací objednávce: předmět s prefixem `[TEST]`, červený
+  proužek „Testovací objednávka — nebyla uhrazena" nahoře; posílají se jen
+  na adresy testovacích účtů nebo interní doménu (`test_email_domains`
+  v `app_settings`, default `pentariva.com`).
+- **Reporty, dashboard, provize, Benefit Club, výplaty**: všechny views
+  a funkce filtrují `NOT is_test`; admin má přepínač „Zobrazit testovací"
+  (samostatné totály, nikdy sečtené s ostrými). Testovací provize/kredity
+  nikdy nejsou vyplatitelné (`fn_request_payout` je ignoruje; selfcheck
+  (15 §1) je kontroluje zvlášť). Sklad: testovací objednávka sklad
+  **neodečítá** (nebo se odečet ihned vrací s `reason='test'`) — volba
+  `test_orders_touch_stock` (default `false`).
+- **Úklid**: `pre-golive-truncate.sql` (15 §7) maže vše; po go-live
+  admin akce „Smazat testovací objednávky starší než N dní" (mazání je tu
+  výjimka z append-only pravidla — ledger řádky `is_test` se smí smazat,
+  protože nikdy nebyly součástí ostrých součtů; audit zapíše
+  `test.purged` s počty).
+- Zásilky: testovací objednávka se v `SHIPPING_PROVIDER=packeta` zakládá
+  jen s testovacím odesílatelem (19 §0) — a nikdy se fyzicky nepodává;
+  balicí stanice ji označí žlutě „TEST".
+
 ### 3.2 Storno
 - Před zaplacením: `fn_admin_cancel_order(order_id, reason)` → `cancelled`,
   uvolní sklad (`fn_release_order_stock`), zruší zásilku, e-mail.
@@ -258,6 +302,11 @@ později) · Poznámka zákazníka.
    dokladu + `prehled.csv`, kontrolní součet = Σ `paid_money` − vratky;
    XLSX otevře Excel bez varování.
 8. Editace položek po zaplacení je odmítnuta serverem (ne jen UI).
+9. Testovací objednávka: `is_test` se propaguje do plateb, dokladu,
+   ledgeru; dashboard a reporty ji bez přepínače nezobrazí; výplata
+   z testovacích provizí je odmítnuta; e-mail má prefix `[TEST]`; v live
+   režimu nejde označit testovací platbu netestovacímu účtu; purge smaže
+   jen `is_test` řádky a ostré součty se nezmění (pgTAP před/po).
 
 ## 9. Pořadí
 
