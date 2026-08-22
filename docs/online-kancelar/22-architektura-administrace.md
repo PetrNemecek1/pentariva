@@ -291,6 +291,20 @@ Vše vysvětleno v tooltipu u příslušného pole.
 4. Promoakce průvodce; Objednávky/Uživatelé záložky a tooltipy.
 5. Seznamy: hledání/filtry/stránkování všude; nápověda rozdělená na kapitoly.
 
+## 9a. Stav implementace (22. 8. 2026, větev `feat/22-admin-ia`, PR #29)
+
+Hotovo: §2 menu sekce → podsekce + breadcrumbs + ⌘K; §5 `Field`/`HelpHint`/
+`ActionButton` + kotvy `route-…` v nápovědě + hledání v nápovědě; §4
+Produkty v záložkách, **Kategorie strom** (migrace `product_category_links`,
+`fn_admin_upsert/delete/reorder_category`, `fn_admin_set_category_products`,
+`fn_category_product_ids`; obchod řadí podle vazeb), Sklad; §3.3 Nastavení
+v 9 podstránkách s registrem typů (`features/admin/settings/registry.ts`);
+§3.4 průvodce Promoakcí; §3.1 `ListToolbar`/`Pagination` v Promoakcích,
+Výplatách, Kampaních, Událostech, Knihovně, E-mailech; §6 tooltipy a
+potvrzení v Uživatelích, Objednávkách, Provizích, Přehledu. Odloženo:
+drag&drop ve stromu kategorií (šipky + „Přesunout pod“ místo něj), editace
+provozních stavů objednávek (jen čtení), automatické kategorie.
+
 ## 10. Souběh s dokumentem 21 (fáze A běží současně) — pravidla, aby se týmy nepřekrývaly
 
 Překryv je jen v **produktech, nastavení, kategoriích a i18n souboru**.

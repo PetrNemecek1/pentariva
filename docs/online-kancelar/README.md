@@ -46,8 +46,10 @@ a v kanceláři na `/help`. Screenshoty do Helpu až na závěr (01 §23).
   691 pgTAP asercí, 17 Edge Functions.
 - **Hotovo:** Epiky 0–11, Fáze 2/3, model v2 (13), provoz (14), go-live
   finance (15), hlášení (16), šev fulfillmentu (17), prezentace + promoakce (18).
-- **Nezačato:** 19 (expedice, doklady, ISDOC), 20 (správa objednávek),
-  21 (multishop fáze A — dělat **před go-live CZ**).
+- **Rozpracováno / částečně:** 19 a 20 (balicí stanice, provozní stavy, dělení
+  zásilek, doposlání, testovací objednávky, ISDOC/Packeta čekají na IČO a účet),
+  21 fáze A a část C hotové (trhy `cz`, merge účtů, spory, reklamace dopravce),
+  22 hotové (PR #29, větev `feat/22-admin-ia`; viz 22 §9a).
 - Mimo kód čeká: IČO firmy, účet Zásilkovny, tiskárna Zebra, účetní
   (ISDOC/SW), právní texty.
 
