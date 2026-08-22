@@ -29,6 +29,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 | [15-go-live-finance.md](15-go-live-finance.md) | Go-live a finance: noční selfcheck ledgeru, heartbeaty, rate limity, výplatní agenda + statementy, účetní exporty, Fakturoid, truncate skript, runbook přepnutí |
 | [16-lidska-komunikace-systemu.md](16-lidska-komunikace-systemu.md) | Hlášení systému pro lidi: katalog kódů, závažnost, dopad, akce, proklik + sbalený technický report pro programátora; přejmenování „Jistota/Toky"; oprava falešných P-INV1 na historických objednávkách |
 | [17-authentica-fulfillment.md](17-authentica-fulfillment.md) | Napojení na Authentica WMS (zaměnitelný adaptér za `FULFILLMENT_MODE` off/shadow/authentica): produkty přes SKU, sklad jako zdroj pravdy, automatická expedice po zaplacení, dopravci + výdejní místa v checkoutu, tracking/doručení webhooky, vratky přes Return Authorization, naskladnění; **šev v office (`fulfillment_provider=internal`), `shadow`/`authentica` zamčené, živá integrace odložená** |
+| [18-eshop-prezentace-a-promoakce.md](18-eshop-prezentace-a-promoakce.md) | Prémiová prezentace produktu (galerie, složení, použití, FAQ, štítky, detail stránka, sdílení) + promoakce: časované slevy %/Kč, doprava zdarma, dárek k produktu/objednávce, slevové kódy, nudge v košíku, ekonomický odhad v adminu; vše v DB cenové logice. §1 hned, §2–4 po 13 a 14 §1 |
 
 Uživatelský manuál (ne implementační spec) žije v
 [`pentariva-office/docs/manual`](https://github.com/PetrNemecek1/pentariva-office/tree/main/docs/manual)
