@@ -445,36 +445,64 @@ z budoucích akruálů.
 
 ---
 
-## 8. Go-live rozšíření: bankovní převod s VS (mimo MVP)
+## 8. Bankovní převod s VS (R25 — rozhodnuto 23. 8. 2026, zapíná se po IČO a účtu)
 
-Bankovní převod **není v MVP** (D23, D30) — firma nemá účet ani IČO a ruční
-párování by bez reálného provozu nemělo co párovat. Specifikace je připravena,
-zapíná se až při go-live rozhodnutím zadavatele:
+Zadavatel rozhodl převod **nabízet** (R25). Zapnutí: `app_settings.bank_transfer_enabled`
+(guard v `fn_admin_set_setting` vyžaduje IČO — zůstává) + vyplněné účty entity.
+Implementuje proud Objednávky (Codex), viz `23` §6.1 b.11.
 
-- **Migrace:** `ALTER TYPE payment_method ADD VALUE 'bank_transfer'` — kanonické
-  schéma s tímto rozšířením počítá (komentář u ENUM `payment_method`).
-  Žádná nová tabulka: převod je řádek `payments (provider='bank_transfer',
-  method='bank_transfer')`.
-- **Adaptér `BankTransferProvider`** (tentýž `PaymentProvider` kontrakt):
-  `createCheckout` vrací `kind:'instructions'` — číslo účtu, částku
-  `paid_money_haleru`, **VS = `orders.order_number`** (BIGINT identity,
-  bezpečně pod limitem 10 číslic VS, unikátní, řaditelné) a QR platbu ve
-  formátu SPD generovanou klientem (npm `qrcode`, žádná brána):
-  `SPD*1.0*ACC:{IBAN}*AM:{částka}*CC:CZK*X-VS:{order_number}*MSG:PENTARIVA {order_number}`.
-  Instrukce jsou na stránce „Děkujeme“ i v potvrzovacím e-mailu.
-- **Ruční párování:** admin obrazovka „Platby čekající na spárování“ (VS,
-  částka, stáří); po ověření ve výpisu admin klikne „Potvrdit přijetí platby“ →
-  `fn_apply_payment_event` s `provider_event_id = 'manual:{order_id}:paid'` —
-  **identická idempotentní cesta jako webhook**, tedy identické provize,
-  e-maily i auditní stopa. Admin potvrzuje pouze přesnou částku; přeplatky
-  a nedoplatky se řeší vrácením rozdílu převodem mimo systém.
-- Refund převodem: admin vrátí peníze ručně z banky a klikne „Označit jako
-  refundováno“ → `fn_apply_refund_event` s `provider_event_id =
-  'manual:{order_id}:refund'`.
-- Expirace nezaplaceného převodu: 7 dní → `cancelled` (shodně s kartou, §4.4).
-- Feature flag `BANK_TRANSFER_ENABLED=false` až do go-live rozhodnutí.
-- Fáze 2: automatické párování přes API banky (např. Fio Bank API) — díky
-  provider kontraktu nahradí jen ruční klik, nic jiného.
+### 8.1 Datový model
+- `payments.method = 'bank_transfer'`, `provider = 'bank_transfer'` (enum už hodnotu má);
+  `provider_payment_id = 'vs:{order_number}'`. Žádná nová platební tabulka.
+- **Účet per trh a měna** z `legal_entities` (B.8): CZ trh → `bank_account` (CZK), SK trh →
+  `iban` + `bic` (EUR). Instrukce i QR se generují z entity trhu objednávky; SK e-mail
+  slovensky (šablona per trh, Cursor/Claude).
+- `bank_payments_inbox(id, received_at, amount_haleru, currency, vs, payer_name, payer_account,
+  message, raw jsonb, source text 'manual'|'csv', matched_order_id, matched_at, matched_by,
+  status 'new'|'matched'|'underpaid'|'overpaid'|'unmatched'|'refunded')` — 21 C.3. Řádky
+  vznikají ručním zápisem nebo importem CSV výpisu (formát: sloupce datum, částka, měna, VS,
+  plátce, zpráva — mapování sloupců admin nastaví jednou a uloží do `app_settings.bank_csv_mapping`).
+
+### 8.2 Checkout a instrukce
+- V pokladně volba **„Bankovní převod“** (jen pokud `bank_transfer_enabled` a entita trhu má
+  účet v měně trhu). Objednávka skončí v `awaiting_payment`, `payments` řádek `pending`.
+- Stránka „Děkujeme“ + e-mail potvrzení: číslo účtu / IBAN, částka, měna, **VS = číslo
+  objednávky**, zpráva „PENTARIVA {číslo}“, splatnost 7 dní, QR:
+  CZ **SPD** `SPD*1.0*ACC:{IBAN}*AM:{částka}*CC:CZK*X-VS:{order_number}*MSG:PENTARIVA {order_number}`,
+  SK **PAY by square** (lzstring + base32hex dle specifikace bysquare 1.x). QR kreslí klient
+  (`qrcode`), žádná brána. Instrukce jsou i v **Moje objednávka** (20 §10) — zákazník je najde
+  bez přihlášení i po zavření okna.
+- Nezaplaceno po 7 dnech → `cancelled` (stejný expirační job jako karta, §4.4) + e-mail.
+  Přijde-li platba po stornu: reconcile → obnovit, je-li sklad; jinak vrátit (inbox `refunded`).
+
+### 8.3 Párování v adminu (`/admin/payments/` → „Převody“)
+- Fronta `bank_payments_inbox` status `new`: systém navrhne objednávku podle **VS** (přesná shoda
+  čísla objednávky v `awaiting_payment` s metodou převod), porovná částku:
+  - **přesně** (|rozdíl| ≤ `underpayment_tolerance_haleru`, default 500 = 5 Kč / 0,20 €) →
+    tlačítko **Potvrdit přijetí** → `fn_apply_payment_event(provider_event_id = 'bank:{inbox_id}')`
+    — identická idempotentní cesta jako webhook (provize, doklad, e-maily, audit stejné);
+  - **nedoplatek** nad toleranci → stav `underpaid`, e-mail „doplaťte X“ (šablona
+    `bank_transfer_underpaid`), objednávka dál čeká; další platba se stejným VS se sčítá
+    (součet ≥ částka → potvrdit);
+  - **přeplatek** → potvrdit přijetí na částku objednávky a rozdíl podle
+    `overpayment_to_credit` (default `false`): `true` = kredit zákazníka (`credit_transactions`
+    reason `overpayment`, přes existující funkci, ne přímý zápis), `false` = stav `overpaid`
+    s úkolem „vrátit rozdíl převodem“ (admin zapíše `refunded` s referencí);
+  - **bez shody VS** → `unmatched`, ruční přiřazení objednávky (výběr) nebo „vrátit plátci“.
+- Hlášení 16: `PAYMENT-UNDERPAID` (low), `PAYMENT-OVERPAID` (low), `PAYMENT-UNMATCHED` (medium,
+  > 3 dny), `PAYMENT-LATE-AFTER-CANCEL` (medium). Každá akce = audit + `order_events`.
+- Refund převodem (vratka objednávky placené převodem): `fn_refund_order` ledger jako dnes, peníze
+  vrací admin z banky a potvrdí „Označit jako vráceno“ s referencí (stejný vzor jako
+  `fn_admin_apply_manual_refund`).
+
+### 8.4 Testy a akceptace
+- pgTAP 079: checkout převodem → `awaiting_payment` + pending platba s VS; potvrzení přijetí
+  = identické provize a doklad jako u karty (porovnat s kartovým scénářem); nedoplatek
+  v toleranci / nad toleranci; přeplatek do kreditu jen při přepínači; expirace 7 dní;
+  platba po stornu; SK objednávka → instrukce s IBAN a EUR; idempotence `bank:{inbox_id}`.
+- vitest: generátor SPD a PAY by square (známé vektory), parser CSV výpisu s mapováním.
+- Manuál 03-obchod (zákazník), 17-admin (Převody) cs/en.
+- Fáze 2 (mimo rozsah): API banky (Fio/ČSOB) místo CSV — nahradí jen zdroj inboxu.
 
 ---
 

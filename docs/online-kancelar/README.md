@@ -11,7 +11,7 @@ logiky + oponentura úplnosti + harmonizační průchod. Určeno k implementaci 
 
 | Soubor | Obsah |
 |---|---|
-| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R24, fáze |
+| [00-zadani-a-rozhodnuti.md](00-zadani-a-rozhodnuti.md) | Mise, zdroje pravdy, rozhodnutí zadavatele R1–R25, fáze |
 | [01-funkcni-zadani.md](01-funkcni-zadani.md) | Plný extrakt funkčního zadání (cílový stav 2–3 roky, MVP v §21; **§23 manuál / Help**) |
 | [02-technicka-rozhodnuti.md](02-technicka-rozhodnuti.md) | Kanonický kontrakt D1–D40 — závazný pro vše ostatní |
 | [03-provizni-pravidla-zdroj.md](03-provizni-pravidla-zdroj.md) | Původní provizní model v1 — **nahrazen 13 (v2)**; worked examples jen historicky |

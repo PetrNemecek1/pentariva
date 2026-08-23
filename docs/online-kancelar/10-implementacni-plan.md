@@ -567,7 +567,7 @@ v epicích výše neexistují záměrně:
 
 | Funkce | Kdy | Odkaz |
 |---|---|---|
-| **Bankovní převod s VS** (adaptér `BankTransferProvider`, ruční párování, `ALTER TYPE payment_method`) | Go-live, rozhodnutím zadavatele | `08` §8, M3 bod 6 |
+| **Bankovní převod s VS** (adaptér `BankTransferProvider`, ruční párování, `ALTER TYPE payment_method`) | **Rozhodnuto R25 (23. 8. 2026) — implementuje Codex, `23` §6.1 b.11** | `08` §8, M3 bod 6 |
 | **PDF doklady / faktury** — v MVP jen e-mailová rekapitulace + CSV | Go-live = Fakturoid | `08` §7, D23, D30 |
 | **Notifikační centrum / interní notifikace (zvoneček)** | Fáze 2 | D30 |
 | **Týdenní digest ambasadorovi, vítací e-mail, bounce webhook Resend** | Fáze 2 | D24, `09` §1.5 |
