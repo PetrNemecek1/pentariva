@@ -183,6 +183,17 @@ je v produkci (PR #45: Packeta REST/XML adaptér za `PACKETA_READY`, mock job + 
 privátní štítky, historie sledování, vratné zásilky přes Packetu, CSV/XLSX výběru, inventura + historie
 nákupní ceny). Integrace opravila kolizi timestampu migrace a tři fixtury. Web nasazen ručně (Actions kvóta).
 
+**Stav 23. 8. 2026 (kolo 2 Objednávky, blok 3):** Codexovy body 5 (hromadné storno objednávek při
+chybné ceně, `product_cost` blok pod nákupní), 12 (`payout_requests.returned` — vrácená výplata,
+`PAYOUT-RETURNED`, resend/cancel-and-return jako jediný návrat kreditu) a **10a** (dokončení
+funkce odstoupení po auditu Gemini, 20 §10.5: tlačítko od vzniku objednávky, `refund_account`
+jen u převodu, info bloky `market_settings.return_notice_md`, potvrzovací obrazovka cs/sk,
+anonymní `RETURN-SELF-SERVICE` notifikace bez PII) jsou v produkci — tři samostatná integrační
+okna (větev `codex/price-error-guard`), fix fixtury 079 (audit_log FK) a jednou stray CLI log
+řádek v `database.types.ts` (rozbil `next build`, opraveno a znovu ověřeno tsc před dalším pushem).
+pgTAP 078/079 a rozšířený 075 zelené, web nasazen ručně (Actions kvóta), `send-email` EF nasazena.
+Zbývá bod 11 (bankovní převod, R25) — na řadě dle pořadí 12 → 10a → 11, Codex již pracuje.
+
 ### 6.3 Claude — proud „Doklady" + integrace, kolo 2
 
 - Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
