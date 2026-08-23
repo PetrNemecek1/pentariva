@@ -169,6 +169,12 @@ R24 na `feat/multishop-kolo2`; po vyčerpání limitu převzal Claude: rebase, o
 + Ověřit ve VIES, firemní údaje na doklad) a **kurzy ČNB** (EF `fx-rates`, cron po–pá 13:10 UTC) — merged
 jako PR #41 a nasazeno. Zbývá: SK checkout end-to-end ve Stripe TEST (bod 6, s Claudem po Codexově merge).
 
+**Stav 23. 8. 2026 (kolo 2 Objednávky):** Codexova priorita 1 (R24, 20 §10) je v produkci (PR #42: `/order/`,
+EF `order-access`, tokeny, odstoupení bez pohybu peněz, tokenové PDF). Integrace odhalila a opravila
+chybu řazení položek (`order_items.created_at`). **SK checkout E2E** (pgTAP 050 §11) odhalil, že validace
+nacenění volala nacenění bez trhu → SK checkout padal; opraveno (PR #44, `20260824100000`). Ostrou platbu
+ve Stripe TEST (EUR) provede zadavatel podle postupu v chatu/README; zbývá jen ověřit webhook → faktura `FSK`.
+
 ### 6.3 Claude — proud „Doklady" + integrace, kolo 2
 
 - Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
