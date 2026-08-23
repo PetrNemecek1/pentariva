@@ -411,3 +411,34 @@ Jedna obrazovka, mobil na prvním místě, **bez** menu účtu:
   `return_requests` s položkami; po lhůtě jen reklamace; e-mail potvrzení
   odeslán; token nevidí cizí objednávku ani interní data; přihlášený zákazník
   totéž bez tokenu.
+
+### 10.5 Doplnění po nezávislém auditu (Gemini, 23. 8. 2026) — závazné
+
+1. **Tlačítko „Odstoupit od smlouvy“ je dostupné od vytvoření objednávky**, ne až od
+   zaplacení. U objednávky ve stavu `awaiting_payment` (převod R25, nezaplacená karta)
+   odstoupení = storno objednávky (`cancelled`, bez `return_requests`, bez peněz), s týmž
+   potvrzením na e-mail. Konec lhůty 14 dní se počítá od převzetí (`delivered_at`, jinak
+   `shipped_at` + doba doručení, jinak `paid_at`) — beze změny.
+2. **Účet pro vrácení peněz jen když je potřeba** (`requires_bank_account_for_refund`
+   v detailu z `fn_order_status_by_token`): platba kartou → pole se nezobrazí, text
+   „Peníze vrátíme na kartu, kterou jste platili.“; platba převodem (R25) → povinné pole
+   **Číslo účtu** (CZ formát `předčíslí-číslo/kód`) resp. **IBAN** (SK, prefix `SK`), uloží
+   se do `return_requests.refund_account` (jen admin; maskovat v UI na posledních 4 znaky).
+   SK texty slovensky.
+3. **Informační bloky nad výběrem položek** (text per trh v `market_settings.return_notice_md`,
+   výchozí znění níže; finální znění dodá právník zadavatele, 10 §7 b.5):
+   - hygienická výjimka (§ 1837 písm. g) OZ): „Doplňky stravy a kosmetiku lze z hygienických
+     důvodů vrátit jen v neotevřeném a neporušeném obalu. Otevřené zboží vám vrátíme zpět.“
+     **Ne** „zlikvidujeme bez nároku na vrácení“ — právně riskantní, nepoužívat;
+   - náklady vrácení: „Zboží můžete vrátit přes Zásilkovnu kódem [KÓD]; poplatek
+     [`return_shipping_fee_haleru` trhu] se odečte z vrácené částky. S vlastním dopravcem
+     hradíte přepravu jemu.“ — zobrazit jen když je vratka přes Packetu aktivní.
+4. **Potvrzovací obrazovka** (směrnice čl. 11a): „Tímto krokem odstupujete od kupní smlouvy
+   k objednávce č. {n} u položek: {seznam a kusy}. Částku {suma} vrátíme do 14 dnů od přijetí
+   vráceného zboží.“ / SK: „Týmto krokom odstupujete od kúpnej zmluvy k objednávke č. {n}
+   pri položkách: {zoznam a kusy}. Čiastku {suma} vrátime do 14 dní od prijatia vráteného
+   tovaru.“ Tlačítko **Potvrdit odstoupení** / **Potvrdiť odstúpenie**.
+5. **Notifikace ambasadorovi bez osobních údajů**: hlášení `RETURN-SELF-SERVICE` a in-app
+   notifikace nesou jen číslo objednávky a částku stornované provize („U objednávky č. {n}
+   došlo k vrácení zboží, provize {částka} byla stornována.“) — žádné jméno, e-mail, telefon
+   ani důvod. Jméno zákazníka vidí ambasador jen ve svém CRM (kde ho vidí i dnes).
