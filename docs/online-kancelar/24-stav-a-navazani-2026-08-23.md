@@ -1,6 +1,8 @@
 # 24 — Stav systému a navázání po pauze (uzavřeno 23. 8. 2026)
 
-Vývoj je **přerušen na týden** (24.–31. 8. 2026). Tento dokument je jediné
+Vývoj je **přerušen na týden** (24.–31. 8. 2026; zakonzervováno 23. 8. večer,
+větev `codex/order-request-copy` je zmergovaná a pushnutá — Codex ji chtěl
+zachovat, nemazat). Tento dokument je jediné
 místo, které stačí přečíst pro navázání: co je v produkci, co chybí, na co
 se během pauzy nesmí zapomenout a v jakém pořadí pokračovat. Podrobnosti
 proudů jsou v `23`, rozhodnutí v `00`, provozní příkazy v `pentariva-office/README.md`.
@@ -9,11 +11,13 @@ proudů jsou v `23`, rozhodnutí v `00`, provozní příkazy v `pentariva-office
 
 ## 1. Kde jsme
 
-- **Produkce = `main`** (`pentariva-office`, commit `f4a2707` + drobné opravy
-  z 23. 8. večer). Všech 120 migrací je nasazených, žádné otevřené PR, žádné
+- **Produkce = `main`** (`pentariva-office`, commit `eb8c6ff`, 23. 8. večer —
+  poslední tři merge: Codexovy opravy prázdného obchodu pro anonymní
+  zákazníky a reklamačního formuláře, a zákaz spotřebitelského odstoupení
+  pro B2B objednávky na veřejné stránce). Všech 120 migrací je nasazených, žádné otevřené PR, žádné
   neintegrované větve — vzdálené i lokální větve kolegů jsou smazané, zůstává
   jen `main`. Web nasazen ručně přes Firebase (`npm run deploy`).
-- **Testy:** pgTAP 1083 asercí v 58 souborech (zlaté testy provizí beze
+- **Testy:** pgTAP 1086 asercí v 58 souborech (zlaté testy provizí beze
   změny), vitest 392, tsc a eslint čisté. Laťka pro každý další merge.
 - **Tři proudy z `23` jsou hotové:** Doklady (Claude), Multishop B + kolo 2
   (Cursor, dokončil Claude), Správa objednávek + kolo 2 vč. bankovního převodu
@@ -123,7 +127,10 @@ banky místo CSV.
 4. **Go-live checklist `10` §5 M3** projít bod po bodu; před spuštěním
    `supabase/scripts/pre-golive-truncate.sql` (testovací data pryč, účty
    a deník zůstávají) a zkušební obnova zálohy (`09` §4).
-5. **Nezávislé audity přes Gemini (textově, web)**, které se ještě vyplatí:
+5. **Romanův balík „PENTARIVA EKOSYSTÉM" MASTER 1.0** — revize a otázky jsou
+   v `25` (zadavatel: čísla v excelech proberte spolu, revizi ber jako
+   podklad k debatě, ne hotový verdikt). Nic z něj se zatím neimplementuje.
+6. **Nezávislé audity přes Gemini (textově, web)**, které se ještě vyplatí:
    (a) ISDOC výstup vs. účetní software účetní (Pohoda/Money/…), (b) OSS a
    DPH SK entity vs. CZ entita, (c) bezpečnostní revize veřejné stránky
    `/order/` (tokeny, enumerace) — `06` §9.
