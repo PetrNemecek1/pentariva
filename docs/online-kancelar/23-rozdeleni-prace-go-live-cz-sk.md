@@ -194,6 +194,15 @@ okna (větev `codex/price-error-guard`), fix fixtury 079 (audit_log FK) a jednou
 pgTAP 078/079 a rozšířený 075 zelené, web nasazen ručně (Actions kvóta), `send-email` EF nasazena.
 Zbývá bod 11 (bankovní převod, R25) — na řadě dle pořadí 12 → 10a → 11, Codex již pracuje.
 
+**Stav 23. 8. 2026 (kolo 2 Objednávky, blok 4):** bod **11 — bankovní převod s VS (R25)** včetně
+doplňků 08 §8.5 je v produkci (merge `f4a2707`; pgTAP 080 = 38 asercí, celkem 1083). Integrace
+opravila migraci 110000 (`CREATE OR REPLACE` nesmí měnit OUT parametry → `DROP` před definicí)
+a pět chyb ve fixtuře 080 (Codex test nikdy nespustil: audit_log FK, chybějící apostrof, ambiguous
+`status`, přímé čtení inboxu bez grantu, nedeterministický výběr řádků se stejným `created_at`).
+Peněžní logika migrací beze změny. `bank_transfer_enabled` zůstává v produkci **vypnuté** (guard
+na IČO). Odloženo: PAY by square QR pro SK (zatím IBAN/BIC textem), CSV mapování per banka až podle
+reálného výpisu. Tím je Codexův seznam §6.1 kompletní — zbývá jen hardware (bod 9, Zebra).
+
 ### 6.3 Claude — proud „Doklady" + integrace, kolo 2
 
 - Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
