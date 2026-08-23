@@ -1006,6 +1006,7 @@ zapíše `audit_log` akci `gdpr.export_generated`.
 | `referral_events` (řádky) | 24 měsíců | DELETE |
 | Neaktivní zákaznický účet (bez loginu i objednávky 5 let) | 5 let + 60 dní po e-mailovém upozornění | `fn_gdpr_erase` |
 | Účetní a daňové záznamy (`orders`, `payments`, ledger, `payout_requests` paid) | 10 let od konce zdaňovacího období | pak teprve smazatelné |
+| `bank_payments_inbox` (jméno a účet plátce, jakmile je řádek spárován s uhrazenou objednávkou — R25, 08 §8) | 10 let od konce zdaňovacího období, stejně jako `payments` | součást účetního dokladu (§35 zákona o DPH); `gdpr_erase_guard` musí spárované řádky vyloučit ze smazání/anonymizace stejně jako `payments` |
 | `audit_log` | 10 let | DELETE |
 | GDPR export soubory (`gdpr-exports`) | 7 dní | DELETE |
 

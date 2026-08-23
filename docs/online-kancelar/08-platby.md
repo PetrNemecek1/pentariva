@@ -473,7 +473,7 @@ Implementuje proud Objednávky (Codex), viz `23` §6.1 b.11.
   (`qrcode`), žádná brána. Instrukce jsou i v **Moje objednávka** (20 §10) — zákazník je najde
   bez přihlášení i po zavření okna.
 - Nezaplaceno po 7 dnech → `cancelled` (stejný expirační job jako karta, §4.4) + e-mail.
-  Přijde-li platba po stornu: reconcile → obnovit, je-li sklad; jinak vrátit (inbox `refunded`).
+  Přijde-li platba po stornu: **NEobnovuje se** stornovaná objednávka — viz 8.5 b.3.
 
 ### 8.3 Párování v adminu (`/admin/payments/` → „Převody“)
 - Fronta `bank_payments_inbox` status `new`: systém navrhne objednávku podle **VS** (přesná shoda
@@ -503,6 +503,45 @@ Implementuje proud Objednávky (Codex), viz `23` §6.1 b.11.
 - vitest: generátor SPD a PAY by square (známé vektory), parser CSV výpisu s mapováním.
 - Manuál 03-obchod (zákazník), 17-admin (Převody) cs/en.
 - Fáze 2 (mimo rozsah): API banky (Fio/ČSOB) místo CSV — nahradí jen zdroj inboxu.
+
+### 8.5 Doplnění po rozhodnutí zadavatele (23. 8. 2026) — závazné
+
+Reakce na nezávislý audit rizik párování VS (interní, před dokončením implementace):
+
+1. **Přihlášený vs. guest zákazník.** U objednávky vytvořené přihlášeným profilem admin v párovací
+   frontě navíc vidí, zda `payer_account` daného řádku už byl u tohoto `profile_id` použit dřív
+   (jiná jeho spárovaná platba převodem) — shoda je jen posilující signál důvěryhodnosti v UI,
+   nic neblokuje ani neautomatizuje. U guest objednávek (bez účtu) tato historie logicky není
+   k dispozici — platí jen shoda podle bodu 2. Netýká se přístupu k instrukcím platby (ten je
+   podle 20 §10 stejný pro oba — token odkaz i přihlášený `/orders/`), jen důvěryhodnosti při
+   párování v adminu.
+2. **Shoda VS nestačí sama o sobě — účet plátce musí sedět taky.** Mění 8.3: pokud pro jeden VS
+   dorazí víc řádků `bank_payments_inbox` (typicky doplatek nedoplatku), smí se **sečíst k jedné
+   objednávce jen řádky se stejným `payer_account`** jako první řádek spárovaný k té objednávce.
+   Řádek se stejným VS, ale jiným `payer_account`, se **nikdy automaticky nesčítá** — zůstává
+   ve frontě se stavem `unmatched` a příznakem „jiný účet plátce u stejného VS — ověřit ručně“;
+   sloučit k téže objednávce nebo řešit zvlášť rozhodne výhradně admin ručně (typicky rodinný
+   příspěvek je legitimní, ale musí to být vědomé rozhodnutí, ne automat).
+3. **Platba po stornu zakládá novou objednávku, ne obnovu staré.** Mění 8.2/8.3: VS odpovídá
+   zrušené (`cancelled`) objednávce → systém **nereaktivuje** starou objednávku (ledger a
+   commission_entries zůstávají netknuté, append-only). Místo toho založí **novou objednávku**
+   se stejnými položkami a cenami jako originál (přes stejnou cestu jako ruční založení
+   objednávky adminem), rovnou ve stavu `paid` s přiřazenou platbou z inboxu, a do poznámky
+   na dokladu i do `order_events` zapíše odkaz na původní stornovanou objednávku pro informaci
+   (dohledatelnost, ne účetní vazba). Není-li položka skladem, nová objednávka se nezaloží —
+   admin dostane úkol kontaktovat zákazníka a vyřešit ručně (vrácení nebo náhrada), stejně jako
+   dnes u zrušených objednávek bez skladu.
+4. **Retence dat plátce.** `bank_payments_inbox` (jméno a účet plátce) se jakmile je řádek
+   spárován s uhrazenou objednávkou, drží **10 let** stejně jako `payments` — je součástí
+   účetního dokladu (zákonná povinnost, ne souhlas), viz `06-bezpecnost-rls.md` §7.4.
+   `gdpr_erase_guard` musí spárované řádky vyloučit ze smazání/anonymizace stejně jako `payments`.
+5. **Číselné řady bez duplicit.** `orders.order_number` (= VS) je `GENERATED ALWAYS AS IDENTITY`
+   nad jedinou tabulkou `orders` napříč trhy i měnami — DB garantuje globální unikátnost a
+   nikdy neopakuje hodnotu, i po rollbacku. Duplicitní VS mezi CZ a SK objednávkou tedy
+   strukturálně nemůže nastat; nová objednávka založená podle bodu 3 dostává číslo ze stejné
+   identity sekvence jako běžný checkout. Doplnit pgTAP regresní test (nový VS z bodu 3 nikdy
+   nekoliduje s existujícím `order_number`), aby to budoucí refaktoring čísel objednávek
+   nerozbil potichu.
 
 ---
 
