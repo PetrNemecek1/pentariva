@@ -175,6 +175,11 @@ chybu řazení položek (`order_items.created_at`). **SK checkout E2E** (pgTAP 0
 nacenění volala nacenění bez trhu → SK checkout padal; opraveno (PR #44, `20260824100000`). Ostrou platbu
 ve Stripe TEST (EUR) provede zadavatel podle postupu v chatu/README; zbývá jen ověřit webhook → faktura `FSK`.
 
+**Stav 23. 8. 2026 (kolo 2 Objednávky, blok 2):** Codexův blok Expedice/Packeta/inventura (body 1–7 §6.1)
+je v produkci (PR #45: Packeta REST/XML adaptér za `PACKETA_READY`, mock job + tisk štítku po zabalení,
+privátní štítky, historie sledování, vratné zásilky přes Packetu, CSV/XLSX výběru, inventura + historie
+nákupní ceny). Integrace opravila kolizi timestampu migrace a tři fixtury. Web nasazen ručně (Actions kvóta).
+
 ### 6.3 Claude — proud „Doklady" + integrace, kolo 2
 
 - Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
