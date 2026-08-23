@@ -163,6 +163,12 @@ rozhraní z §4 platí, nové sdílené sloupce se hlásí tam.
 | 9 | D38 izolace: doplnit scénáře (akce, doprava, e-maily, `paused` trh) do pgTAP 060–069 | 21 B.9 | |
 | 10 | Šablony `order_access_link` a `withdrawal_received` per trh a jazyk + odkaz **Moje objednávka** v hlavičce/patičce storefrontu všech trhů (texty cs/sk/en) | 20 §10, R24 | pro Codexův bod 10 |
 
+**Stav 23. 8. 2026 (kolo 2 Multishop):** Cursor dokončil body 1–5, 7 (OSS), 8 (VIES záznam + EF), 9 a šablony
+R24 na `feat/multishop-kolo2`; po vyčerpání limitu převzal Claude: rebase, opravy z integračního běhu
+(`fn_email_template` ambiguity, SK právní dokumenty, fixtury), **VIES v checkoutu** („Nakupuji na firmu“
++ Ověřit ve VIES, firemní údaje na doklad) a **kurzy ČNB** (EF `fx-rates`, cron po–pá 13:10 UTC) — merged
+jako PR #41 a nasazeno. Zbývá: SK checkout end-to-end ve Stripe TEST (bod 6, s Claudem po Codexově merge).
+
 ### 6.3 Claude — proud „Doklady" + integrace, kolo 2
 
 - Exkluzivní okna (společný `supabase test db`), merge po jednom PR, nasazení (`db push`, deploy funkcí) po každém merge.
