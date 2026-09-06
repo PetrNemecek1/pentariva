@@ -37,7 +37,7 @@ export const LEGAL_DOCUMENTS: Record<LegalDocumentSlug, Omit<LegalDocument, "mar
     shortTitle: "GDPR",
     description:
       "Zásady ochrany osobních údajů PENTARIVA. Návrh ke zveřejnění; identita správce zůstává v placeholderech.",
-    lead: "Návrh zásad zpracování osobních údajů na veřejném webu a v partnerském prostředí. Kontakt gdpr@pentariva.com je platný. Údaje správce doplníme po zápisu společnosti.",
+    lead: "Návrh zásad ochrany osobních údajů. Ke zveřejnění až po doplnění [NÁZEV SPOLEČNOSTI], [IČO] a [SÍDLO] a po kontrole provozovatele. Kontakt gdpr@pentariva.com je platný.",
   },
 };
 
