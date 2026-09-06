@@ -59,12 +59,13 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
 }
 
 function slugifyHeading(value: string) {
-  return value
+  const slug = value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+  return /^\d/.test(slug) ? `sekce-${slug}` : slug;
 }
 
 function parseTableRow(line: string) {
