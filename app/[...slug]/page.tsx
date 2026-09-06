@@ -167,23 +167,6 @@ const PAGES: Record<string, PreparationPage> = {
     parentHref: "/",
     items: SHARED_ITEMS,
   },
-  "pravni/obchodni-podminky": {
-    eyebrow: "Právní informace",
-    title: "Obchodní podmínky",
-    summary: "Obchodní podmínky tvoří součást spuštění skutečného prodeje a placených služeb.",
-    parentLabel: "Hlavní strana",
-    parentHref: "/",
-    items: SHARED_ITEMS,
-  },
-  "pravni/ochrana-udaju": {
-    eyebrow: "Právní informace",
-    title: "Ochrana osobních údajů",
-    summary:
-      "Úplné zásady tvoří součást aktivace registrace, formulářů a dalších způsobů zpracování údajů.",
-    parentLabel: "Hlavní strana",
-    parentHref: "/",
-    items: SHARED_ITEMS,
-  },
   "pravni/cookies": {
     eyebrow: "Právní informace",
     title: "Cookies",
